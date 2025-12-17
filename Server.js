@@ -1,22 +1,34 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // --- START: Uncaught Exception Handler ---
 process.on('uncaughtException', function (err) {
     console.error('Caught exception:', err.stack);
-    // Prevents the application from completely crashing immediately,
-    // allowing the error log to be fully sent to Render logs.
     process.exit(1); 
 });
 // --- END: Uncaught Exception Handler ---
-
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve index.html for root route
 app.get("/", (req, res) => {
-    res.send("🔥 QuikSpark backend is running!");
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// API health check endpoint
+app.get("/api/health", (req, res) => {
+    res.json({ status: "🔥 QuikSpark backend is running!", timestamp: new Date() });
 });
 
 const PORT = process.env.PORT || 3000;
