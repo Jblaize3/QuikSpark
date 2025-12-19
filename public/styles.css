@@ -40,8 +40,8 @@ body {
 }
 
 .logo-img {
-    height: clamp(60px, 8vw, 100px);
-    width: auto;
+    width: clamp(140px, 18vw, 220px);
+    height: auto;
 }
 
 .nav-links {
@@ -214,8 +214,8 @@ body {
 }
 
 .logo-img-footer {
-    height: clamp(120px, 20vw, 300px);
-    width: auto;
+    width: clamp(220px, 35vw, 420px);
+    height: auto;
 }
 
 .footer-links {
