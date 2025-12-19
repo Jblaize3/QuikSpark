@@ -203,23 +203,24 @@ body {
 }
 
 .footer-content {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: start;
-    column-gap: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .footer-logo {
-    align-self: flex-start;
+     display: flex;
+     align-items: flex-start;
 }
 
 .logo-img-footer {
-    display: block;     
-    margin-top: 0;
+    height: 120px;
+    width: auto;
 }
 
 .footer-links {
-    justify-self: end;
+    display: flex;
+    gap: 80px;
 }
 
 .footer-column h4 {
