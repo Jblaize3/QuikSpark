@@ -203,14 +203,13 @@ body {
 }
 
 .footer-content {
-    display: flex;
+     display: flex;
     justify-content: space-between;
-    align-items: start;
+    align-items: flex-start;
 }
 
 .footer-logo {
-    display: flex;
-    align-items: center;
+    margin-top: 0;
 }
 
 .logo-img-footer {
