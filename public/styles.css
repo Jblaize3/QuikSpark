@@ -203,9 +203,10 @@ body {
 }
 
 .footer-content {
-     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    column-gap: 80px;
 }
 
 .footer-logo {
@@ -218,8 +219,7 @@ body {
 }
 
 .footer-links {
-    display: flex;
-    gap: 80px;
+    justify-self: end;
 }
 
 .footer-column h4 {
