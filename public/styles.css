@@ -209,12 +209,12 @@ body {
 }
 
 .footer-logo {
-    margin-top: 0;
+    align-self: flex-start;
 }
 
 .logo-img-footer {
-    width: clamp(220px, 35vw, 420px);
-    height: auto;
+    display: block;     
+    margin-top: 0;
 }
 
 .footer-links {
