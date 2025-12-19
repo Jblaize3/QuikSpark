@@ -35,25 +35,13 @@ body {
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: 700;
     display: flex;
     align-items: center;
 }
 
-.logo-quik {
-    color: #1a1a1a;
-}
-
-.logo-spark {
-    color: #1a1a1a;
-    position: relative;
-}
-
-.logo-spark::before {
-    content: '⚡';
-    color: #8B5CF6;
-    margin: 0 5px;
+.logo-img {
+    height: 40px;
+    width: auto;
 }
 
 .nav-links {
@@ -201,6 +189,12 @@ body {
     padding: 40px 0;
 }
 
+.spark-icon {
+    width: 150px;
+    height: auto;
+    opacity: 0.6;
+}
+
 /* Footer */
 .footer {
     background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
@@ -215,13 +209,14 @@ body {
 }
 
 .footer-logo {
-    font-size: 28px;
-    font-weight: 700;
+    display: flex;
+    align-items: center;
 }
 
-.footer-logo .logo-quik,
-.footer-logo .logo-spark {
-    color: white;
+.logo-img-footer {
+    height: 50px;
+    width: auto;
+    filter: brightness(0) invert(1);
 }
 
 .footer-links {
