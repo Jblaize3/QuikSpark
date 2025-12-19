@@ -199,15 +199,14 @@ body {
 .footer {
     background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
     color: white;
-    padding: 60px 0;
 }
 
 .footer-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    flex-direction: row; /* default — logo left, links right */
     gap: 80px;
+    padding: 0 0 60px; /* ✅ no top padding */
 }
 
 .footer-logo {
@@ -224,10 +223,8 @@ body {
 .footer-links {
     display: flex;
     gap: 80px;
-    margin: 0;
-    margin-top: 10px;
-    align-items: flex-start;   
     flex-wrap: wrap;
+    padding-top: 30px; /* ✅ links get breathing room, not the logo */
 }
 
 .footer-column h4 {
