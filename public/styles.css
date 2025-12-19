@@ -206,7 +206,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    flex-direction: row-reverse;
+    flex-direction: row; /* default — logo left, links right */
     gap: 80px;
 }
 
