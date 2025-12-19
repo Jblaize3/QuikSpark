@@ -197,6 +197,8 @@ body {
 
 /* Footer */
 .footer {
+    background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+    color: white;
     padding: 60px 0;
 }
 
@@ -204,6 +206,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    flex-direction: row-reverse;
 }
 
 .footer-logo {
