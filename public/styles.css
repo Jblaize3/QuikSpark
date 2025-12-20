@@ -1,4 +1,6 @@
 /* Reset and Base Styles */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -6,9 +8,9 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     line-height: 1.6;
-    color: #1a1a1a;
+    color: #000000;
     background: #ffffff;
 }
 
@@ -54,11 +56,12 @@ body {
     text-decoration: none;
     color: #666;
     font-size: 14px;
+    font-family: 'Inter', sans-serif;
     transition: color 0.3s;
 }
 
 .nav-links a:hover {
-    color: #8B5CF6;
+    color: #5820F7;
 }
 
 /* Hero Section */
@@ -68,6 +71,7 @@ body {
 }
 
 .hero-title {
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 48px;
     margin-bottom: 40px;
     line-height: 1.2;
@@ -80,7 +84,7 @@ body {
 }
 
 .main-text {
-    color: #1a1a1a;
+    color: #000000;
     font-weight: 700;
 }
 
@@ -91,6 +95,7 @@ body {
 }
 
 .btn {
+    font-family: 'Inter', sans-serif;
     padding: 15px 35px;
     border-radius: 25px;
     font-size: 16px;
@@ -101,7 +106,7 @@ body {
 }
 
 .btn-primary {
-    background: #1a1a1a;
+    background: #000000;
     color: white;
 }
 
@@ -112,8 +117,8 @@ body {
 
 .btn-secondary {
     background: white;
-    color: #1a1a1a;
-    border: 2px solid #1a1a1a;
+    color: #000000;
+    border: 2px solid #000000;
 }
 
 .btn-secondary:hover {
@@ -129,12 +134,14 @@ body {
 }
 
 .tagline h2 {
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 36px;
     margin-bottom: 20px;
-    color: #1a1a1a;
+    color: #000000;
 }
 
 .tagline p {
+    font-family: 'Inter', sans-serif;
     font-size: 18px;
     color: #888DA6;
     max-width: 600px;
@@ -161,12 +168,14 @@ body {
 }
 
 .feature-text h3 {
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 32px;
     margin-bottom: 20px;
-    color: #1a1a1a;
+    color: #000000;
 }
 
 .feature-text p {
+    font-family: 'Inter', sans-serif;
     font-size: 18px;
     color: #888DA6;
     line-height: 1.8;
@@ -197,9 +206,9 @@ body {
 
 /* Footer */
 .footer {
-    background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+    background: linear-gradient(135deg, #5820F7 0%, #A78BFA 100%);
     color: white;
-    padding: 30px 0 60px;       /* Less top padding */
+    padding: 30px 0 60px;
 }
 
 .footer-content {
@@ -213,11 +222,11 @@ body {
     display: flex;
     align-items: flex-start;
     flex-shrink: 0;
-    margin-top: -10;           /* Pull logo UP even more */
+    margin-top: -10px;
 }
 
 .logo-img-footer {
-    height: 240px;         /* BIGGER - was 180px */
+    height: 240px;
     width: auto;
 }
 
@@ -225,13 +234,15 @@ body {
     display: flex;
     gap: 80px;
     flex-wrap: wrap;
-    padding-top: 50px;        /* Push links down more */
+    padding-top: 50px;
 }
 
 .footer-column h4 {
+    font-family: 'Space Grotesk', sans-serif;
     margin-bottom: 15px;
     font-size: 18px;
     font-weight: 600;
+    color: #C2CAF3;
 }
 
 .footer-column ul {
@@ -243,14 +254,15 @@ body {
 }
 
 .footer-column a {
-    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Inter', sans-serif;
+    color: #C2CAF3;
     text-decoration: none;
     font-size: 16px;
     transition: color 0.3s;
 }
 
 .footer-column a:hover {
-    color: white;
+    color: #ffffff;
 }
 
 /* Responsive Design */
@@ -270,34 +282,20 @@ body {
     }
 
     .footer-content {
-        flex-direction: column;
-        gap: 24px;
-        align-items: flex-start;
+        flex-direction: row;
+        gap: 20px;
     }
 
     .logo-img-footer {
-        width: min(85vw, 320px); /* prevent giant logo on mobile */
-        height: auto;
+        height: 80px;
     }
 
     .footer-links {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 24px;
-        width: 100%;
-        margin-top: 0;
+        flex-direction: column;
+        gap: 20px;
     }
 
     .footer-column {
         min-width: 0;
     }
-
-    .footer-logo {
-        margin-top: 0;
-    }
-
-   .footer {
-        padding: 40px 0;
-    }
-
 }
