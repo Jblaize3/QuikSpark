@@ -74,7 +74,7 @@ body {
 }
 
 .welcome {
-    color: #8B5CF6;
+    color: #5820F7;
     display: block;
     font-weight: 600;
 }
@@ -136,7 +136,7 @@ body {
 
 .tagline p {
     font-size: 18px;
-    color: #666;
+    color: #888DA6;
     max-width: 600px;
     margin: 0 auto;
 }
@@ -168,7 +168,7 @@ body {
 
 .feature-text p {
     font-size: 18px;
-    color: #666;
+    color: #888DA6;
     line-height: 1.8;
 }
 
