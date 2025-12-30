@@ -201,8 +201,7 @@ body {
 .spark-icon {
     width: 300px;
     height: auto;
-    opacity: 1;
-    filter: brightness(0) saturate(100%) invert(21%) sepia(95%) saturate(4890%) hue-rotate(256deg) brightness(98%) contrast(105%);
+    opacity: 0.8;
 }
 
 /* Footer */
