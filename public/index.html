@@ -9,21 +9,29 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <img src="/Images/FINAL AWAY COLORS RESIZED.png" alt="QuikSpark Logo" class="logo-img">
-            </div>
-            <ul class="nav-links">
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#feed">Spark Feed</a></li>
-                <li><a href="#network">Network</a></li>
-                <li><a href="#collaborate">Collaborate</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#community">Spark Community</a></li>
-                <li><a href="#events">Events</a></li>
-            </ul>
+    <div class="container">
+        <div class="logo">
+            <img src="/Images/FINAL AWAY COLORS RESIZED.png" alt="QuikSpark Logo" class="logo-img">
         </div>
-    </nav>
+        
+        <!-- Hamburger Menu Button -->
+        <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <ul class="nav-links">
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#feed">Spark Feed</a></li>
+            <li><a href="#network">Network</a></li>
+            <li><a href="#collaborate">Collaborate</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#community">Spark Community</a></li>
+            <li><a href="#events">Events</a></li>
+        </ul>
+    </div>
+</nav>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -127,5 +135,22 @@
             </div>
         </div>
     </footer>
+<script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+        
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            });
+        });
+    </script>
 </body>
 </html>

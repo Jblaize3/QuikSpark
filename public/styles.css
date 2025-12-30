@@ -199,7 +199,7 @@ body {
 }
 
 .spark-icon {
-    width: 300px;
+    width: 300px;	
     height: auto;
     opacity: 0.8;
 }
@@ -265,10 +265,69 @@ body {
     color: #000000; /* Clean, confident hover */
 }
 
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.mobile-menu-btn span {
+    width: 25px;
+    height: 3px;
+    background: #000000;
+    border-radius: 3px;
+    transition: all 0.3s;
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+
     .nav-links {
-        display: none;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 20px;
+        gap: 15px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .nav-links a {
+        font-size: 16px;
+        padding: 10px 0;
     }
 
     .hero-title {
