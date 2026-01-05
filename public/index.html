@@ -9,46 +9,47 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-    <div class="container">
-        <div class="logo">
-            <img src="/Images/FINAL AWAY COLORS RESIZED.png" alt="QuikSpark Logo" class="logo-img">
+        <div class="container">
+            <div class="logo">
+                <img src="/Images/FINAL AWAY COLORS RESIZED.png" alt="QuikSpark Logo" class="logo-img">
+            </div>
+            
+            <!-- Hamburger Menu Button -->
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-links">
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#feed">Spark Feed</a></li>
+                <li><a href="#network">Network</a></li>
+                <li><a href="#collaborate">Collaborate</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#community">Spark Community</a></li>
+                <li><a href="#events">Events</a></li>
+            </ul>
         </div>
-        
-        <!-- Hamburger Menu Button -->
-        <button class="mobile-menu-btn" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        
-        <ul class="nav-links">
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#feed">Spark Feed</a></li>
-            <li><a href="#network">Network</a></li>
-            <li><a href="#collaborate">Collaborate</a></li>
-            <li><a href="#portfolio">Portfolio</a></li>
-            <li><a href="#community">Spark Community</a></li>
-            <li><a href="#events">Events</a></li>
-        </ul>
-    </div>
-</nav>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <h1 class="hero-title">
                 <span class="welcome">Welcome to QuikSpark,</span><br>
-                <span class="main-text">Start your business journey today.</span>
+                <span class="main-text">Launching Soon.</span>
             </h1>
             <div class="hero-buttons">
-                <button class="btn btn-primary">Sign In</button>
-                <button class="btn btn-secondary">Create Account</button>
+                <button class="btn btn-primary" id="earlyAccessBtn">Get Early Access</button>
+                <a href="#tagline" class="btn btn-secondary">Learn More</a>
             </div>
+            <p class="hero-microcopy">Join entrepreneurs building what's next</p>
         </div>
     </section>
 
     <!-- Tagline Section -->
-    <section class="tagline">
+    <section class="tagline" id="tagline">
         <div class="container">
             <h2>Where ideas become businesses.</h2>
             <p>The network where entrepreneurs and creators connect, build and launch what's next.</p>
@@ -135,7 +136,66 @@
             </div>
         </div>
     </footer>
-<script>
+
+    <!-- Early Access Modal -->
+    <div id="earlyAccessModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <h2>Get Early Access to QuikSpark</h2>
+            <p class="modal-subtitle">Launching soon. Be the first to connect with entrepreneurs building what's next.</p>
+            
+            <form id="earlyAccessForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>I'm interested in:</label>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="creator" name="interest" value="finding-creator">
+                        <label for="creator">Finding a creator</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="entrepreneur" name="interest" value="working-entrepreneur">
+                        <label for="entrepreneur">Working with an entrepreneur</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="collaborating" name="interest" value="collaborating">
+                        <label for="collaborating">Collaborating on projects</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="exploring" name="interest" value="exploring">
+                        <label for="exploring">Exploring the community</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="networking" name="interest" value="networking">
+                        <label for="networking">Networking with entrepreneurs</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="all" name="interest" value="all">
+                        <label for="all">All of the above</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Get Early Access</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu functionality
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
         const navLinks = document.querySelector('.nav-links');
         
@@ -149,6 +209,61 @@
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
                 mobileMenuBtn.classList.remove('active');
+            });
+        });
+
+        // Early Access Modal functionality
+        const modal = document.getElementById('earlyAccessModal');
+        const earlyAccessBtn = document.getElementById('earlyAccessBtn');
+        const closeModal = document.getElementById('closeModal');
+        const form = document.getElementById('earlyAccessForm');
+
+        earlyAccessBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const data = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                interests: formData.getAll('interest')
+            };
+
+            console.log('Form submitted:', data);
+            
+            // TODO: Replace with your actual form submission endpoint
+            // Example: fetch('/api/early-access', { method: 'POST', body: JSON.stringify(data) })
+            
+            alert('Thank you for your interest! We\'ll be in touch soon.');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            form.reset();
+        });
+
+        // Smooth scroll for Learn More button
+        document.querySelector('a[href="#tagline"]').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#tagline').scrollIntoView({ 
+                behavior: 'smooth' 
             });
         });
     </script>
