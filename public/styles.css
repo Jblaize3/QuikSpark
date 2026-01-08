@@ -22,7 +22,7 @@ body {
 
 /* Navigation */
 .navbar {
-    padding: 20px 0;
+    padding: 12px 0;
     border-bottom: 1px solid #f0f0f0;
     background: linear-gradient(180deg, #C2CAF3 0%, rgba(194, 202, 243, 0.3) 50%, #ffffff 100%);
     position: sticky;
@@ -89,20 +89,15 @@ body {
 }
 
 .hero-buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
+        flex-direction: column;  /* Stack vertically */
+        width: 100%;
+        max-width: 350px;  /* Constrain max width */
+        margin: 0 auto;  /* Center them */
 }
 
 .btn {
-    font-family: 'Inter', sans-serif;
-    padding: 15px 35px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
+        width: 100%;  /* Full width of container */
+        padding: 18px 35px;  /* Slightly bigger tap target */
 }
 
 .btn-primary {
@@ -302,7 +297,7 @@ body {
     }
 
     .logo-img {
-        width: 160px;
+        width: 200px;
     }
 
     .nav-links {
