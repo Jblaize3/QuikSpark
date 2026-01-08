@@ -567,3 +567,25 @@ body {
         font-size: 1.5rem;
     }
 }
+
+/* Gradient overlay for feature images */
+.feature-image {
+    position: relative;
+    }
+
+.feature-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(88, 32, 247, 0.15) 0%, rgba(88, 32, 247, 0.05) 100%);
+    border-radius: 20px;
+    pointer-events: none;
+    }
+
+.feature-image img {
+    position: relative;
+    z-index: 1;
+    }
