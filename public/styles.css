@@ -42,7 +42,7 @@ body {
 }
 
 .logo-img {
-    width: clamp(140px, 18vw, 220px);
+    width: clamp(180px, 22vw, 280px);
     height: auto;
 }
 
@@ -55,7 +55,7 @@ body {
 .nav-links a {
     text-decoration: none;
     color: #666;
-    font-size: 14px;
+    font-size: 16px;
     font-family: 'Inter', sans-serif;
     transition: color 0.3s;
 }
