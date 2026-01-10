@@ -24,7 +24,7 @@ body {
 .navbar {
     padding: 20px 0;
     border-bottom: 1px solid #f0f0f0;
-    background: linear-gradient(180deg, #C2CAF3 0%, rgba(194, 202, 243, 0.3) 50%, #ffffff 100%);
+    background: linear-gradient(180deg, #C2CAF3 0%, rgba(194, 202, 243, 0.6) 60%, #ffffff 100%);
     position: sticky;
     top: 0;
     z-index: 100;
