@@ -77,6 +77,15 @@ body {
     line-height: 1.2;
 }
 
+.hero-subline {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    color: #888DA6;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+}
+
 .welcome {
     color: #5820F7;
     display: block;
@@ -538,6 +547,11 @@ body {
     .hero-title {
         font-size: 28px;
         margin-bottom: 30px;
+    }
+
+    .hero-subline {
+        font-size: 0.95rem;
+        margin-bottom: 30px;  
     }
 
     .hero-buttons {
