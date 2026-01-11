@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 // Configure Mailchimp
 mailchimp.setConfig({
-    apiKey: "95d1e2009147877550a948b4588b9971-us9",
+    apiKey: "2f1e3003b58c87ddf311865f68ca084c-us9",
     server: "us9"
 });
 
