@@ -232,7 +232,7 @@
         });
 
         // Form submission
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const formData = new FormData(form);
@@ -245,13 +245,30 @@
 
             console.log('Form submitted:', data);
             
-            // TODO: Replace with your actual form submission endpoint
-            // Example: fetch('/api/early-access', { method: 'POST', body: JSON.stringify(data) })
-            
-            alert('Thank you for your interest! We\'ll be in touch soon.');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            form.reset();
+            try {
+                // Send data to your backend API
+                const response = await fetch('/api/early-access', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Thank you for your interest! We\'ll be in touch soon.');
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    form.reset();
+                } else {
+                    alert(result.message || 'Something went wrong. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Failed to submit. Please check your connection and try again.');
+            }
         });
 
         // Smooth scroll for Learn More button
