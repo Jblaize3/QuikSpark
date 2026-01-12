@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuikSpark - Where Ideas Become Businesses</title>
     <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Images/apple-touch-icon.png">
 </head>
 <body>
     <!-- Navigation -->
@@ -248,4 +254,37 @@
             
             try {
                 // Send data to your backend API
-                const response = await fetch('/api/early-access'
+                const response = await fetch('/api/early-access', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Thank you for your interest! We\'ll be in touch soon.');
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    form.reset();
+                } else {
+                    alert(result.message || 'Something went wrong. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Failed to submit. Please check your connection and try again.');
+            }
+        });
+
+        // Smooth scroll for Learn More button
+        document.querySelector('a[href="#tagline"]').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#tagline').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+    </script>
+</body>
+</html>
