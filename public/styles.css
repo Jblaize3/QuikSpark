@@ -235,7 +235,7 @@ body {
 }
 
 .spark-icon {
-    width: 300px;	
+    width: 300px;
     height: auto;
     opacity: 0.8;
 }
@@ -549,9 +549,22 @@ body {
         margin-bottom: 30px;
     }
 
+    /* Mobile-specific welcome text - keep on one line, smaller */
+    .welcome-text {
+        font-size: 1.35rem !important;
+        margin-bottom: 1.25rem !important;
+        white-space: nowrap;
+    }
+
+    /* Mobile-specific main text - smaller, better spacing */
+    .main-text {
+        font-size: 1.1rem !important;
+        line-height: 1.5 !important;
+    }
+
     .hero-subline {
         font-size: 0.95rem;
-        margin-bottom: 30px;  
+        margin-bottom: 30px;
     }
 
     .hero-buttons {
