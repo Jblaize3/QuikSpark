@@ -34,6 +34,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
 .logo {
@@ -362,6 +363,7 @@ body {
     position: relative;
     animation: slideUp 0.3s ease;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overscroll-behavior: contain;
 }
 
 @keyframes slideUp {
@@ -496,6 +498,16 @@ body {
 
 .submit-btn:active {
     transform: translateY(0);
+}
+
+/* Focus Accessibility */
+.btn:focus-visible,
+.modal-close:focus-visible,
+.submit-btn:focus-visible,
+.nav-links a:focus-visible,
+.form-group input:focus-visible {
+    outline: 3px solid rgba(88, 32, 247, 0.35);
+    outline-offset: 2px;
 }
 
 /* Responsive Design - Mobile */
