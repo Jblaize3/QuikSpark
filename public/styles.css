@@ -561,16 +561,17 @@ body {
         margin-bottom: 30px;
     }
 
-    /* Mobile-specific welcome text - keep on one line, smaller */
+    /* Mobile-specific welcome text - LARGER and more prominent */
     .welcome-text {
-        font-size: 1.35rem !important;
-        margin-bottom: 1.25rem !important;
-        white-space: nowrap;
+        font-size: 1.75rem !important;
+        margin-bottom: 1.5rem !important;
+        line-height: 1.3 !important;
+        font-weight: 700 !important;
     }
 
-    /* Mobile-specific main text - smaller, better spacing */
+    /* Mobile-specific main text - smaller for balance */
     .main-text {
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
         line-height: 1.5 !important;
     }
 
@@ -603,6 +604,11 @@ body {
         gap: 40px;
     }
 
+    /* IMPROVED MOBILE FOOTER */
+    .footer {
+        padding: 40px 0 50px;
+    }
+
     .footer-content {
         flex-direction: column;
         align-items: center;
@@ -612,20 +618,40 @@ body {
 
     .footer-logo {
         margin-top: 0;
+        margin-bottom: 10px;
     }
 
+    /* Larger logo on mobile */
     .logo-img-footer {
-        height: 120px;
+        height: 160px;
+        width: auto;
     }
 
+    /* Footer links in one clean row */
     .footer-links {
         padding-top: 0;
-        gap: 30px;
+        gap: 40px;
         width: 100%;
+        justify-content: center;
+        flex-direction: row;
     }
 
     .footer-column {
         min-width: 0;
+        flex-shrink: 0;
+    }
+
+    .footer-column h4 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .footer-column a {
+        font-size: 14px;
+    }
+
+    .footer-column li {
+        margin-bottom: 8px;
     }
 
     .modal-content {
