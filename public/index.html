@@ -3,215 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to QuikSpark</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-        }
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-        }
-        .header {
-            background: linear-gradient(135deg, #A9B1EB 15%, #C2CAF3 85%);
-            padding: 40px 20px;
-            text-align: center;
-        }
-        .logo {
-            max-width: 200px;
-            height: auto;
-        }
-        .content {
-            padding: 40px 30px;
-        }
-        .welcome-title {
-            color: #C2CAF3;
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            text-align: center;
-        }
-        .main-heading {
-            color: #000000;
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0 0 20px 0;
-            text-align: center;
-            line-height: 1.3;
-        }
-        .intro-text {
-            color: #333333;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-        .section-heading {
-            color: #000000;
-            font-size: 20px;
-            font-weight: 600;
-            margin: 30px 0 15px 0;
-        }
-        .benefit-item {
-            margin-bottom: 15px;
-            padding-left: 25px;
-            position: relative;
-        }
-        .benefit-item:before {
-            content: "→";
-            color: #5820F7;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-        .benefit-title {
-            color: #000000;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .benefit-desc {
-            color: #666666;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-        .cta-section {
-            background: #fafafa;
-            padding: 30px;
-            margin: 30px 0;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .cta-text {
-            color: #333333;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-        .cta-button {
-            display: inline-block;
-            background: #000000;
-            color: #ffffff !important;
-            padding: 15px 40px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 16px;
-        }
-        .timeline {
-            color: #888DA6;
-            font-size: 15px;
-            text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-        }
-        .footer {
-            background: #f5f5f5;
-            padding: 30px;
-            text-align: center;
-            color: #666666;
-            font-size: 14px;
-        }
-        .social-links {
-            margin: 20px 0;
-        }
-        .social-links a {
-            color: #5820F7;
-            text-decoration: none;
-            margin: 0 10px;
-            font-weight: 500;
-        }
-        @media only screen and (max-width: 600px) {
-            .content {
-                padding: 30px 20px;
-            }
-            .welcome-title {
-                font-size: 24px;
-            }
-            .main-heading {
-                font-size: 20px;
-            }
-            .cta-section {
-                padding: 20px;
-            }
-        }
-    </style>
+    <title>QuikSpark - Where Ideas Become Businesses</title>
+    <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Images/apple-touch-icon.png">
 </head>
 <body>
-    <div class="email-container">
-        <!-- Header with Logo -->
-        <div class="header">
-            <img src="https://quik-spark.com/Images/FINAL_TRANSPARENT_LOGO.png" alt="QuikSpark Logo" class="logo">
-        </div>
-
-        <!-- Main Content -->
-        <div class="content">
-            <h1 class="welcome-title">Welcome to QuikSpark!</h1>
-            <h2 class="main-heading">You're In. Let's Build Something Real.</h2>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="/Images/FINAL_TRANSPARENT_AWAY_COLORS.png" alt="QuikSpark Logo" class="logo-img">
+            </div>
             
-            <p class="intro-text">
-                Thanks for joining the QuikSpark early access community. You're now part of a network of entrepreneurs and creators who are serious about turning ideas into businesses.
-            </p>
-
-            <h3 class="section-heading">Here's What You Can Expect:</h3>
+            <!-- Hamburger Menu Button -->
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             
-            <div class="benefit-item">
-                <div class="benefit-title">Entrepreneurial News & Insights</div>
-                <div class="benefit-desc">Monthly updates on startup trends, founder stories and the latest in building and launching businesses.</div>
-            </div>
-
-            <div class="benefit-item">
-                <div class="benefit-title">Launch Updates</div>
-                <div class="benefit-desc">Be the first to know when we go live. Get exclusive updates on new features, tools and community milestones.</div>
-            </div>
-
-            <div class="benefit-item">
-                <div class="benefit-title">Monthly Founder Spotlights</div>
-                <div class="benefit-desc">Meet real entrepreneurs building real businesses. Learn from their journeys, challenges and wins.</div>
-            </div>
-
-            <div class="benefit-item">
-                <div class="benefit-title">Early Access</div>
-                <div class="benefit-desc">When we launch, you'll be first in line. Connect with partners, collaborate on projects and start building.</div>
-            </div>
-
-            <!-- Call to Action -->
-            <div class="cta-section">
-                <p class="cta-text"><strong>Stay Connected</strong></p>
-                <p class="cta-text" style="margin-bottom: 20px;">Follow our journey as we build the network where ideas become businesses.</p>
-                <a href="https://www.linkedin.com/company/quikspark/" class="cta-button" style="margin-right: 10px; margin-bottom: 10px;">Follow Us on LinkedIn</a>
-                <a href="https://www.instagram.com/quik.spark/" class="cta-button" style="margin-bottom: 10px;">Follow Us on Instagram</a>
-            </div>
-
-            <!-- Timeline -->
-            <div class="timeline">
-                <strong>What's Next?</strong><br>
-                Launch is coming soon. We'll keep you updated every step of the way. In the meantime, start thinking about what you want to build.
-            </div>
-
-            <p class="intro-text" style="text-align: center; margin-top: 30px;">
-                Questions? Ideas? Just want to connect?<br>
-                Email us at <a href="mailto:j.blaize@quik-spark.com" style="color: #5820F7; text-decoration: none;">j.blaize@quik-spark.com</a>
-            </p>
+            <ul class="nav-links">
+                <li><a href="#discover">Discover</a></li>
+                <li><a href="#feed">Spark Feed</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#collaborate">Collaborate</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <!-- Footer -->
-        <div class="footer">
-            <div class="social-links">
-                <a href="https://www.linkedin.com/company/quikspark/">LinkedIn</a> | 
-                <a href="https://www.instagram.com/quik.spark/">Instagram</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="welcome-text" style="color: #5820F7; display: block; font-size: 3rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: 0.05em;">Welcome to QuikSpark,</span>
+                <span class="main-text" style="font-size: 2rem; font-weight: 600; line-height: 1.3;">Connect with Builders.<br>Collaborate on Ideas.<br>Launch Real Businesses.</span>
+            </h1>
+            <p class="hero-subline">Built for early-stage entrepreneurs looking for co-founders, creative partners and execution-focused collaborators.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="earlyAccessBtn">Get Early Access</button>
+                <a href="#tagline" class="btn btn-secondary">Learn More</a>
             </div>
-            <p style="margin: 10px 0;">
-                QuikSpark - Where Ideas Become Businesses
-            </p>
-            <p style="font-size: 12px; color: #999999; margin-top: 20px;">
-                You're receiving this because you signed up for early access to QuikSpark.<br>
-                <a href="*|UNSUB|*" style="color: #999999;">Unsubscribe</a>
-            </p>
+            <p class="hero-microcopy">Join entrepreneurs and creators turning ideas into reality</p>
+        </div>
+    </section>
+
+    <!-- Tagline Section -->
+    <section class="tagline" id="tagline">
+        <div class="container">
+            <h2>Where ideas become businesses.</h2>
+            <p>The network where entrepreneurs and creators connect, build and launch what's next.</p>
+        </div>
+    </section>
+
+    <!-- Feature 1: Find Your People -->
+    <section class="feature">
+        <div class="container feature-content">
+            <div class="feature-text">
+                <h3>Find your people.</h3>
+                <p>Discover collaborators who align with your vision, not just your skill needs. Our smart matching connects you with partners who understand what you're building and turn connections into real partnerships.</p>
+            </div>
+            <div class="feature-image">
+                <img src="/Images/find_your_people.jpg" alt="People collaborating">
+            </div>
+        </div>
+    </section>
+
+    <!-- Spark Connector -->
+    <div class="spark-connector">
+        <img src="/Images/ClassicSparkLine.png" alt="Spark" class="spark-icon">
+    </div>
+
+    <!-- Feature 2: Build Together -->
+    <section class="feature feature-reverse">
+        <div class="container feature-content">
+            <div class="feature-image">
+                <img src="/Images/build_together.jpg" alt="Working together">
+            </div>
+            <div class="feature-text">
+                <h3>Build together.</h3>
+                <p>Execute end-to-end with tools built for real collaboration. Track milestones, manage deliverables and keep your team aligned with Spark Board from first idea to final launch.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature 3: Turn Ideas into Businesses -->
+    <section class="feature">
+        <div class="container feature-content">
+            <div class="feature-text">
+                <h3>Turn Ideas into Businesses.</h3>
+                <p>Launch real businesses, not just side projects. QuikSpark provides the network, tools and support to take you from napkin sketch to market-ready.</p>
+            </div>
+            <div class="feature-image">
+                <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600" alt="Creator working">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="/Images/FINAL_TRANSPARENT_LOGO.png" alt="QuikSpark Logo" class="logo-img-footer">
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Social Media</h4>
+                        <ul>
+                            <li><a href="https://www.linkedin.com/company/108357234/admin/dashboard/" target="_blank" rel="noopener">LinkedIn</a></li>
+                            <li><a href="https://www.instagram.com/quik.spark/" target="_blank" rel="noopener">Instagram</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#faq">FAQ</a></li>
+                            <li><a href="#contact">Contact Form</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Get in Touch</h4>
+                        <ul>
+                            <li><a href="mailto:j.blaize@quik-spark.com">j.blaize@quik-spark.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Early Access Modal -->
+    <div id="earlyAccessModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <h2>Get Early Access to the QuikSpark Network</h2>
+            <p class="modal-subtitle">Be first in. Get entrepreneurial news, launch updates and monthly founder spotlights. Plus early access when we go live.</p>
+            
+            <form id="earlyAccessForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>I'm interested in:</label>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="creator" name="interest" value="finding-creator">
+                        <label for="creator">Finding a creator</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="entrepreneur" name="interest" value="working-entrepreneur">
+                        <label for="entrepreneur">Working with an entrepreneur</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="collaborating" name="interest" value="collaborating">
+                        <label for="collaborating">Collaborating on projects</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="exploring" name="interest" value="exploring">
+                        <label for="exploring">Exploring the community</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="networking" name="interest" value="networking">
+                        <label for="networking">Networking with entrepreneurs</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="all" name="interest" value="all">
+                        <label for="all">All of the above</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Get Early Access</button>
+            </form>
         </div>
     </div>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+        
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            });
+        });
+
+        // Early Access Modal functionality
+        const modal = document.getElementById('earlyAccessModal');
+        const earlyAccessBtn = document.getElementById('earlyAccessBtn');
+        const closeModal = document.getElementById('closeModal');
+        const form = document.getElementById('earlyAccessForm');
+
+        earlyAccessBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const data = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                interests: formData.getAll('interest')
+            };
+
+            console.log('Form submitted:', data);
+            
+            try {
+                // Send data to your backend API
+                const response = await fetch('/api/early-access', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Thank you for your interest! We\'ll be in touch soon.');
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    form.reset();
+                } else {
+                    alert(result.message || 'Something went wrong. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Failed to submit. Please check your connection and try again.');
+            }
+        });
+
+        // Smooth scroll for Learn More button
+        document.querySelector('a[href="#tagline"]').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#tagline').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+    </script>
 </body>
 </html>
