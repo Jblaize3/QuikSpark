@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySpark - QuikSpark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(88, 32, 247, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(194, 202, 243, 0.08) 0%, transparent 40%);
+            z-index: 0;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 20px 0;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-img {
+            width: clamp(180px, 22vw, 280px);
+            height: auto;
+            opacity: 0.75;
+            filter: brightness(1.15) contrast(0.9) saturate(0.85);
+            transition: all 0.3s ease;
+            mix-blend-mode: screen;
+        }
+
+        .logo-img:hover {
+            opacity: 0.95;
+            filter: brightness(1.25) contrast(1) saturate(1);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #C2CAF3;
+        }
+
+        /* Main Container */
+        .myspark-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255,255,255,0.06) inset;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(88, 32, 247, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .profile-top {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 3px rgba(88, 32, 247, 0.3), 0 0 0 6px rgba(88, 32, 247, 0.1), 0 8px 24px rgba(88, 32, 247, 0.25);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #C2CAF3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .profile-role {
+            color: #C2CAF3;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .profile-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .edit-profile-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-start;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.3);
+        }
+
+        .edit-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 32, 247, 0.5);
+        }
+
+        /* Tags */
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background: rgba(194, 202, 243, 0.1);
+            color: #C2CAF3;
+            border: 1px solid rgba(194, 202, 243, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* About Section */
+        .about-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .about-text {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Portfolio Grid */
+        .portfolio-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Shortlist Section */
+        .shortlist-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .shortlist-count {
+            color: #C2CAF3;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .shortlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .shortlist-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 25px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shortlist-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(88, 32, 247, 0.08) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .shortlist-card:hover::before { opacity: 1; }
+
+        .shortlist-card:hover {
+            border-color: rgba(194, 202, 243, 0.35);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 50px rgba(88, 32, 247, 0.25);
+        }
+
+        .shortlist-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .shortlist-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .shortlist-info {
+            flex: 1;
+        }
+
+        .shortlist-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .shortlist-role {
+            color: #C2CAF3;
+            font-size: 0.9rem;
+        }
+
+        .shortlist-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .shortlist-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .shortlist-vision {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .shortlist-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .shortlist-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-view-profile {
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .btn-view-profile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 32, 247, 0.5);
+        }
+
+        .btn-remove {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-remove:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .loading-state, .empty-shortlist {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+            grid-column: 1 / -1;
+        }
+
+        .empty-shortlist-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .upload-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.3);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 32, 247, 0.5);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .portfolio-item {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .portfolio-item:hover {
+            border-color: rgba(194, 202, 243, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(88, 32, 247, 0.2);
+        }
+
+        .portfolio-item-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(88, 32, 247, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-item-image.has-image {
+            padding: 0;
+        }
+
+        .portfolio-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .portfolio-item:hover .portfolio-item-image img {
+            transform: scale(1.1);
+        }
+
+        /* Play button for videos */
+        .portfolio-item-play-overlay {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(88, 32, 247, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .portfolio-item:hover .portfolio-item-play-overlay {
+            transform: scale(1.1);
+        }
+
+        .portfolio-item-play-icon {
+            width: 0;
+            height: 0;
+            border-left: 15px solid white;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            margin-left: 3px;
+        }
+
+        /* Link badge */
+        .portfolio-item-link-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 0.7rem;
+            color: white;
+            z-index: 2;
+        }
+
+        .portfolio-item-content {
+            padding: 20px;
+        }
+
+        .portfolio-item-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        .portfolio-item-caption {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .portfolio-item-type {
+            color: #C2CAF3;
+            font-size: 0.85rem;
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(194, 202, 243, 0.1);
+            border: 1px solid rgba(194, 202, 243, 0.2);
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .empty-state-subtext {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #C2CAF3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-top {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-meta {
+                justify-content: center;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+        /* Collaboration Requests Section */
+        .collab-requests-section {
+            margin-top: 40px;
+        }
+
+        .requests-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 28px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 5px;
+            border-radius: 14px;
+            width: fit-content;
+        }
+
+        .request-tab {
+            padding: 10px 22px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .request-tab.active {
+            background: rgba(88, 32, 247, 0.25);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(88, 32, 247, 0.2);
+        }
+
+        .request-tab:hover:not(.active) {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .requests-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .request-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .request-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(88, 32, 247, 0.08) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.35s;
+        }
+
+        .request-card:hover::before {
+            opacity: 1;
+        }
+
+        .request-card:hover {
+            border-color: rgba(194, 202, 243, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(88, 32, 247, 0.2);
+        }
+
+        .request-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .request-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .request-info {
+            flex: 1;
+        }
+
+        .request-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .request-role {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .request-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+        }
+
+        .request-portfolio-ref {
+            background: rgba(88, 32, 247, 0.1);
+            border: 1px solid rgba(88, 32, 247, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #C2CAF3;
+        }
+
+        .request-message {
+            background: rgba(194, 202, 243, 0.06);
+            border: 1px solid rgba(194, 202, 243, 0.12);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.88);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        .request-details {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .request-detail {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .request-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .accept-btn {
+            background: linear-gradient(135deg, #5820F7, #7c3aed);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.35);
+        }
+
+        .accept-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(88, 32, 247, 0.55);
+        }
+
+        .decline-btn {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .decline-btn:hover {
+            background: rgba(239, 68, 68, 0.08);
+            color: rgba(239, 68, 68, 0.8);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .view-profile-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .view-profile-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .request-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .status-accepted {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-declined {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .empty-requests {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-requests-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Bell Icon */
+        .bell-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .bell-btn:hover {
+            background: rgba(88, 32, 247, 0.2);
+            border-color: rgba(88, 32, 247, 0.4);
+            color: #C2CAF3;
+            transform: translateY(-1px);
+        }
+
+        .bell-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: linear-gradient(135deg, #5820F7, #7c3aed);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid #0a0a0a;
+            animation: badgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes badgePop {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Bell ping ring */
+        .bell-btn.has-notifications::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid #5820F7;
+            animation: bellPing 2s ease-out infinite;
+        }
+
+        @keyframes bellPing {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+        .collab-requests-section.highlight {
+            animation: sectionPulse 1s ease;
+        }
+
+        @keyframes sectionPulse {
+            0% { box-shadow: none; }
+            40% { box-shadow: 0 0 0 3px rgba(88, 32, 247, 0.4), 0 8px 32px rgba(88, 32, 247, 0.2); }
+            100% { box-shadow: none; }
+        }
+
+        /* Staggered card entrance */
+        @keyframes cardFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .request-card.animate-in {
+            animation: cardFadeUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+
+        .shortlist-card.animate-in {
+            animation: cardFadeUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+
+        /* Accept / Decline exit animations */
+        .request-card.accepting {
+            animation: cardAccept 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes cardAccept {
+            0% { transform: translateX(0); opacity: 1; border-color: rgba(88,32,247,0.3); }
+            30% { background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.5); transform: scale(1.01); }
+            100% { transform: translateX(60px); opacity: 0; max-height: 0; padding: 0; margin: 0; }
+        }
+
+        .request-card.declining {
+            animation: cardDecline 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes cardDecline {
+            0% { transform: translateX(0); opacity: 1; }
+            20% { background: rgba(239, 68, 68, 0.08); border-color: rgba(239,68,68,0.3); }
+            100% { transform: translateX(-40px); opacity: 0; max-height: 0; padding: 0; margin: 0; }
+        }
+    </style>
+    <script src="notifications.js"></script>
+    <script src="portfolio-lightbox.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark Logo" class="logo-img">
+                </a>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="/#discover">Discover</a></li>
+                <li><a href="/#feed">Spark Feed</a></li>
+                <li><a href="/myspark.html">MySpark</a></li>
+                <li><a href="/#collaborate">Collaborate</a></li>
+                <li><a href="/#events">Events</a></li>
+                <li><a href="/#about">About</a></li>
+            </ul>
+            <button class="bell-btn" id="bell-btn" onclick="scrollToCollabRequests()" title="Collaboration Requests">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="bell-badge" id="bell-badge" style="display:none;">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="myspark-container" id="content">
+        <!-- Loading State -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading your MySpark...</p>
+        </div>
+    </div>
+
+    <script>
+        
+        let currentRequestFilter = 'pending';
+        // Get current user ID from localStorage (you'll set this on login)
+        const currentUserId = localStorage.getItem('currentUserId');
+
+        async function loadProfile() {
+            try {
+                if (!currentUserId) {
+                    // No user logged in - redirect to profile setup
+                    window.location.href = '/profile-setup.html';
+                    return;
+                }
+
+                // Fetch user profile from API
+                const response = await fetch(`/api/portfolio/${currentUserId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Profile not found');
+                }
+
+                const data = await response.json();
+                const user = data.user;
+
+                // Store for portfolio lightbox access
+                currentUserData = user;
+
+                // Render profile
+                renderProfile(user);
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('content').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <div class="empty-state-text">Unable to load profile</div>
+                        <div class="empty-state-subtext">${error.message}</div>
+                        <button class="upload-btn" onclick="window.location.href='/profile-setup.html'" style="margin-top: 20px;">
+                            Create Profile
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderProfile(user) {
+            const initials = user.fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            // Format interests
+            const interestLabels = {
+                'ai-tech': 'AI & Tech',
+                'apps-software': 'Apps & Software',
+                'content-media': 'Content & Media',
+                'film-video': 'Film & Video',
+                'creative-arts': 'Creative Arts',
+                'graphic-design': 'Graphic Design',
+                'music-audio': 'Music & Audio',
+                'photography': 'Photography',
+                'fashion-beauty': 'Fashion & Beauty',
+                'food-beverage': 'Food & Beverage',
+                'fitness-wellness': 'Fitness & Wellness',
+                'gaming-esports': 'Gaming & Esports',
+                'ecommerce-retail': 'E-commerce & Retail',
+                'social-impact': 'Social Impact',
+                'education': 'Education',
+                'finance-crypto': 'Finance & Crypto'
+            };
+
+            const workTypeLabels = {
+                'prototype': 'Prototype',
+                'live-product': 'Live Product',
+                'experiment-mvp': 'Experiment / MVP',
+                'client-work': 'Client Work',
+                'open-source': 'Open Source',
+                'research': 'Research',
+                'concept': 'Concept'
+            };
+
+            document.getElementById('content').innerHTML = `
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-top">
+                        <div class="profile-image">
+                            ${user.profileImage ? `<img src="${user.profileImage}" alt="${user.fullName}">` : initials}
+                        </div>
+                        <div class="profile-info">
+                            <h1 class="profile-name">${user.fullName}</h1>
+                            <div class="profile-role">${user.role}</div>
+                            <div class="profile-meta">
+                                <span>📍 ${user.location}</span>
+                                <span>⏱️ ${formatExperience(user.experience)}</span>
+                                <span>⚡ ${formatAvailability(user.availability)}</span>
+                                ${user.workTypes && user.workTypes.length > 0 ? 
+                                    `<span style="background: rgba(88, 32, 247, 0.1); padding: 4px 12px; border-radius: 12px; color: #5820F7; font-weight: 600;">${getExecutionStatus(user.workTypes)}</span>`
+                                    : ''
+                                }
+                            </div>
+                        </div>
+                        <button class="edit-profile-btn" onclick="window.location.href='/profile-setup.html'">
+                            ✏️ Edit
+                        </button>
+                    </div>
+
+                    ${user.interests && user.interests.length > 0 ? `
+                        <div class="profile-tags">
+                            ${user.interests.map(interest => 
+                                `<span class="tag">${interestLabels[interest] || interest}</span>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+
+                    ${user.vision || user.preferences || user.workStyle ? `
+                        <div class="about-section">
+                            ${user.vision ? `
+                                <h2 class="section-title">What I'm Building</h2>
+                                <p class="about-text">${user.vision}</p>
+                            ` : ''}
+                            
+                            ${user.preferences ? `
+                                <h2 class="section-title" style="margin-top: 25px;">Who I Want to Build With</h2>
+                                <p class="about-text">${user.preferences}</p>
+                            ` : ''}
+
+                            ${user.workStyle ? `
+                                <h2 class="section-title" style="margin-top: 25px;">Work Style</h2>
+                                <p class="about-text">${user.workStyle}</p>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+<!-- Collaboration Requests Section -->
+                <div class="collab-requests-section" id="collab-requests-section">
+                    <h2 class="section-title">📥 Collaboration Requests</h2>
+                    
+                    <div class="requests-tabs">
+                        <button id="pending-tab" class="request-tab active" onclick="switchRequestTab('pending')">
+                            Pending <span id="pending-count">(0)</span>
+                        </button>
+                        <button id="accepted-tab" class="request-tab" onclick="switchRequestTab('accepted')">
+                            Accepted <span id="accepted-count">(0)</span>
+                        </button>
+                        <button id="declined-tab" class="request-tab" onclick="switchRequestTab('declined')">
+                            Declined <span id="declined-count">(0)</span>
+                        </button>
+                    </div>
+	
+                    <div class="requests-grid" id="requests-grid">
+                        <div class="loading-state">Loading requests...</div>
+                    </div>
+                </div>
+                <!-- Shortlist Section -->
+                <div class="shortlist-section" id="shortlist-section" style="margin-top: 40px;">
+                    <div class="section-header">
+                        <h2 class="section-title">⭐ My Shortlist</h2>
+                        <span class="shortlist-count" id="shortlist-count">0 saved</span>
+                    </div>
+                    
+                    <div class="shortlist-grid" id="shortlist-grid">
+                        <div class="loading-state">Loading shortlist...</div>
+                    </div>
+                </div>
+
+                <!-- Portfolio Section -->
+                <div class="portfolio-section">
+                    <div class="section-header">
+                        <h2 class="section-title">My Work</h2>
+                        <button class="upload-btn" onclick="alert('Upload feature coming soon!')">
+                            📤 Upload Work
+                        </button>
+                    </div>
+
+                    <div class="portfolio-grid">
+                        ${user.uploadedFiles && user.uploadedFiles.length > 0 ? 
+                            user.uploadedFiles.map((file, index) => {
+                                const type = getPortfolioItemType(file.url || '', file.filename || '');
+                                const isImage = type === 'image';
+                                const isVideo = type === 'video';
+                                const isLink = type === 'link';
+                                
+                                return `
+                                <div class="portfolio-item" onclick="viewPortfolioItem(${index})" style="cursor: pointer;">
+                                    <div class="portfolio-item-image ${isImage ? 'has-image' : ''}">
+                                        ${isImage && file.url
+                                            ? `<img src="${file.url}" alt="${file.filename}">` 
+                                            : isVideo
+                                            ? `<div style="font-size: 3.5rem;">🎬</div>
+                                               <div class="portfolio-item-play-overlay">
+                                                   <div class="portfolio-item-play-icon"></div>
+                                               </div>`
+                                            : isLink
+                                            ? `<div style="font-size: 3.5rem;">${file.url && file.url.includes('figma') ? '🎨' : file.url && file.url.includes('github') ? '💻' : file.url && file.url.includes('notion') ? '📝' : '🔗'}</div>`
+                                            : '📄'
+                                        }
+                                        ${isLink ? `<div class="portfolio-item-link-badge">↗</div>` : ''}
+                                    </div>
+                                    <div class="portfolio-item-content">
+                                        <div class="portfolio-item-title">${file.filename || `Project ${index + 1}`}</div>
+                                        ${file.caption ? `
+                                            <div class="portfolio-item-caption">${file.caption}</div>
+                                        ` : ''}
+                                        ${user.workTypes && user.workTypes[index] ? 
+                                            `<span class="portfolio-item-type">${workTypeLabels[user.workTypes[index]] || user.workTypes[index]}</span>` 
+                                            : ''
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                            }).join('')
+                            : `
+                                <div class="empty-state" style="grid-column: 1 / -1;">
+                                    <div class="empty-state-icon">📂</div>
+                                    <div class="empty-state-text">Nothing here yet</div>
+                                    <div class="empty-state-subtext">Early ideas, sketches, experiments, or links to Notion/Figma/GitHub — all welcome</div>
+                                </div>
+                            `
+                        }
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatExperience(exp) {
+            const labels = {
+                '0': 'Just starting',
+                '1-2': '1-2 years',
+                '3-5': '3-5 years',
+                '6-10': '6-10 years',
+                '10+': '10+ years'
+            };
+            return labels[exp] || exp;
+        }
+
+        function formatAvailability(avail) {
+            const labels = {
+                'full-time': 'Full-time',
+                'part-time': 'Part-time',
+                'weekends': 'Nights & weekends',
+                'flexible': 'Flexible'
+            };
+            return labels[avail] || avail;
+        }
+
+        function getExecutionStatus(workTypes) {
+            // Determine execution signal based on work types
+            if (workTypes.includes('live-product')) return '🚀 Live product';
+            if (workTypes.includes('prototype') || workTypes.includes('experiment-mvp')) return '⚡ Actively building';
+            if (workTypes.includes('concept')) return '🧱 Idea stage';
+            if (workTypes.includes('open-source')) return '💻 Open source';
+            return '🔨 Building';
+        }
+
+        // Load shortlisted profiles
+        async function loadShortlist() {
+            const userId = localStorage.getItem('currentUserId');
+            if (!userId) return;
+
+            try {
+                const response = await fetch(`/api/shortlist/${userId}`);
+                const result = await response.json();
+
+                const shortlistGrid = document.getElementById('shortlist-grid');
+                const shortlistCount = document.getElementById('shortlist-count');
+
+                if (result.success && result.shortlistedProfiles && result.shortlistedProfiles.length > 0) {
+                    const profiles = result.shortlistedProfiles;
+                    shortlistCount.textContent = `${profiles.length} saved`;
+
+                    shortlistGrid.innerHTML = profiles.map((profile, index) => `
+                        <div class="shortlist-card animate-in" style="animation-delay: ${index * 70}ms">
+                            <div class="shortlist-card-header">
+                                <div class="shortlist-avatar">
+                                    ${profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
+                                </div>
+                                <div class="shortlist-info">
+                                    <div class="shortlist-name">${profile.name || 'Anonymous'}</div>
+                                    <div class="shortlist-role">${profile.role || 'Builder'}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="shortlist-details">
+                                ${profile.location ? `<span class="shortlist-detail">📍 ${profile.location}</span>` : ''}
+                                ${profile.experience ? `<span class="shortlist-detail">⚡ ${profile.experience}</span>` : ''}
+                                ${profile.availability ? `<span class="shortlist-detail">🕐 ${profile.availability}</span>` : ''}
+                            </div>
+
+                            ${profile.vision ? `
+                                <div class="shortlist-vision">${profile.vision}</div>
+                            ` : ''}
+
+                            <div class="shortlist-actions">
+                                <button class="shortlist-btn btn-view-profile" onclick="window.location.href='/profile/${profile._id}'">
+                                    View Profile
+                                </button>
+                                <button class="shortlist-btn btn-remove" onclick="removeFromShortlist('${profile._id}')">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    shortlistCount.textContent = '0 saved';
+                    shortlistGrid.innerHTML = `
+                        <div class="empty-shortlist">
+                            <div class="empty-shortlist-icon">⭐</div>
+                            <div style="font-size: 1.15rem; margin-bottom: 10px; color: rgba(255,255,255,0.8);">No saved profiles yet</div>
+                            <div style="font-size: 0.95rem;">Visit the Discover page to find and shortlist collaborators</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading shortlist:', error);
+                document.getElementById('shortlist-grid').innerHTML = `
+                    <div class="empty-shortlist">
+                        <div style="color: #ef4444;">Failed to load shortlist</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Remove profile from shortlist
+        async function removeFromShortlist(profileId) {
+            const userId = localStorage.getItem('currentUserId');
+            if (!userId) return;
+
+            if (!confirm('Remove this profile from your shortlist?')) return;
+
+            try {
+                const response = await fetch(`/api/shortlist/remove/${profileId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Reload shortlist
+                    loadShortlist();
+                    if (window.notify) {
+                        window.notify.success('Removed from shortlist');
+                    }
+                } else {
+                    if (window.notify) {
+                        window.notify.error(result.message || 'Failed to remove');
+                    }
+                }
+            } catch (error) {
+                console.error('Error removing from shortlist:', error);
+                if (window.notify) {
+                    window.notify.error('Failed to remove from shortlist');
+                }
+            }
+        }
+
+        // View portfolio item in lightbox
+        let currentUserData = null;
+        
+        function viewPortfolioItem(index) {
+            if (!currentUserData || !currentUserData.uploadedFiles) return;
+            
+            // Convert all portfolio items to lightbox format
+            const items = currentUserData.uploadedFiles.map((file, i) => {
+                const type = getPortfolioItemType(file.url || '', file.filename || '');
+                return {
+                    type: type,
+                    url: file.url || '',
+                    title: file.filename || `Project ${i + 1}`
+                };
+            });
+            
+            // Open lightbox at the clicked item
+            portfolioLightbox.open(items, index);
+        }
+
+        // Load profile and shortlist on page load
+        loadProfile();
+        loadShortlist();
+        loadCollabRequests();
+
+        function scrollToCollabRequests() {
+            const section = document.getElementById('collab-requests-section');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                section.classList.add('highlight');
+                setTimeout(() => section.classList.remove('highlight'), 1000);
+            }
+        }
+
+        // Switch between request tabs
+        function switchRequestTab(status) {
+            currentRequestFilter = status;
+            
+            // Update tab active states
+            document.querySelectorAll('.request-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`${status}-tab`).classList.add('active');
+            
+            // Load requests for this status
+            loadCollabRequests();
+        }
+
+        // Load collaboration requests
+        async function loadCollabRequests() {
+            const userId = localStorage.getItem('currentUserId');
+            if (!userId) return;
+
+            try {
+                const response = await fetch(`/api/collab/received/${userId}?status=${currentRequestFilter}`);
+                const result = await response.json();
+
+                if (response.ok) {
+                    renderCollabRequests(result.requests);
+                    updateRequestCounts();
+                } else {
+                    console.error('Failed to load requests:', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+            }
+        }
+
+        // Update request counts for each tab
+        async function updateRequestCounts() {
+            const userId = localStorage.getItem('currentUserId');
+            if (!userId) return;
+
+            try {
+                // Get counts for all statuses
+                const [pendingRes, acceptedRes, declinedRes] = await Promise.all([
+                    fetch(`/api/collab/received/${userId}?status=pending`),
+                    fetch(`/api/collab/received/${userId}?status=accepted`),
+                    fetch(`/api/collab/received/${userId}?status=declined`)
+                ]);
+
+                const pending = await pendingRes.json();
+                const accepted = await acceptedRes.json();
+                const declined = await declinedRes.json();
+
+                document.getElementById('pending-count').textContent = `(${pending.requests?.length || 0})`;
+                document.getElementById('accepted-count').textContent = `(${accepted.requests?.length || 0})`;
+                document.getElementById('declined-count').textContent = `(${declined.requests?.length || 0})`;
+
+                // Update bell badge
+                const pendingCount = pending.requests?.length || 0;
+                const badge = document.getElementById('bell-badge');
+                const bellBtn = document.getElementById('bell-btn');
+                if (badge) {
+                    if (pendingCount > 0) {
+                        badge.textContent = pendingCount;
+                        badge.style.display = 'flex';
+                        bellBtn.classList.add('has-notifications');
+                    } else {
+                        badge.style.display = 'none';
+                        bellBtn.classList.remove('has-notifications');
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating counts:', error);
+            }
+        }
+
+        // Render collaboration requests
+        function renderCollabRequests(requests) {
+            const grid = document.getElementById('requests-grid');
+
+            if (!requests || requests.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-requests">
+                        <div class="empty-requests-icon">📭</div>
+                        <p>${currentRequestFilter === 'pending' 
+                            ? 'No pending requests' 
+                            : currentRequestFilter === 'accepted'
+                            ? 'No accepted requests yet'
+                            : 'No declined requests'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const needLabels = {
+                design: '🎨 Design',
+                pm: '📊 Product/Strategy',
+                engineering: '💻 Engineering',
+                marketing: '📣 Marketing',
+                other: '🔧 Other'
+            };
+
+            const timelineLabels = {
+                'asap': '⚡ ASAP',
+                '1-2-weeks': '📅 1-2 weeks',
+                '1-month': '📆 1 month',
+                'flexible': '🕐 Flexible'
+            };
+
+            grid.innerHTML = requests.map((request, index) => {
+                const fromUser = request.fromUser;
+                const initials = fromUser.fullName
+                    ? fromUser.fullName.split(' ').map(n => n[0]).join('').toUpperCase()
+                    : '?';
+                
+                const timeAgo = getTimeAgo(new Date(request.createdAt));
+
+                return `
+                    <div class="request-card animate-in" style="animation-delay: ${index * 70}ms" data-request-id="${request._id}">
+                        <div class="request-header">
+                            <div class="request-avatar">
+                                ${fromUser.profileImage 
+                                    ? `<img src="${fromUser.profileImage}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
+                                    : initials}
+                            </div>
+                            <div class="request-info">
+                                <div class="request-name">${fromUser.fullName || 'Anonymous'}</div>
+                                <div class="request-role">${fromUser.role || 'Builder'}</div>
+                                <div class="request-meta">
+                                    <span>📍 ${fromUser.location || 'Unknown'}</span>
+                                    <span>⏰ ${timeAgo}</span>
+                                </div>
+                            </div>
+                            ${request.status !== 'pending' ? `
+                                <span class="request-status status-${request.status}">
+                                    ${request.status === 'accepted' ? '✅ Accepted' : '❌ Declined'}
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        ${request.portfolioItem ? `
+                            <div class="request-portfolio-ref">
+                                💼 Regarding: <strong>${request.portfolioItem}</strong>
+                            </div>
+                        ` : ''}
+
+                        <div class="request-message">
+                            "${request.message}"
+                        </div>
+
+                        ${request.need || request.timeline ? `
+                            <div class="request-details">
+                                ${request.need ? `
+                                    <div class="request-detail">
+                                        ${needLabels[request.need] || request.need}
+                                    </div>
+                                ` : ''}
+                                ${request.timeline ? `
+                                    <div class="request-detail">
+                                        ${timelineLabels[request.timeline] || request.timeline}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+
+                        <div class="request-actions">
+                            <a href="/profile.html?id=${fromUser._id}" class="view-profile-btn" target="_blank">
+                                View Profile
+                            </a>
+                            ${request.status === 'pending' ? `
+                                <button class="request-btn accept-btn" onclick="acceptRequest('${request._id}')">
+                                    ✅ Accept
+                                </button>
+                                <button class="request-btn decline-btn" onclick="declineRequest('${request._id}')">
+                                    ❌ Decline
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Accept a collaboration request
+        async function acceptRequest(requestId) {
+            const userId = localStorage.getItem('currentUserId');
+            
+            // Animate the card out first
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.classList.add('accepting');
+                // Disable buttons immediately
+                card.querySelectorAll('button').forEach(b => b.disabled = true);
+            }
+
+            try {
+                const response = await fetch(`/api/collab/accept/${requestId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (window.notify) notify.success('✅ Request accepted! They\'ll be notified.');
+                    setTimeout(() => loadCollabRequests(), 500);
+                } else {
+                    // Reverse animation on failure
+                    if (card) card.classList.remove('accepting');
+                    if (window.notify) notify.error(result.message || 'Failed to accept request');
+                }
+            } catch (error) {
+                if (card) card.classList.remove('accepting');
+                if (window.notify) notify.error('Failed to accept request');
+            }
+        }
+
+        // Decline a collaboration request
+        async function declineRequest(requestId) {
+            const userId = localStorage.getItem('currentUserId');
+            
+            if (!confirm('Are you sure you want to decline this request?')) return;
+
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.classList.add('declining');
+                card.querySelectorAll('button').forEach(b => b.disabled = true);
+            }
+
+            try {
+                const response = await fetch(`/api/collab/decline/${requestId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (window.notify) notify.info('Request declined');
+                    setTimeout(() => loadCollabRequests(), 400);
+                } else {
+                    if (card) card.classList.remove('declining');
+                    if (window.notify) notify.error(result.message || 'Failed to decline request');
+                }
+            } catch (error) {
+                if (card) card.classList.remove('declining');
+                if (window.notify) notify.error('Failed to decline request');
+            }
+        }
+
+        // Helper function to format time ago
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            const intervals = {
+                year: 31536000,
+                month: 2592000,
+                week: 604800,
+                day: 86400,
+                hour: 3600,
+                minute: 60
+            };
+            
+            for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+                const interval = Math.floor(seconds / secondsInUnit);
+                if (interval >= 1) {
+                    return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+                }
+            }
+            
+            return 'Just now';
+        }
+
+        // Load requests when page loads (add this to the existing loadUserData function or after it)
+        // Make sure to call loadCollabRequests() after the user data is loaded
+    </script>
+</body>
+</html>

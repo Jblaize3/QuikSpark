@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply to Collaborate - QuikSpark</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+        }
+
+        .setup-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: rgba(88, 32, 247, 0.2);
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5820F7 0%, #C2CAF3 100%);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+
+        .step-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(88, 32, 247, 0.2);
+            z-index: 0;
+        }
+
+        .step-indicator:first-child::before {
+            left: 50%;
+            width: 50%;
+        }
+
+        .step-indicator:last-child::before {
+            width: 50%;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(88, 32, 247, 0.2);
+            border: 2px solid rgba(88, 32, 247, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888DA6;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s;
+        }
+
+        .step-indicator.active .step-number {
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            border-color: #5820F7;
+            color: white;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.5);
+        }
+
+        .step-indicator.completed .step-number {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: #888DA6;
+            text-align: center;
+        }
+
+        .step-indicator.active .step-label {
+            color: #C2CAF3;
+            font-weight: 600;
+        }
+
+        /* Form Steps */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .step-subtitle {
+            color: #C2CAF3;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .form-label .required {
+            color: #ef4444;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid rgba(194, 202, 243, 0.2);
+            border-radius: 15px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5820F7;
+            background: rgba(26, 26, 46, 1);
+            box-shadow: 0 0 0 4px rgba(88, 32, 247, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #888DA6;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid rgba(88, 32, 247, 0.3);
+            overflow: hidden;
+        }
+
+        .image-preview:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(88, 32, 247, 0.5);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-placeholder {
+            text-align: center;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 0.85rem;
+            color: #C2CAF3;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        /* Tag Selection */
+        .tag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .tag-option {
+            padding: 15px 20px;
+            background: rgba(88, 32, 247, 0.1);
+            border: 2px solid rgba(88, 32, 247, 0.3);
+            border-radius: 15px;
+            color: #C2CAF3;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .tag-option:hover {
+            background: rgba(88, 32, 247, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tag-option.selected {
+            background: rgba(88, 32, 247, 0.4);
+            border-color: #5820F7;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.3);
+        }
+
+        /* Radio Options */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid rgba(194, 202, 243, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            background: rgba(26, 26, 46, 1);
+            border-color: rgba(88, 32, 247, 0.5);
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: #5820F7;
+        }
+
+        .radio-option.selected {
+            background: rgba(88, 32, 247, 0.2);
+            border-color: #5820F7;
+        }
+
+        .radio-label {
+            flex: 1;
+        }
+
+        .radio-title {
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .radio-desc {
+            color: #888DA6;
+            font-size: 0.9rem;
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed rgba(88, 32, 247, 0.4);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(26, 26, 46, 0.5);
+        }
+
+        .file-upload-area:hover {
+            border-color: #5820F7;
+            background: rgba(88, 32, 247, 0.1);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #5820F7;
+            background: rgba(88, 32, 247, 0.2);
+        }
+
+        .upload-icon-large {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-title {
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtitle {
+            color: #888DA6;
+            font-size: 0.9rem;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(88, 32, 247, 0.1);
+            border: 1px solid rgba(88, 32, 247, 0.3);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #C2CAF3;
+        }
+
+        .file-remove {
+            color: #ef4444;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: all 0.3s;
+        }
+
+        .file-remove:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-radius: 5px;
+        }
+
+        /* Navigation Buttons */
+        .form-nav {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-secondary {
+            background: rgba(88, 32, 247, 0.2);
+            border: 2px solid rgba(88, 32, 247, 0.4);
+            color: #C2CAF3;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(88, 32, 247, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(88, 32, 247, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(88, 32, 247, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            animation: bounce 1s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .success-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .success-text {
+            color: #C2CAF3;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .setup-container {
+                padding: 80px 15px 40px;
+            }
+
+            .step-title {
+                font-size: 1.6rem;
+            }
+
+            .tag-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .form-nav {
+                flex-direction: column-reverse;
+            }
+
+            .progress-steps {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/Images/FINAL_TRANSPARENT_AWAY_COLORS.png" alt="QuikSpark Logo" class="logo-img">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="setup-container">
+        <!-- Fun Header -->
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; color: #ffffff; margin-bottom: 15px; font-weight: 700;">
+                Find Your Creative Partners
+            </h1>
+            <p style="color: #C2CAF3; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                This might look like a job application, but it's actually how we match you with people who see what you see. Let's find your aligned visionaries.
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 16.66%"></div>
+        </div>
+
+        <!-- Step Indicators -->
+        <div class="progress-steps">
+            <div class="step-indicator active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Basics</div>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Photo</div>
+            </div>
+            <div class="step-indicator" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Purpose</div>
+            </div>
+            <div class="step-indicator" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-label">Interests</div>
+            </div>
+            <div class="step-indicator" data-step="5">
+                <div class="step-number">5</div>
+                <div class="step-label">Work Style</div>
+            </div>
+            <div class="step-indicator" data-step="6">
+                <div class="step-number">6</div>
+                <div class="step-label">Portfolio</div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="portfolioForm">
+            <!-- Step 1: Basic Info -->
+            <div class="form-step active" data-step="1">
+                <h2 class="step-title">Hey! Who are you?</h2>
+                <p class="step-subtitle">Just the basics - we'll get to the fun stuff soon 😊</p>
+
+                <div class="form-group">
+                    <label class="form-label">I'm <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="fullName" placeholder="Your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Based in <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="location" placeholder="Brooklyn, NY" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">I've been doing this for <span class="required">*</span></label>
+                    <input type="number" class="form-input" name="experience" placeholder="5" min="0" max="50" required>
+                    <small style="color: #888DA6; font-size: 0.85rem; margin-top: 5px; display: block;">years (or type 0 if you're just starting!)</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">What I do <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="role" placeholder="Designer who codes, Solo founder, Creative strategist..." required>
+                </div>
+            </div>
+
+            <!-- Step 2: Profile Photo -->
+            <div class="form-step" data-step="2">
+                <h2 class="step-title">Show your face!</h2>
+                <p class="step-subtitle">Real recognizes real - let's see who we're working with 📸</p>
+
+                <div class="image-upload">
+                    <div class="image-preview" id="imagePreview" onclick="document.getElementById('imageInput').click()">
+                        <div class="image-placeholder">
+                            <div class="upload-icon">📸</div>
+                            <div class="upload-text">Tap to upload</div>
+                        </div>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+                </div>
+
+                <p style="text-align: center; color: #888DA6; font-size: 0.9rem;">
+                    Just be yourself - smile, look approachable ✨
+                </p>
+            </div>
+
+            <!-- Step 3: Purpose -->
+            <div class="form-step" data-step="3">
+                <h2 class="step-title">What kind of magic are you making?</h2>
+                <p class="step-subtitle">Help us understand what you're building toward</p>
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="find-cofounder" required>
+                        <div class="radio-label">
+                            <div class="radio-title">Looking for my creative partner</div>
+                            <div class="radio-desc">Ready to build something meaningful with the right person</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="collaborate-projects">
+                        <div class="radio-label">
+                            <div class="radio-title">Project-based collaboration</div>
+                            <div class="radio-desc">Want to create together and see where it goes</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="find-talent">
+                        <div class="radio-label">
+                            <div class="radio-title">Building my dream team</div>
+                            <div class="radio-desc">I've got a vision, need the right people to bring it to life</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="networking">
+                        <div class="radio-label">
+                            <div class="radio-title">Connecting with visionaries</div>
+                            <div class="radio-desc">Growing my network of builders and creators</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 4: Interests & Preferences -->
+            <div class="form-step" data-step="4">
+                <h2 class="step-title">What gets you excited?</h2>
+                <p class="step-subtitle">Pick what you vibe with - the more the merrier!</p>
+
+                <div class="form-group">
+                    <label class="form-label">I'm into...</label>
+                    <div class="tag-grid" id="interestTags">
+                        <div class="tag-option" data-value="ai-ml">AI/ML</div>
+                        <div class="tag-option" data-value="saas">SaaS</div>
+                        <div class="tag-option" data-value="healthcare">Healthcare</div>
+                        <div class="tag-option" data-value="fintech">Fintech</div>
+                        <div class="tag-option" data-value="edtech">EdTech</div>
+                        <div class="tag-option" data-value="ecommerce">E-commerce</div>
+                        <div class="tag-option" data-value="climate">Climate Tech</div>
+                        <div class="tag-option" data-value="social-impact">Social Impact</div>
+                        <div class="tag-option" data-value="design">Design</div>
+                        <div class="tag-option" data-value="marketing">Marketing</div>
+                        <div class="tag-option" data-value="web3">Web3/Crypto</div>
+                        <div class="tag-option" data-value="mobile">Mobile Apps</div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">My dream collaborator is...</label>
+                    <textarea class="form-input" name="preferences" placeholder="Someone who shares my vision, isn't afraid to take risks, and believes we can actually make this happen..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 5: Availability & Work Style -->
+            <div class="form-step" data-step="5">
+                <h2 class="step-title">How do you work best?</h2>
+                <p class="step-subtitle">Let's talk availability and vibe</p>
+
+                <div class="form-group">
+                    <label class="form-label">I can commit... <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="full-time" required>
+                            <div class="radio-label">
+                                <div class="radio-title">All in (Full-time)</div>
+                                <div class="radio-desc">40+ hours/week - this is my main thing</div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="part-time">
+                            <div class="radio-label">
+                                <div class="radio-title">Serious side hustle</div>
+                                <div class="radio-desc">15-25 hours/week - got a day job but committed</div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="weekends">
+                            <div class="radio-label">
+                                <div class="radio-title">Nights & weekends</div>
+                                <div class="radio-desc">10-15 hours/week - when I'm not at the 9-5</div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="flexible">
+                            <div class="radio-label">
+                                <div class="radio-title">It depends</div>
+                                <div class="radio-desc">Flexible based on the project and chemistry</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">My work style is...</label>
+                    <textarea class="form-input" name="workStyle" placeholder="I move fast and iterate, love async updates on Slack, prefer video calls over endless meetings..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 6: Portfolio & Media -->
+            <div class="form-step" data-step="6">
+                <h2 class="step-title">Show off your work!</h2>
+                <p class="step-subtitle">Drop your projects, side hustles, or anything you're proud of (totally optional)</p>
+
+                <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon-large">📁</div>
+                    <div class="upload-title">Drag files here or tap to browse</div>
+                    <div class="upload-subtitle">Screenshots, PDFs, videos, whatever shows what you do</div>
+                </div>
+                <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.mp4,.mov" style="display: none;" onchange="handleFileUpload(event)">
+
+                <div class="file-list" id="fileList"></div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">What's your vision?</label>
+                    <textarea class="form-input" name="vision" placeholder="What future are you trying to create? What change do you want to see in the world? What keeps you up at night thinking about possibilities?" rows="5"></textarea>
+                </div>
+            </div>
+        </form>
+
+        <!-- Navigation Buttons -->
+        <div class="form-nav">
+            <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                ← Back
+            </button>
+            <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                Next →
+            </button>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="successScreen" style="display: none;">
+            <div class="success-screen">
+                <div class="success-icon">🎉</div>
+                <h2 class="success-title">You're in the network!</h2>
+                <p class="success-text">
+                    Your portfolio is live. Time to discover the people who see what you see.
+                </p>
+                <button class="btn btn-primary" onclick="window.location.href='/portfolios.html'">
+                    Find Your Partners →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        let uploadedFiles = [];
+        let selectedInterests = [];
+        let profileImage = null;
+        let formData = {};
+
+        // Tag selection
+        document.querySelectorAll('.tag-option').forEach(tag => {
+            tag.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                const value = this.dataset.value;
+                if (this.classList.contains('selected')) {
+                    selectedInterests.push(value);
+                } else {
+                    selectedInterests = selectedInterests.filter(i => i !== value);
+                }
+            });
+        });
+
+        // Radio option styling
+        document.querySelectorAll('.radio-option input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const group = this.name;
+                document.querySelectorAll(`input[name="${group}"]`).forEach(r => {
+                    r.closest('.radio-option').classList.remove('selected');
+                });
+                this.closest('.radio-option').classList.add('selected');
+            });
+        });
+
+        // Image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImage = e.target.result;
+                    document.getElementById('imagePreview').innerHTML = `<img src="${e.target.result}" alt="Profile">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // File upload
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+                    uploadedFiles.push(file);
+                    addFileToList(file);
+                } else {
+                    alert(`${file.name} is too large. Maximum file size is 10MB.`);
+                }
+            });
+        }
+
+        function addFileToList(file) {
+            const fileList = document.getElementById('fileList');
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <span>📄</span>
+                    <span>${file.name}</span>
+                </div>
+                <div class="file-remove" onclick="removeFile('${file.name}')">✕</div>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
+            const fileItems = document.querySelectorAll('.file-item');
+            fileItems.forEach(item => {
+                if (item.textContent.includes(fileName)) {
+                    item.remove();
+                }
+            });
+        }
+
+        // Drag and drop
+        const uploadArea = document.getElementById('fileUploadArea');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            });
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            document.getElementById('fileInput').files = files;
+            handleFileUpload({ target: { files } });
+        });
+
+        // Step navigation
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                const stepNum = index + 1;
+                indicator.classList.remove('active', 'completed');
+                if (stepNum < currentStep) {
+                    indicator.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    indicator.classList.add('active');
+                }
+            });
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[data-step="${step}"]`).classList.add('active');
+
+            // Update buttons
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = step === totalSteps ? 'Create Portfolio' : 'Next →';
+
+            updateProgress();
+        }
+
+        function validateStep(step) {
+            const currentStepDiv = document.querySelector(`.form-step[data-step="${step}"]`);
+            const requiredInputs = currentStepDiv.querySelectorAll('input[required], textarea[required]');
+            
+            for (let input of requiredInputs) {
+                if (!input.value.trim() && input.type !== 'radio') {
+                    input.focus();
+                    alert('Please fill in all required fields');
+                    return false;
+                }
+                
+                if (input.type === 'radio') {
+                    const radioGroup = currentStepDiv.querySelectorAll(`input[name="${input.name}"]`);
+                    const isChecked = Array.from(radioGroup).some(r => r.checked);
+                    if (!isChecked) {
+                        alert('Please select an option');
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function nextStep() {
+            if (!validateStep(currentStep)) {
+                return;
+            }
+
+            // Collect data from current step
+            const currentStepDiv = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            const inputs = currentStepDiv.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    if (input.checked) {
+                        formData[input.name] = input.value;
+                    }
+                } else if (input.type !== 'file') {
+                    formData[input.name] = input.value;
+                }
+            });
+
+            if (currentStep === totalSteps) {
+                submitPortfolio();
+            } else {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        async function submitPortfolio() {
+            // Collect all data
+            const portfolioData = {
+                ...formData,
+                interests: selectedInterests,
+                profileImage: profileImage,
+                uploadedFiles: uploadedFiles.map(f => f.name),
+                createdAt: new Date().toISOString()
+            };
+
+            console.log('Portfolio Data:', portfolioData);
+
+            // In production: send to backend API
+            // const response = await fetch('/api/portfolio/create', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(portfolioData)
+            // });
+
+            // Show success screen
+            document.querySelector('.setup-container > form').style.display = 'none';
+            document.querySelector('.form-nav').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.querySelector('.progress-steps').style.display = 'none';
+            document.getElementById('successScreen').style.display = 'block';
+        }
+
+        // Initialize
+        showStep(1);
+    </script>
+</body>
+</html>

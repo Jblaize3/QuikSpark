@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QuikSpark Match Test</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .result { background: #f0f0f0; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        button { background: #5820F7; color: white; padding: 15px 30px; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #4318c5; }
+    </style>
+</head>
+<body>
+    <h1>🎯 QuikSpark AI Matchmaking Test</h1>
+    <button onclick="testMatch()">Test Match Analysis</button>
+    <div id="result" class="result" style="display:none;"></div>
+
+    <script>
+        async function testMatch() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Analyzing match...';
+            result.style.display = 'block';
+
+            const response = await fetch('/api/test/match', { method: 'POST' });
+            const data = await response.json();
+
+            if (data.success) {
+                const m = data.match;
+                result.innerHTML = `
+                    <h2>Match Result</h2>
+                    <p><strong>Score:</strong> ${m.compatibilityScore}/100 (${m.matchStrength})</p>
+                    <p><strong>Why:</strong> ${m.reasoning}</p>
+                    <p><strong>Shared Interests:</strong> ${m.sharedInterests.join(', ')}</p>
+                    <p><strong>Next Steps:</strong> ${m.recommendedNextSteps}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
