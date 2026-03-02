@@ -12,9 +12,6 @@ const __dirname = path.dirname(__filename);
 const mcKey = process.env.MAILCHIMP_API_KEY;
 const serverPrefix = mcKey?.split("-").pop();
 
-console.log("MAILCHIMP KEY (masked):", mcKey?.slice(0, 8), "...", mcKey?.slice(-6));
-console.log("SERVER PREFIX:", serverPrefix);
-
 mailchimp.setConfig({
   apiKey: mcKey,
   server: serverPrefix
