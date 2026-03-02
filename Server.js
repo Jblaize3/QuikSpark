@@ -9,9 +9,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configure Mailchimp
+const mcKey = process.env.MAILCHIMP_API_KEY;
+const serverPrefix = mcKey?.split("-").pop();
+
+console.log("MAILCHIMP KEY (masked):", mcKey?.slice(0, 8), "...", mcKey?.slice(-6));
+console.log("SERVER PREFIX:", serverPrefix);
+
 mailchimp.setConfig({
-    apiKey: "2f1e3003b58c87ddf311865f68ca084c-us9",
-    server: "us9"
+  apiKey: mcKey,
+  server: serverPrefix
 });
 
 // --- START: Uncaught Exception Handler ---
