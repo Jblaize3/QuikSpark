@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join QuikSpark - Creation Coalition</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(180deg, #C2CAF3 0%, rgba(194, 202, 243, 0.6) 40%, #ffffff 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+            background: transparent;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            width: clamp(180px, 22vw, 280px);
+            height: auto;
+        }
+
+        /* Navigation links (hidden for now, but structured like landing page) */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #5820F7;
+        }
+
+        .setup-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 80px 20px 60px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: rgba(88, 32, 247, 0.2);
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5820F7 0%, #C2CAF3 100%);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+
+        .step-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(88, 32, 247, 0.2);
+            z-index: 0;
+        }
+
+        .step-indicator:first-child::before {
+            left: 50%;
+            width: 50%;
+        }
+
+        .step-indicator:last-child::before {
+            width: 50%;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666666;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s;
+        }
+
+        .step-indicator.active .step-number {
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            border-color: #5820F7;
+            color: white;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.5);
+        }
+
+        .step-indicator.completed .step-number {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: #666666;
+            text-align: center;
+        }
+
+        .step-indicator.active .step-label {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        /* Form Steps */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            color: #000000;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .step-subtitle {
+            color: #666666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            display: block;
+            color: #000000;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .form-label .required {
+            color: #ef4444;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            color: #000000;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5820F7;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(88, 32, 247, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid rgba(88, 32, 247, 0.3);
+            overflow: hidden;
+        }
+
+        .image-preview:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(88, 32, 247, 0.5);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-placeholder {
+            text-align: center;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 0.85rem;
+            color: #C2CAF3;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        /* Tag Selection */
+        .tag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .tag-option {
+            padding: 15px 20px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            color: #000000;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .tag-option:hover {
+            background: #f9fafb;
+            border-color: rgba(88, 32, 247, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .tag-option.selected {
+            background: rgba(88, 32, 247, 0.1);
+            border-color: #5820F7;
+            color: #5820F7;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.2);
+        }
+
+        /* Radio Options */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            background: #f9fafb;
+            border-color: rgba(88, 32, 247, 0.5);
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: #5820F7;
+        }
+
+        .radio-option.selected {
+            background: rgba(88, 32, 247, 0.05);
+            border-color: #5820F7;
+        }
+
+        .radio-label {
+            flex: 1;
+        }
+
+        .radio-title {
+            color: #000000;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .radio-desc {
+            color: #666666;
+            font-size: 0.9rem;
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #ffffff;
+        }
+
+        .file-upload-area:hover {
+            border-color: #5820F7;
+            background: rgba(88, 32, 247, 0.02);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #5820F7;
+            background: rgba(88, 32, 247, 0.05);
+        }
+
+        .upload-icon-large {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-title {
+            color: #000000;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtitle {
+            color: #666666;
+            font-size: 0.9rem;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(88, 32, 247, 0.05);
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #000000;
+        }
+
+        .file-remove {
+            color: #ef4444;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: all 0.3s;
+        }
+
+        .file-remove:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-radius: 5px;
+        }
+
+        /* Navigation Buttons */
+        .form-nav {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .form-nav {
+                position: sticky;
+                bottom: 0;
+                background: linear-gradient(to top, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0.98) 80%, transparent 100%);
+                padding: 20px 0 20px;
+                margin: 20px -20px 0;
+                padding-left: 20px;
+                padding-right: 20px;
+                z-index: 100;
+            }
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            border: 2px solid #000000;
+            color: #000000;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: #000000;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover {
+            background: #333333;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            animation: bounce 1s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .success-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            color: #000000;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .success-text {
+            color: #666666;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .setup-container {
+                padding: 80px 15px 40px;
+            }
+
+            .step-title {
+                font-size: 1.6rem;
+            }
+
+            .tag-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .form-nav {
+                flex-direction: column-reverse;
+            }
+
+            .progress-steps {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/Images/FINAL_TRANSPARENT_AWAY_COLORS.png?v=2" alt="QuikSpark Logo" class="logo-img">
+                </a>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="/#discover">Discover</a></li>
+                <li><a href="/#feed">Spark Feed</a></li>
+                <li><a href="/#portfolio">Portfolio</a></li>
+                <li><a href="/#collaborate">Collaborate</a></li>
+                <li><a href="/#events">Events</a></li>
+                <li><a href="/#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="setup-container">
+        <!-- Hero Header -->
+        <div style="text-align: center; margin-bottom: 60px; padding-top: 40px;">
+            <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 5vw, 3rem); color: #000000; margin-bottom: 20px; font-weight: 700; line-height: 1.2;">
+                Build with people who take ideas seriously
+            </h1>
+            <p style="color: #888DA6; font-size: clamp(1rem, 2vw, 1.1rem); max-width: 700px; margin: 0 auto; line-height: 1.6;">
+                We'll connect you with collaborators who want to execute, not just talk.
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 16.66%"></div>
+        </div>
+
+        <!-- Step Indicators -->
+        <div class="progress-steps">
+            <div class="step-indicator active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Basics</div>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Photo</div>
+            </div>
+            <div class="step-indicator" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Purpose</div>
+            </div>
+            <div class="step-indicator" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-label">Interests</div>
+            </div>
+            <div class="step-indicator" data-step="5">
+                <div class="step-number">5</div>
+                <div class="step-label">Work Style</div>
+            </div>
+            <div class="step-indicator" data-step="6">
+                <div class="step-number">6</div>
+                <div class="step-label">Portfolio</div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="portfolioForm">
+            <!-- Step 1: Basic Info -->
+            <div class="form-step active" data-step="1">
+                <h2 class="step-title">Who's the builder?</h2>
+                <p class="step-subtitle">Let's start with the basics. This stays private until you match.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Full Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="fullName" placeholder="Your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Where are you building from? <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="location" placeholder="City, State or Country" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">How long have you been building? <span class="required">*</span></label>
+                    <select class="form-input" name="experience" required>
+                        <option value="">Your experience level</option>
+                        <option value="0">Just starting out</option>
+                        <option value="1-2">1-2 years</option>
+                        <option value="3-5">3-5 years</option>
+                        <option value="6-10">6-10 years</option>
+                        <option value="10+">10+ years</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">What do you do? <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="role" placeholder="Developer, Designer, Operator, Founder..." required>
+                </div>
+            </div>
+
+            <!-- Step 2: Profile Photo -->
+            <div class="form-step" data-step="2">
+                <h2 class="step-title">Show how you want to show up</h2>
+                <p class="step-subtitle">Add a photo or brand image (optional)</p>
+
+                <div class="image-upload">
+                    <div class="image-preview" id="imagePreview" onclick="document.getElementById('imageInput').click()">
+                        <div class="image-placeholder">
+                            <div class="upload-icon">📸</div>
+                            <div class="upload-text">Add image</div>
+                        </div>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+                </div>
+
+                <p style="text-align: center; color: #888DA6; font-size: 0.9rem; margin-top: 15px;">
+                    This helps collaborators recognize you or what you're building.
+                </p>
+                <p style="text-align: center; color: #888DA6; font-size: 0.85rem; margin-top: 8px;">
+                    Personal photo, logo, or project image — your choice.
+                </p>
+            </div>
+
+            <!-- Step 3: Purpose -->
+            <div class="form-step" data-step="3">
+                <h2 class="step-title">What are you here to build?</h2>
+                <p class="step-subtitle">This helps us match you with people aligned on execution and ambition</p>
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="find-cofounder" required>
+                        <div class="radio-label">
+                            <div class="radio-title">Turning an idea into a real business</div>
+                            <div class="radio-desc">Looking for a partner or co-founder to build with</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="collaborate-projects">
+                        <div class="radio-label">
+                            <div class="radio-title">Collaborating on projects with long-term potential</div>
+                            <div class="radio-desc">Building toward something that can grow beyond a single project</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="find-talent">
+                        <div class="radio-label">
+                            <div class="radio-title">Building a team for my idea</div>
+                            <div class="radio-desc">I have direction and need collaborators to help execute</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="purpose" value="networking">
+                        <div class="radio-label">
+                            <div class="radio-title">Exploring opportunities</div>
+                            <div class="radio-desc">Learning what others are building and where I could contribute</div>
+                        </div>
+                    </label>
+                </div>
+
+                <p style="text-align: center; color: #888DA6; font-size: 0.85rem; margin-top: 20px;">
+                    You can always refine this later as your direction becomes clearer.
+                </p>
+            </div>
+
+            <!-- Step 4: Interests & Preferences -->
+            <div class="form-step" data-step="4">
+                <h2 class="step-title">What are you excited to build in?</h2>
+                <p class="step-subtitle">Select the spaces where you want to build and collaborate</p>
+
+                <div class="form-group">
+                    <label class="form-label">I'm interested in... <span style="color: #888DA6; font-weight: 400;">(Pick up to 5 for better matching)</span></label>
+                    <div class="tag-grid" id="interestTags">
+                        <div class="tag-option" data-value="ai-tech">AI & Tech</div>
+                        <div class="tag-option" data-value="apps-software">Apps & Software</div>
+                        <div class="tag-option" data-value="content-media">Content & Media</div>
+                        <div class="tag-option" data-value="film-video">Film & Video</div>
+                        <div class="tag-option" data-value="creative-arts">Creative Arts</div>
+                        <div class="tag-option" data-value="graphic-design">Graphic Design</div>
+                        <div class="tag-option" data-value="music-audio">Music & Audio</div>
+                        <div class="tag-option" data-value="photography">Photography</div>
+                        <div class="tag-option" data-value="fashion-beauty">Fashion & Beauty</div>
+                        <div class="tag-option" data-value="food-beverage">Food & Beverage</div>
+                        <div class="tag-option" data-value="fitness-wellness">Fitness & Wellness</div>
+                        <div class="tag-option" data-value="gaming-esports">Gaming & Esports</div>
+                        <div class="tag-option" data-value="ecommerce-retail">E-commerce & Retail</div>
+                        <div class="tag-option" data-value="social-impact">Social Impact</div>
+                        <div class="tag-option" data-value="education">Education</div>
+                        <div class="tag-option" data-value="finance-crypto">Finance & Crypto</div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">What kind of collaborator are you looking for?</label>
+                    <textarea class="form-input" name="preferences" placeholder="What skills, mindset, or experience would make someone a great collaborator for you?" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 5: Availability & Work Style -->
+            <div class="form-step" data-step="5">
+                <h2 class="step-title">How much time can you realistically commit?</h2>
+                <p class="step-subtitle">This helps us match expectations early</p>
+
+                <div class="form-group">
+                    <label class="form-label">Time commitment <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="full-time" required>
+                            <div class="radio-label">
+                                <div class="radio-title">Full-time</div>
+                                <div class="radio-desc">40+ hours/week — this is my primary focus</div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="part-time">
+                            <div class="radio-label">
+                                <div class="radio-title">Part-time</div>
+                                <div class="radio-desc">15-25 hours/week — committed, alongside other responsibilities</div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="weekends">
+                            <div class="radio-label">
+                                <div class="radio-title">Nights & weekends</div>
+                                <div class="radio-desc">10-15 hours/week — building alongside a full-time role</div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="availability" value="flexible">
+                            <div class="radio-label">
+                                <div class="radio-title">Flexible</div>
+                                <div class="radio-desc">Depends on the project, stage, and fit</div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <p style="color: #888DA6; font-size: 0.85rem; margin-top: 15px;">
+                        You can update this anytime as your availability changes.
+                    </p>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">How do you prefer to communicate, make decisions, and keep things moving?</label>
+                    <textarea class="form-input" name="workStyle" placeholder="Fast iteration, async communication, clear milestones, regular check-ins..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 6: Portfolio & Media -->
+            <div class="form-step" data-step="6">
+                <h2 class="step-title">Show how you execute (optional)</h2>
+                <p class="step-subtitle">Projects, experiments, prototypes, or anything that shows how you move ideas forward</p>
+
+                <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon-large">📁</div>
+                    <div class="upload-title">Drop files, links, or artifacts here</div>
+                    <div class="upload-subtitle">Figma files, GitHub repos, decks, Notion docs, screenshots, demos — all welcome</div>
+                    <div style="color: #888DA6; font-size: 0.85rem; margin-top: 10px;">
+                        Only visible to matched collaborators. Helps them understand your execution style quickly.
+                    </div>
+                </div>
+                <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.mp4,.mov" style="display: none;" onchange="handleFileUpload(event)">
+
+                <div class="file-list" id="fileList"></div>
+
+                <!-- Work type selector -->
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">What best describes this work? <span style="color: #888DA6; font-weight: 400;">(Select all that apply)</span></label>
+                    <div class="tag-grid" id="workTypeTags">
+                        <div class="tag-option" data-value="prototype">Prototype</div>
+                        <div class="tag-option" data-value="live-product">Live product</div>
+                        <div class="tag-option" data-value="experiment-mvp">Experiment / MVP</div>
+                        <div class="tag-option" data-value="client-work">Client work</div>
+                        <div class="tag-option" data-value="open-source">Open-source</div>
+                        <div class="tag-option" data-value="research">Research / exploration</div>
+                        <div class="tag-option" data-value="concept">Concept / early idea</div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">What are you actively thinking about building next?</label>
+                    <textarea class="form-input" name="vision" placeholder="What's the idea, the problem it solves, and what stage it's at right now?" rows="5"></textarea>
+                    <p style="color: #888DA6; font-size: 0.85rem; margin-top: 8px;">
+                        Rough thoughts are fine — this helps collaborators understand where you're headed.
+                    </p>
+                </div>
+            </div>
+        </form>
+
+        <!-- Navigation Buttons -->
+        <div class="form-nav">
+            <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                ← Back
+            </button>
+            <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                Next →
+            </button>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="successScreen" style="display: none;">
+            <div class="success-screen">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title">You're in</h2>
+                <p class="success-text">
+                    Your profile is live. Start finding people who want to build.
+                </p>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="window.location.href='/portfolios.html'" style="flex: 1; max-width: 250px;">
+                        Find collaborators →
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.location.href='/myspark.html'" style="flex: 1; max-width: 250px; background: white; color: #000; border: 2px solid #000;">
+                        View MySpark
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        let uploadedFiles = [];
+        let selectedInterests = [];
+        let selectedWorkTypes = [];
+        let profileImage = null;
+        let formData = {};
+
+        // Tag selection for interests
+        document.querySelectorAll('#interestTags .tag-option').forEach(tag => {
+            tag.addEventListener('click', function() {
+                const currentlySelected = document.querySelectorAll('#interestTags .tag-option.selected').length;
+                
+                // If trying to select and already at 5, don't allow
+                if (!this.classList.contains('selected') && currentlySelected >= 5) {
+                    // Show brief message
+                    const label = this.closest('.form-group').querySelector('.form-label');
+                    const originalText = label.innerHTML;
+                    label.innerHTML = 'I\'m interested in... <span style="color: #ef4444; font-weight: 400;">(Maximum 5 selections)</span>';
+                    setTimeout(() => {
+                        label.innerHTML = originalText;
+                    }, 2000);
+                    return;
+                }
+                
+                this.classList.toggle('selected');
+                const value = this.dataset.value;
+                if (this.classList.contains('selected')) {
+                    selectedInterests.push(value);
+                } else {
+                    selectedInterests = selectedInterests.filter(i => i !== value);
+                }
+            });
+        });
+
+        // Tag selection for work types (no limit)
+        document.querySelectorAll('#workTypeTags .tag-option').forEach(tag => {
+            tag.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                const value = this.dataset.value;
+                if (this.classList.contains('selected')) {
+                    selectedWorkTypes.push(value);
+                } else {
+                    selectedWorkTypes = selectedWorkTypes.filter(i => i !== value);
+                }
+            });
+        });
+
+        // Radio option styling
+        document.querySelectorAll('.radio-option input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const group = this.name;
+                document.querySelectorAll(`input[name="${group}"]`).forEach(r => {
+                    r.closest('.radio-option').classList.remove('selected');
+                });
+                this.closest('.radio-option').classList.add('selected');
+            });
+        });
+
+        // Image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImage = e.target.result;
+                    document.getElementById('imagePreview').innerHTML = `<img src="${e.target.result}" alt="Profile">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // File upload
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+                    uploadedFiles.push(file);
+                    addFileToList(file);
+                } else {
+                    alert(`${file.name} is too large. Maximum file size is 10MB.`);
+                }
+            });
+        }
+
+        function addFileToList(file) {
+            const fileList = document.getElementById('fileList');
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <span>📄</span>
+                    <span>${file.name}</span>
+                </div>
+                <div class="file-remove" onclick="removeFile('${file.name}')">✕</div>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
+            const fileItems = document.querySelectorAll('.file-item');
+            fileItems.forEach(item => {
+                if (item.textContent.includes(fileName)) {
+                    item.remove();
+                }
+            });
+        }
+
+        // Drag and drop
+        const uploadArea = document.getElementById('fileUploadArea');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            });
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            document.getElementById('fileInput').files = files;
+            handleFileUpload({ target: { files } });
+        });
+
+        // Step navigation
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                const stepNum = index + 1;
+                indicator.classList.remove('active', 'completed');
+                if (stepNum < currentStep) {
+                    indicator.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    indicator.classList.add('active');
+                }
+            });
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+
+            // Update buttons
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = step === totalSteps ? 'Start building →' : 'Next →';
+
+            updateProgress();
+        }
+
+        function validateStep(step) {
+            const currentStepDiv = document.querySelector(`.form-step[data-step="${step}"]`);
+            const requiredInputs = currentStepDiv.querySelectorAll('input[required], textarea[required], select[required]');
+            let isValid = true;
+            
+            // Clear previous errors
+            currentStepDiv.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('error');
+                const errorMsg = input.parentElement.querySelector('.error-message');
+                if (errorMsg) errorMsg.classList.remove('visible');
+            });
+            
+            for (let input of requiredInputs) {
+                if (!input.value.trim() && input.type !== 'radio') {
+                    input.classList.add('error');
+                    input.focus();
+                    
+                    // Add error message if it doesn't exist
+                    let errorMsg = input.parentElement.querySelector('.error-message');
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('div');
+                        errorMsg.className = 'error-message';
+                        errorMsg.textContent = 'This field is required';
+                        input.parentElement.appendChild(errorMsg);
+                    }
+                    errorMsg.classList.add('visible');
+                    isValid = false;
+                    break;
+                }
+                
+                if (input.type === 'radio') {
+                    const radioGroup = currentStepDiv.querySelectorAll(`input[name="${input.name}"]`);
+                    const isChecked = Array.from(radioGroup).some(r => r.checked);
+                    if (!isChecked) {
+                        // Show error on radio group
+                        const radioContainer = input.closest('.radio-group');
+                        let errorMsg = radioContainer.querySelector('.error-message');
+                        if (!errorMsg) {
+                            errorMsg = document.createElement('div');
+                            errorMsg.className = 'error-message';
+                            errorMsg.textContent = 'Please select an option';
+                            radioContainer.parentElement.appendChild(errorMsg);
+                        }
+                        errorMsg.classList.add('visible');
+                        isValid = false;
+                        break;
+                    }
+                }
+            }
+
+            return isValid;
+        }
+
+        function nextStep() {
+            if (!validateStep(currentStep)) {
+                return;
+            }
+
+            // Collect data from current step
+            const currentStepDiv = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            const inputs = currentStepDiv.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    if (input.checked) {
+                        formData[input.name] = input.value;
+                    }
+                } else if (input.type !== 'file') {
+                    formData[input.name] = input.value;
+                }
+            });
+
+            if (currentStep === totalSteps) {
+                submitPortfolio();
+            } else {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        async function submitPortfolio() {
+            try {
+                // Collect all data
+                const portfolioData = {
+                    ...formData,
+                    interests: selectedInterests,
+                    workTypes: selectedWorkTypes,
+                    profileImage: profileImage,
+                    uploadedFiles: uploadedFiles.map(f => ({ filename: f.name, size: f.size })),
+                    createdAt: new Date().toISOString()
+                };
+
+                console.log('Submitting portfolio data:', portfolioData);
+
+                // Send to backend API
+                const response = await fetch('/api/portfolio/create', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(portfolioData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to create profile');
+                }
+
+                console.log('Profile created successfully:', result);
+
+                // Save user ID to localStorage for MySpark page
+                localStorage.setItem('currentUserId', result.userId);
+
+                // Show success screen
+                document.querySelector('.setup-container > form').style.display = 'none';
+                document.querySelector('.form-nav').style.display = 'none';
+                document.querySelector('.progress-bar').style.display = 'none';
+                document.querySelector('.progress-steps').style.display = 'none';
+                document.getElementById('successScreen').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error creating profile:', error);
+                alert('Failed to create profile: ' + error.message);
+            }
+        }
+
+        // Initialize
+        showStep(1);
+    </script>
+</body>
+</html>

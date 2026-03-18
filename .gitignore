@@ -1,2 +1,5 @@
-node_modules/
-package-lock.json
+# Explicitly ensure package.json is NOT ignored
+!package.json
+
+# Ignore Node modules
+node_modules/.env

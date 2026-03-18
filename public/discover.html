@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Collaborators - QuikSpark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Dynamic Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(88, 32, 247, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(194, 202, 243, 0.1) 0%, transparent 40%);
+            z-index: 0;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Hero Background Image */
+        .hero-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60vh;
+            background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80') center/cover;
+            z-index: 0;
+            opacity: 0.15;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 20px 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-img {
+            width: clamp(180px, 22vw, 280px);
+            height: auto;
+            opacity: 0.75;
+            filter: brightness(1.15) contrast(0.9) saturate(0.85);
+            transition: all 0.3s ease;
+            mix-blend-mode: screen;
+        }
+
+        .logo-img:hover {
+            opacity: 0.95;
+            filter: brightness(1.25) contrast(1) saturate(1);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #C2CAF3;
+        }
+
+        /* Main Container */
+        .discover-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .page-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #C2CAF3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Search & Filter Bar */
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 1rem;
+            color: #ffffff;
+            transition: all 0.3s;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #C2CAF3;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(194, 202, 243, 0.2);
+        }
+
+        .search-btn {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.4);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 32, 247, 0.6);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #C2CAF3;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .filter-select option {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .clear-filters {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-end;
+        }
+
+        .clear-filters:hover {
+            border-color: #C2CAF3;
+            color: #C2CAF3;
+            background: rgba(194, 202, 243, 0.1);
+        }
+
+        /* Results Header */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .results-count {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: #5820F7;
+            color: white;
+            border-color: #5820F7;
+        }
+
+        /* Profile Grid */
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(88, 32, 247, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .profile-card:hover::before {
+            opacity: 1;
+        }
+
+        .profile-card:hover {
+            border-color: rgba(194, 202, 243, 0.4);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(88, 32, 247, 0.3);
+        }
+
+        .profile-card-header {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-card-info {
+            flex: 1;
+        }
+
+        .profile-card-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #ffffff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card-role {
+            color: #C2CAF3;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card-meta {
+            display: flex;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .execution-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(194, 202, 243, 0.15);
+            color: #C2CAF3;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 8px;
+            border: 1px solid rgba(194, 202, 243, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card-vision {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 15px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .tag-small {
+            padding: 6px 14px;
+            background: rgba(194, 202, 243, 0.1);
+            color: #C2CAF3;
+            border: 1px solid rgba(194, 202, 243, 0.2);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 32, 247, 0.5);
+        }
+
+        .btn-view {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-view:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #C2CAF3;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #C2CAF3;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            opacity: 0.3;
+        }
+
+        .empty-text {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .empty-subtext {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profiles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+        /* Proof Strip */
+        .proof-strip {
+            background: rgba(194, 202, 243, 0.08);
+            border: 1px solid rgba(194, 202, 243, 0.15);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .proof-stat {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .proof-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #C2CAF3;
+        }
+
+        .proof-dot {
+            width: 6px;
+            height: 6px;
+            background: #C2CAF3;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+    </style>
+    <script src="notifications.js"></script>
+</head>
+<body>
+    <!-- Hero Background -->
+    <div class="hero-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark Logo" class="logo-img">
+                </a>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="/discover.html" class="active">Discover</a></li>
+                <li><a href="/#feed">Spark Feed</a></li>
+                <li><a href="/myspark.html">MySpark</a></li>
+                <li><a href="/#collaborate">Collaborate</a></li>
+                <li><a href="/#events">Events</a></li>
+                <li><a href="/#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="discover-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">Discover Collaborators</h1>
+            <p class="page-subtitle">Find people who want to build, not just talk</p>
+        </div>
+
+        <!-- Search & Filters -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by name, interest, or what they're building...">
+                <button class="search-btn" onclick="applyFilters()">Search</button>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Purpose</label>
+                    <select class="filter-select" id="purposeFilter" onchange="applyFilters()">
+                        <option value="">All purposes</option>
+                        <option value="find-cofounder">Finding co-founder</option>
+                        <option value="collaborate-projects">Collaborating on projects</option>
+                        <option value="find-talent">Building a team</option>
+                        <option value="networking">Exploring opportunities</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Availability</label>
+                    <select class="filter-select" id="availabilityFilter" onchange="applyFilters()">
+                        <option value="">All availability</option>
+                        <option value="full-time">Full-time</option>
+                        <option value="part-time">Part-time</option>
+                        <option value="weekends">Nights & weekends</option>
+                        <option value="flexible">Flexible</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Experience</label>
+                    <select class="filter-select" id="experienceFilter" onchange="applyFilters()">
+                        <option value="">All experience</option>
+                        <option value="0">Just starting</option>
+                        <option value="1-2">1-2 years</option>
+                        <option value="3-5">3-5 years</option>
+                        <option value="6-10">6-10 years</option>
+                        <option value="10+">10+ years</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Stage</label>
+                    <select class="filter-select" id="stageFilter" onchange="applyFilters()">
+                        <option value="">All stages</option>
+                        <option value="live-product">🚀 Live product</option>
+                        <option value="prototype">⚙️ Actively building</option>
+                        <option value="idea-stage">💡 Idea stage</option>
+                    </select>
+                </div>
+
+                <button class="clear-filters" onclick="clearFilters()">Clear</button>
+            </div>
+        </div>
+
+        <!-- Proof Strip -->
+        <div class="proof-strip" id="proofStrip">
+            <div class="proof-stat">
+                <span class="proof-number" id="totalBuilders">0</span>
+                <span>builders in the network</span>
+            </div>
+            <span class="proof-dot"></span>
+            <div class="proof-stat">
+                <span class="proof-number" id="activeBuilders">0</span>
+                <span>actively building</span>
+            </div>
+            <span class="proof-dot"></span>
+            <div class="proof-stat">
+                <span class="proof-number" id="newThisWeek">0</span>
+                <span>new this week</span>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-header">
+            <div class="results-count" id="resultsCount">Loading...</div>
+        </div>
+
+        <!-- Profiles Grid -->
+        <div id="profilesContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Finding collaborators...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allProfiles = [];
+        let filteredProfiles = [];
+
+        // Interest labels
+        const interestLabels = {
+            'ai-tech': 'AI & Tech',
+            'apps-software': 'Apps & Software',
+            'content-media': 'Content & Media',
+            'film-video': 'Film & Video',
+            'creative-arts': 'Creative Arts',
+            'graphic-design': 'Graphic Design',
+            'music-audio': 'Music & Audio',
+            'photography': 'Photography',
+            'fashion-beauty': 'Fashion & Beauty',
+            'food-beverage': 'Food & Beverage',
+            'fitness-wellness': 'Fitness & Wellness',
+            'gaming-esports': 'Gaming & Esports',
+            'ecommerce-retail': 'E-commerce & Retail',
+            'social-impact': 'Social Impact',
+            'education': 'Education',
+            'finance-crypto': 'Finance & Crypto'
+        };
+
+        // Load profiles from API
+        async function loadProfiles() {
+            try {
+                const response = await fetch('/api/portfolio?limit=100');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load profiles');
+                }
+
+                const data = await response.json();
+                allProfiles = data.users;
+                filteredProfiles = allProfiles;
+
+                renderProfiles();
+
+            } catch (error) {
+                console.error('Error loading profiles:', error);
+                document.getElementById('profilesContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-text">Unable to load profiles</div>
+                        <div class="empty-subtext">${error.message}</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const purpose = document.getElementById('purposeFilter').value;
+            const availability = document.getElementById('availabilityFilter').value;
+            const experience = document.getElementById('experienceFilter').value;
+            const stage = document.getElementById('stageFilter').value;
+
+            filteredProfiles = allProfiles.filter(profile => {
+                // Search filter
+                if (searchTerm) {
+                    const matchesSearch = 
+                        profile.fullName.toLowerCase().includes(searchTerm) ||
+                        profile.role.toLowerCase().includes(searchTerm) ||
+                        (profile.vision && profile.vision.toLowerCase().includes(searchTerm)) ||
+                        (profile.interests && profile.interests.some(i => 
+                            interestLabels[i].toLowerCase().includes(searchTerm)
+                        ));
+                    
+                    if (!matchesSearch) return false;
+                }
+
+                // Purpose filter
+                if (purpose && profile.purpose !== purpose) return false;
+
+                // Availability filter
+                if (availability && profile.availability !== availability) return false;
+
+                // Experience filter
+                if (experience && profile.experience !== experience) return false;
+
+                // Stage filter
+                if (stage && (!profile.workTypes || !profile.workTypes.includes(stage))) return false;
+
+                return true;
+            });
+
+            renderProfiles();
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('purposeFilter').value = '';
+            document.getElementById('availabilityFilter').value = '';
+            document.getElementById('experienceFilter').value = '';
+            document.getElementById('stageFilter').value = '';
+            
+            filteredProfiles = allProfiles;
+            renderProfiles();
+        }
+
+        // Render profiles
+        function renderProfiles() {
+            const container = document.getElementById('profilesContainer');
+            const count = document.getElementById('resultsCount');
+
+            // Update proof strip with live stats
+            document.getElementById('totalBuilders').textContent = allProfiles.length;
+            
+            // Count actively building (has live-product or prototype work types)
+            const activeCount = allProfiles.filter(p => 
+                p.workTypes && (p.workTypes.includes('live-product') || p.workTypes.includes('prototype'))
+            ).length;
+            document.getElementById('activeBuilders').textContent = activeCount;
+            
+            // Count new this week (created in last 7 days)
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const newCount = allProfiles.filter(p => 
+                new Date(p.createdAt) > oneWeekAgo
+            ).length;
+            document.getElementById('newThisWeek').textContent = newCount;
+
+            count.textContent = `${filteredProfiles.length} collaborator${filteredProfiles.length !== 1 ? 's' : ''}`;
+
+            if (filteredProfiles.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-text">No collaborators found</div>
+                        <div class="empty-subtext">Try adjusting your filters</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'profiles-grid';
+
+            filteredProfiles.forEach(profile => {
+                const initials = profile.fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                const card = document.createElement('div');
+                card.className = 'profile-card';
+                card.onclick = () => viewProfile(profile._id);
+
+                // Get execution status
+                let executionBadge = '';
+                if (profile.workTypes && profile.workTypes.length > 0) {
+                    if (profile.workTypes.includes('live-product')) executionBadge = '🚀 Live product';
+                    else if (profile.workTypes.includes('prototype')) executionBadge = '⚡ Actively building';
+                    else if (profile.workTypes.includes('concept')) executionBadge = '🧱 Idea stage';
+                    else executionBadge = '🔨 Building';
+                }
+
+                card.innerHTML = `
+                    <div class="profile-card-header">
+                        <div class="profile-avatar">
+                            ${profile.profileImage ? `<img src="${profile.profileImage}" alt="${profile.fullName}">` : initials}
+                        </div>
+                        <div class="profile-card-info">
+                            <div class="profile-card-name">${profile.fullName}</div>
+                            <div class="profile-card-role">${profile.role}</div>
+                            <div class="profile-card-meta">
+                                <span>📍 ${profile.location}</span>
+                                <span>⚡ ${formatAvailability(profile.availability)}</span>
+                            </div>
+                            ${executionBadge ? `<div class="execution-badge">${executionBadge}</div>` : ''}
+                        </div>
+                    </div>
+
+                    ${profile.vision ? `
+                        <div class="profile-card-vision">${profile.vision}</div>
+                    ` : ''}
+
+                    ${profile.preferences ? `
+                        <div style="margin: 15px 0;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255, 255, 255, 0.5); margin-bottom: 8px;">Looking for</div>
+                            <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">${profile.preferences.substring(0, 80)}${profile.preferences.length > 80 ? '...' : ''}</div>
+                        </div>
+                    ` : ''}
+
+                    ${profile.interests && profile.interests.length > 0 ? `
+                        <div class="profile-card-tags">
+                            ${profile.interests.slice(0, 3).map(interest => 
+                                `<span class="tag-small">${interestLabels[interest] || interest}</span>`
+                            ).join('')}
+                            ${profile.interests.length > 3 ? `<span class="tag-small">+${profile.interests.length - 3} more</span>` : ''}
+                        </div>
+                    ` : ''}
+
+                    <div class="profile-card-actions">
+                        <button class="btn-save" onclick="event.stopPropagation(); saveProfile('${profile._id}')">
+                            ⭐ Shortlist
+                        </button>
+                        <button class="btn-view" onclick="event.stopPropagation(); window.location.href='/profile/${profile._id}'">
+                            View Profile
+                        </button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(grid);
+        }
+
+        function formatAvailability(avail) {
+            const labels = {
+                'full-time': 'Full-time',
+                'part-time': 'Part-time',
+                'weekends': 'Nights & weekends',
+                'flexible': 'Flexible'
+            };
+            return labels[avail] || avail;
+        }
+
+        async function saveProfile(profileId) {
+            const currentUserId = localStorage.getItem('currentUserId');
+            
+            if (!currentUserId) {
+                notify.warning('Please create a profile first to shortlist others!');
+                setTimeout(() => window.location.href = '/profile-setup.html', 2000);
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/shortlist/add/${profileId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUserId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    notify.success('✨ Added to your shortlist!');
+                } else {
+                    notify.error(result.message || 'Failed to add to shortlist');
+                }
+            } catch (error) {
+                console.error('Error shortlisting:', error);
+                notify.error('Failed to add to shortlist');
+            }
+        }
+
+        function viewProfile(userId) {
+            // Navigate to user's profile page
+            window.location.href = `/profile/${userId}`;
+        }
+
+        // Load profiles on page load
+        loadProfiles();
+    </script>
+</body>
+</html>

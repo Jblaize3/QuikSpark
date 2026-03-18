@@ -3,6 +3,18 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import mailchimp from "@mailchimp/mailchimp_marketing";
+import MatchmakingService from "./matchmaking-service.js";
+import dotenv from "dotenv";
+import connectDB from './config/database.js';
+import portfolioRoutes from './routes/portfolio.js';
+import shortlistRoutes from './routes/shortlist.js';
+import mockRoutes from './routes/mock.js';
+import engagementRoutes from './routes/engagement.js';
+import collabRoutes from './routes/collab.js';
+
+// Load environment variables
+dotenv.config();
+
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -25,8 +37,18 @@ process.on('uncaughtException', function (err) {
 // --- END: Uncaught Exception Handler ---
 
 const app = express();
-app.use(cors());
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use('/api/shortlist', shortlistRoutes);
+app.use('/api/mock', mockRoutes);
+app.use('/api/engagement', engagementRoutes);
+app.use('/api/collab', collabRoutes);
+
+connectDB();
+
+app.use('/api/portfolio', portfolioRoutes);
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -39,6 +61,11 @@ app.get("/", (req, res) => {
 // API health check endpoint
 app.get("/api/health", (req, res) => {
     res.json({ status: "🔥 QuikSpark backend is running!", timestamp: new Date() });
+});
+
+// Profile view route
+app.get("/profile/:userId", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "profile.html"));
 });
 
 // Early Access Form Submission Endpoint
@@ -86,6 +113,95 @@ app.post("/api/early-access", async (req, res) => {
         res.status(500).json({ 
             success: false, 
             message: "Failed to subscribe. Please try again later." 
+        });
+    }
+});
+
+
+// ========================================
+// AI MATCHMAKING ENDPOINTS
+// ========================================
+
+// Initialize AI Matchmaking Service
+const matchmaker = new MatchmakingService(process.env.ANTHROPIC_API_KEY);
+
+/**
+ * POST /api/match/analyze
+ * Analyze compatibility between two users
+ */
+app.post("/api/match/analyze", async (req, res) => {
+    try {
+        const { user1, user2 } = req.body;
+
+        if (!user1 || !user2) {
+            return res.status(400).json({
+                success: false,
+                message: "Both user profiles are required"
+            });
+        }
+
+        const matchResult = await matchmaker.matchUsers(user1, user2);
+
+        res.json({
+            success: true,
+            match: matchResult
+        });
+    } catch (error) {
+        console.error("Match analysis error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to analyze match"
+        });
+    }
+});
+
+/**
+ * POST /api/test/match
+ * Quick test endpoint to see matching in action
+ */
+app.post("/api/test/match", async (req, res) => {
+    try {
+        const mockUsers = [
+            {
+                email: "sarah@example.com",
+                firstName: "Sarah",
+                lastName: "Chen",
+                role: "Technical Co-founder",
+                skills: ["Full-stack development", "AI/ML", "Product design"],
+                interests: ["SaaS", "Healthcare tech"],
+                lookingFor: "Business co-founder",
+                goals: "Build healthcare AI platform",
+                experience: "5 years as senior engineer",
+                workingStyle: "Data-driven, collaborative",
+                availability: "20+ hours/week"
+            },
+            {
+                email: "mike@example.com",
+                firstName: "Mike",
+                lastName: "Rodriguez",
+                role: "Business Co-founder",
+                skills: ["Business development", "Sales", "Healthcare"],
+                interests: ["Healthcare tech", "B2B SaaS"],
+                lookingFor: "Technical co-founder",
+                goals: "Make healthcare accessible",
+                experience: "8 years in healthcare",
+                workingStyle: "Results-oriented",
+                availability: "Full-time"
+            }
+        ];
+
+        const matchResult = await matchmaker.matchUsers(mockUsers[0], mockUsers[1]);
+        
+        res.json({
+            success: true,
+            message: "Test match between Sarah (technical) and Mike (business)",
+            match: matchResult
+        });
+    } catch (error) {
+        console.error("Test match error:", error);
+        res.status(500).json({
+            success: false,
+            message: error.message
         });
     }
 });

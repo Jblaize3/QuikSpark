@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - QuikSpark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Hero Background Image - Creative/Building theme */
+        .hero-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60vh;
+            background: url('https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&q=80') center/cover;
+            z-index: 0;
+            opacity: 0.12;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        /* Lighter, more inviting gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(194, 202, 243, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.12) 0%, transparent 50%);
+            z-index: 0;
+            animation: gradientShift 15s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 20px 0;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-img {
+            width: clamp(180px, 22vw, 280px);
+            height: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #C2CAF3;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #C2CAF3;
+            color: #C2CAF3;
+        }
+
+        /* Main Container */
+        .profile-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .profile-top {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .profile-role {
+            color: #C2CAF3;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .profile-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .execution-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(194, 202, 243, 0.15);
+            color: #C2CAF3;
+            border: 1px solid rgba(194, 202, 243, 0.3);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* Action Buttons */
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.3);
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 32, 247, 0.5);
+        }
+
+        .btn-secondary {
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #C2CAF3;
+        }
+
+        /* Tags */
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background: rgba(194, 202, 243, 0.1);
+            color: #C2CAF3;
+            border: 1px solid rgba(194, 202, 243, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Sections */
+        .section-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-content {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        /* Portfolio Grid - Make it CENTRAL */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .portfolio-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(88, 32, 247, 0.2) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 1;
+        }
+
+        .portfolio-item:hover::before {
+            opacity: 1;
+        }
+
+        .portfolio-item:hover {
+            border-color: rgba(194, 202, 243, 0.5);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(88, 32, 247, 0.3);
+        }
+
+        .portfolio-item-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, rgba(88, 32, 247, 0.4) 0%, rgba(124, 58, 237, 0.4) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .portfolio-item-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 2;
+        }
+
+        .portfolio-item:hover .portfolio-item-overlay {
+            opacity: 1;
+        }
+
+        .view-work-btn {
+            padding: 12px 24px;
+            background: #5820F7;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .portfolio-item:hover .view-work-btn {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .portfolio-item-content {
+            padding: 22px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .portfolio-item-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+
+        .portfolio-item-type {
+            color: #C2CAF3;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            background: rgba(194, 202, 243, 0.15);
+            border: 1px solid rgba(194, 202, 243, 0.3);
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        /* Loading & Empty States */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #C2CAF3;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-top {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Background -->
+    <div class="hero-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/Images/ALT AWAY QUIKSPARK_DISCOVER.png" alt="QuikSpark Logo" class="logo-img">
+                </a>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="/discover.html">Discover</a></li>
+                <li><a href="/#feed">Spark Feed</a></li>
+                <li><a href="/myspark.html">MySpark</a></li>
+                <li><a href="/#collaborate">Collaborate</a></li>
+                <li><a href="/#events">Events</a></li>
+                <li><a href="/#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <a href="/discover.html" class="back-btn">← Back to Discover</a>
+
+        <div id="content">
+            <!-- Loading State -->
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading profile...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get user ID from URL
+        const urlPath = window.location.pathname;
+        const userId = urlPath.split('/profile/')[1];
+
+        // Interest labels
+        const interestLabels = {
+            'ai-tech': 'AI & Tech',
+            'apps-software': 'Apps & Software',
+            'content-media': 'Content & Media',
+            'film-video': 'Film & Video',
+            'creative-arts': 'Creative Arts',
+            'graphic-design': 'Graphic Design',
+            'music-audio': 'Music & Audio',
+            'photography': 'Photography',
+            'fashion-beauty': 'Fashion & Beauty',
+            'food-beverage': 'Food & Beverage',
+            'fitness-wellness': 'Fitness & Wellness',
+            'gaming-esports': 'Gaming & Esports',
+            'ecommerce-retail': 'E-commerce & Retail',
+            'social-impact': 'Social Impact',
+            'education': 'Education',
+            'finance-crypto': 'Finance & Crypto'
+        };
+
+        const workTypeLabels = {
+            'prototype': 'Prototype',
+            'live-product': 'Live Product',
+            'experiment-mvp': 'Experiment / MVP',
+            'client-work': 'Client Work',
+            'open-source': 'Open Source',
+            'research': 'Research',
+            'concept': 'Concept'
+        };
+
+        async function loadProfile() {
+            try {
+                if (!userId) {
+                    throw new Error('No user ID provided');
+                }
+
+                const response = await fetch(`/api/portfolio/${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Profile not found');
+                }
+
+                const data = await response.json();
+                renderProfile(data.user);
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('content').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div style="font-size: 1.2rem; margin-bottom: 10px; color: rgba(255, 255, 255, 0.7);">Profile not found</div>
+                        <div style="color: rgba(255, 255, 255, 0.4);">${error.message}</div>
+                        <button class="btn-primary" onclick="window.location.href='/discover.html'" style="margin-top: 20px;">
+                            Back to Discover
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderProfile(user) {
+            const initials = user.fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            // Get execution status
+            let executionBadge = '';
+            if (user.workTypes && user.workTypes.length > 0) {
+                if (user.workTypes.includes('live-product')) executionBadge = '🚀 Live product';
+                else if (user.workTypes.includes('prototype')) executionBadge = '⚡ Actively building';
+                else if (user.workTypes.includes('concept')) executionBadge = '🧱 Idea stage';
+                else executionBadge = '🔨 Building';
+            }
+
+            document.getElementById('content').innerHTML = `
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-top">
+                        <div class="profile-image">
+                            ${user.profileImage ? `<img src="${user.profileImage}" alt="${user.fullName}">` : initials}
+                        </div>
+                        <div class="profile-info">
+                            <h1 class="profile-name">${user.fullName}</h1>
+                            <div class="profile-role">${user.role}</div>
+                            <div class="profile-meta">
+                                <span>📍 ${user.location}</span>
+                                <span>⏱️ ${formatExperience(user.experience)}</span>
+                                <span>⚡ ${formatAvailability(user.availability)}</span>
+                            </div>
+                            ${executionBadge ? `<div class="execution-badge">${executionBadge}</div>` : ''}
+                        </div>
+                    </div>
+
+                    ${user.interests && user.interests.length > 0 ? `
+                        <div class="profile-tags">
+                            ${user.interests.map(interest => 
+                                `<span class="tag">${interestLabels[interest] || interest}</span>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="profile-actions">
+                        <button class="btn-primary" onclick="shortlistProfile('${user._id}')">
+                            ⭐ Shortlist
+                        </button>
+                        <button class="btn-secondary" onclick="alert('Messaging coming soon!')">
+                            💬 Message
+                        </button>
+                    </div>
+                </div>
+
+                ${user.vision ? `
+                    <div class="section-card">
+                        <h2 class="section-title">🎯 What They're Building</h2>
+                        <div class="section-content">${user.vision}</div>
+                    </div>
+                ` : ''}
+
+                ${user.preferences ? `
+                    <div class="section-card">
+                        <h2 class="section-title">🤝 Who They Want to Build With</h2>
+                        <div class="section-content">${user.preferences}</div>
+                    </div>
+                ` : ''}
+
+                ${user.workStyle ? `
+                    <div class="section-card">
+                        <h2 class="section-title">⚙️ Work Style</h2>
+                        <div class="section-content">${user.workStyle}</div>
+                    </div>
+                ` : ''}
+
+                ${user.uploadedFiles && user.uploadedFiles.length > 0 ? `
+                    <div class="section-card">
+                        <h2 class="section-title">💼 Their Work</h2>
+                        <div class="portfolio-grid">
+                            ${user.uploadedFiles.map((file, index) => `
+                                <div class="portfolio-item" onclick="viewWork('${file.url || file.filename}', '${file.filename}')">
+                                    <div class="portfolio-item-image">
+                                        ${file.url && (file.url.includes('image') || file.filename.match(/\.(jpg|jpeg|png|gif|webp)$/i)) 
+                                            ? `<img src="${file.url}" alt="${file.filename}">` 
+                                            : '📄'
+                                        }
+                                        <div class="portfolio-item-overlay">
+                                            <button class="view-work-btn">👁️ View Work</button>
+                                        </div>
+                                    </div>
+                                    <div class="portfolio-item-content">
+                                        <div class="portfolio-item-title">${file.filename || `Project ${index + 1}`}</div>
+                                        ${user.workTypes && user.workTypes[index] ? 
+                                            `<span class="portfolio-item-type">${workTypeLabels[user.workTypes[index]] || user.workTypes[index]}</span>` 
+                                            : ''
+                                        }
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : `
+                    <div class="section-card">
+                        <h2 class="section-title">💼 Their Work</h2>
+                        <div class="empty-state">
+                            <div class="empty-icon">📂</div>
+                            <div style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.6);">No work uploaded yet</div>
+                        </div>
+                    </div>
+                `}
+            `;
+        }
+
+        function formatExperience(exp) {
+            const labels = {
+                '0': 'Just starting',
+                '1-2': '1-2 years',
+                '3-5': '3-5 years',
+                '6-10': '6-10 years',
+                '10+': '10+ years'
+            };
+            return labels[exp] || exp;
+        }
+
+        function formatAvailability(avail) {
+            const labels = {
+                'full-time': 'Full-time',
+                'part-time': 'Part-time',
+                'weekends': 'Nights & weekends',
+                'flexible': 'Flexible'
+            };
+            return labels[avail] || avail;
+        }
+
+        async function shortlistProfile(profileId) {
+            const currentUserId = localStorage.getItem('currentUserId');
+            
+            if (!currentUserId) {
+                alert('Please create a profile first to shortlist others!');
+                window.location.href = '/profile-setup.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/shortlist/add/${profileId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUserId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('✅ Added to shortlist!');
+                } else {
+                    alert(result.message || 'Failed to add to shortlist');
+                }
+            } catch (error) {
+                console.error('Error shortlisting:', error);
+                alert('Failed to add to shortlist');
+            }
+        }
+
+        function viewWork(url, filename) {
+            // Check if it's a link (Figma, Notion, GitHub, etc.)
+            if (url && (url.startsWith('http') || url.startsWith('https'))) {
+                window.open(url, '_blank');
+            } else {
+                // For uploaded files, show preview or download
+                alert(`Viewing: ${filename}\n\nFull portfolio view and file uploads coming soon!`);
+            }
+        }
+
+        // Load profile on page load
+        loadProfile();
+    </script>
+</body>
+</html>
