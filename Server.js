@@ -1,3 +1,4 @@
+import sparkRoutes from './routes/sparks.js';
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -35,6 +36,7 @@ process.on('uncaughtException', function (err) {
 
 const app = express();
 
+app.use('/api/sparks', sparkRoutes);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
