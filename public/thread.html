@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread - QuikSpark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(194, 202, 243, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(88, 32, 247, 0.1) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── Navbar ─────────────────────────────────────────── */
+        .navbar {
+            padding: 18px 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-img {
+            width: clamp(160px, 20vw, 240px);
+            height: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: #C2CAF3; }
+
+        /* ── Thread Layout ───────────────────────────────────── */
+        .thread-layout {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 760px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Thread Header ───────────────────────────────────── */
+        .thread-header {
+            padding: 24px 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+
+        .thread-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+            transition: color 0.2s;
+        }
+
+        .thread-back:hover { color: #C2CAF3; }
+
+        .thread-participants {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .participant-avatars {
+            display: flex;
+            align-items: center;
+        }
+
+        .participant-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7, #7c3aed);
+            border: 2px solid #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: white;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .participant-avatar:not(:first-child) {
+            margin-left: -10px;
+        }
+
+        .participant-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .participant-avatar.you {
+            background: rgba(194, 202, 243, 0.2);
+            border-color: rgba(194, 202, 243, 0.3);
+        }
+
+        .thread-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .thread-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .thread-subtitle {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 3px;
+        }
+
+        .thread-context-pill {
+            padding: 6px 14px;
+            background: rgba(88, 32, 247, 0.12);
+            border: 1px solid rgba(88, 32, 247, 0.3);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #C2CAF3;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ── Messages Area ───────────────────────────────────── */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-height: 0;
+            scroll-behavior: smooth;
+        }
+
+        .messages-area::-webkit-scrollbar { width: 4px; }
+        .messages-area::-webkit-scrollbar-track { background: transparent; }
+        .messages-area::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
+
+        /* Date separator */
+        .date-separator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0 8px;
+        }
+
+        .date-separator::before,
+        .date-separator::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.07);
+        }
+
+        .date-separator span {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.3);
+            white-space: nowrap;
+            letter-spacing: 0.04em;
+        }
+
+        /* Message bubble */
+        .message-row {
+            display: flex;
+            gap: 10px;
+            padding: 2px 0;
+            animation: msgIn 0.2s ease;
+        }
+
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-row.mine {
+            flex-direction: row-reverse;
+        }
+
+        .message-row .msg-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5820F7, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+            align-self: flex-end;
+            margin-bottom: 2px;
+        }
+
+        .message-row .msg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message-row.mine .msg-avatar {
+            background: rgba(194, 202, 243, 0.2);
+        }
+
+        /* Hide avatar on consecutive messages from same sender */
+        .message-row.consecutive .msg-avatar {
+            visibility: hidden;
+        }
+
+        .msg-bubble-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-width: 72%;
+        }
+
+        .message-row.mine .msg-bubble-wrap {
+            align-items: flex-end;
+        }
+
+        .msg-bubble {
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        /* Theirs */
+        .message-row:not(.mine) .msg-bubble {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom-left-radius: 5px;
+        }
+
+        /* Mine */
+        .message-row.mine .msg-bubble {
+            background: linear-gradient(135deg, #5820F7 0%, #7c3aed 100%);
+            color: #ffffff;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.25);
+        }
+
+        /* First in a group gets full radius */
+        .message-row.first-in-group:not(.mine) .msg-bubble { border-top-left-radius: 18px; }
+        .message-row.first-in-group.mine .msg-bubble { border-top-right-radius: 18px; }
+
+        .msg-time {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.25);
+            padding: 0 4px;
+        }
+
+        /* Read receipt */
+        .msg-receipt {
+            font-size: 0.7rem;
+            color: rgba(194, 202, 243, 0.5);
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── Empty / loading states ──────────────────────────── */
+        .thread-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .thread-empty svg { opacity: 0.2; }
+
+        .thread-empty-title {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+        }
+
+        .thread-empty-sub {
+            font-size: 0.875rem;
+            max-width: 280px;
+            line-height: 1.6;
+        }
+
+        .thread-loading {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9rem;
+        }
+
+        .thread-loading .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top-color: #C2CAF3;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Compose Box ─────────────────────────────────────── */
+        .compose-area {
+            padding: 16px 0 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+
+        .compose-box {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 12px 14px;
+            transition: border-color 0.2s;
+        }
+
+        .compose-box:focus-within {
+            border-color: rgba(88, 32, 247, 0.5);
+            box-shadow: 0 0 0 3px rgba(88, 32, 247, 0.08);
+        }
+
+        .compose-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+            max-height: 120px;
+            min-height: 22px;
+            overflow-y: auto;
+        }
+
+        .compose-input::placeholder { color: rgba(255,255,255,0.3); }
+
+        .compose-input::-webkit-scrollbar { width: 3px; }
+        .compose-input::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
+
+        .compose-send {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #5820F7, #7c3aed);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .compose-send:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(88, 32, 247, 0.4);
+        }
+
+        .compose-send:active { transform: scale(0.96); }
+
+        .compose-send:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .compose-hint {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.2);
+            text-align: right;
+            margin-top: 8px;
+            padding-right: 4px;
+        }
+
+        /* ── Error / access denied ───────────────────────────── */
+        .access-denied {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .access-denied svg { opacity: 0.3; margin-bottom: 4px; }
+
+        .access-denied-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .access-denied-sub {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.4);
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        .back-btn {
+            margin-top: 8px;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        /* ── Responsive ──────────────────────────────────────── */
+        @media (max-width: 640px) {
+            .nav-links { display: none; }
+            .thread-context-pill { display: none; }
+            .msg-bubble-wrap { max-width: 85%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/Images/ALT AWAY QUIKSPARK_DISCOVER.png" alt="QuikSpark" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/discover.html">Discover</a></li>
+                <li><a href="/#feed">Spark Feed</a></li>
+                <li><a href="/myspark.html">MySpark</a></li>
+                <li><a href="/#collaborate">Collaborate</a></li>
+                <li><a href="/#events">Events</a></li>
+                <li><a href="/#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Thread -->
+    <div class="thread-layout">
+
+        <!-- Loading state (shown first, replaced once data arrives) -->
+        <div id="thread-header-area" class="thread-header" style="display:none;"></div>
+
+        <div id="thread-body" class="thread-loading">
+            <div class="spinner"></div>
+            Loading thread...
+        </div>
+
+        <div id="compose-area" class="compose-area" style="display:none;">
+            <div class="compose-box">
+                <textarea
+                    id="compose-input"
+                    class="compose-input"
+                    placeholder="Write something..."
+                    rows="1"
+                    maxlength="2000"
+                ></textarea>
+                <button class="compose-send" id="send-btn" disabled title="Send">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="compose-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for new line</div>
+        </div>
+
+    </div>
+
+    <!-- Inline notification system -->
+    <script>
+    if (!window.notify) {
+        const container = document.createElement('div');
+        container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;';
+        document.body.appendChild(container);
+        window.notify = {
+            show(msg, type = 'success') {
+                const colors = { success:'#10b981', error:'#ef4444', warning:'#f59e0b', info:'#3b82f6' };
+                const el = document.createElement('div');
+                el.style.cssText = `background:rgba(0,0,0,0.9);border-left:4px solid ${colors[type]};color:white;padding:14px 18px;border-radius:8px;margin-bottom:10px;min-width:280px;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-size:0.9rem;`;
+                el.textContent = msg;
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 3000);
+            },
+            success(m) { this.show(m,'success'); },
+            error(m)   { this.show(m,'error'); },
+            info(m)    { this.show(m,'info'); },
+            warning(m) { this.show(m,'warning'); }
+        };
+    }
+    </script>
+
+    <script>
+    // ─────────────────────────────────────────────────────────────
+    // State
+    // ─────────────────────────────────────────────────────────────
+    const params       = new URLSearchParams(window.location.search);
+    const collabReqId  = params.get('id');
+    const currentUserId = localStorage.getItem('currentUserId');
+
+    let threadMessages  = [];
+    let otherUser       = null;
+    let collabRequest   = null;
+    let pollingInterval = null;
+    let lastMessageId   = null;
+
+    // ─────────────────────────────────────────────────────────────
+    // Boot
+    // ─────────────────────────────────────────────────────────────
+    async function init() {
+        if (!collabReqId) {
+            showAccessDenied('No thread ID provided', 'Go back to MySpark and open a thread from an accepted collaboration.');
+            return;
+        }
+
+        if (!currentUserId) {
+            showAccessDenied('Not signed in', 'Please create a profile first to access your threads.');
+            return;
+        }
+
+        await loadThread();
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Load thread (initial + on poll)
+    // ─────────────────────────────────────────────────────────────
+    async function loadThread(silent = false) {
+        try {
+            const res = await fetch(`/api/messages/thread/${collabReqId}?userId=${currentUserId}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                if (!silent) {
+                    if (res.status === 403) {
+                        showAccessDenied(
+                            'Thread not accessible',
+                            data.message || 'This thread is only available after a collaboration request is accepted.'
+                        );
+                    } else if (res.status === 404) {
+                        showAccessDenied('Thread not found', 'This collaboration request no longer exists.');
+                    } else {
+                        showAccessDenied('Something went wrong', data.message || 'Could not load this thread.');
+                    }
+                }
+                return;
+            }
+
+            // First load — build the full UI
+            if (!silent) {
+                // Fetch the collab request details for the header
+                await loadCollabRequestDetails();
+                renderHeader();
+                showCompose();
+            }
+
+            const newMessages = data.messages || [];
+
+            // Only re-render if something changed
+            const latestId = newMessages.length ? newMessages[newMessages.length - 1]._id : null;
+            if (latestId !== lastMessageId) {
+                threadMessages = newMessages;
+                lastMessageId  = latestId;
+                renderMessages();
+            }
+
+        } catch (err) {
+            if (!silent) {
+                showAccessDenied('Could not reach server', 'Check your connection and try again.');
+            }
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Fetch collab request details for header
+    // ─────────────────────────────────────────────────────────────
+    async function loadCollabRequestDetails() {
+        try {
+            // Use inbox to find the thread context
+            const res = await fetch(`/api/messages/inbox/${currentUserId}`);
+            const data = await res.json();
+
+            if (data.success && data.threads) {
+                const thread = data.threads.find(t => t.collabRequestId.toString() === collabReqId);
+                if (thread) {
+                    otherUser = thread.otherUser;
+                    collabRequest = { portfolioItem: thread.portfolioItem };
+                }
+            }
+        } catch (e) {
+            // Non-fatal — header will fall back gracefully
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Render header
+    // ─────────────────────────────────────────────────────────────
+    function renderHeader() {
+        const area = document.getElementById('thread-header-area');
+
+        const myInitial = 'You';
+        const theirInitials = otherUser?.fullName
+            ? otherUser.fullName.split(' ').map(n => n[0]).join('').toUpperCase()
+            : '?';
+
+        const theirAvatar = otherUser?.profileImage
+            ? `<img src="${otherUser.profileImage}" alt="${otherUser.fullName}">`
+            : theirInitials;
+
+        const portfolioRef = collabRequest?.portfolioItem
+            ? `<div class="thread-context-pill">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                ${collabRequest.portfolioItem}
+               </div>`
+            : '';
+
+        area.innerHTML = `
+            <a href="/myspark.html" class="thread-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Back to MySpark
+            </a>
+            <div class="thread-participants">
+                <div class="participant-avatars">
+                    <div class="participant-avatar">${theirAvatar}</div>
+                    <div class="participant-avatar you" title="You">Y</div>
+                </div>
+                <div class="thread-meta">
+                    <div class="thread-title">${otherUser?.fullName || 'Collaborator'}</div>
+                    <div class="thread-subtitle">${otherUser?.role || 'Builder'} &nbsp;·&nbsp; Accepted collaboration</div>
+                </div>
+                ${portfolioRef}
+            </div>
+        `;
+
+        area.style.display = 'block';
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Render messages
+    // ─────────────────────────────────────────────────────────────
+    function renderMessages() {
+        const body = document.getElementById('thread-body');
+
+        if (threadMessages.length === 0) {
+            body.className = '';
+            body.innerHTML = `
+                <div class="thread-empty">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <div class="thread-empty-title">Thread is open</div>
+                    <div class="thread-empty-sub">This is the start of your collaboration with ${otherUser?.fullName || 'your collaborator'}. Say something.</div>
+                </div>
+            `;
+            return;
+        }
+
+        const wasAtBottom = isAtBottom(body);
+
+        body.className = 'messages-area';
+
+        let html = '';
+        let prevSenderId = null;
+        let prevDate     = null;
+
+        threadMessages.forEach((msg, i) => {
+            const isMine     = msg.sender._id === currentUserId || msg.sender === currentUserId;
+            const senderId   = msg.sender._id || msg.sender;
+            const senderName = msg.sender.fullName || (isMine ? 'You' : 'Them');
+            const initials   = senderName.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            const msgDate    = new Date(msg.createdAt);
+            const dateStr    = formatDate(msgDate);
+            const timeStr    = formatTime(msgDate);
+
+            // Date separator
+            if (dateStr !== prevDate) {
+                html += `<div class="date-separator"><span>${dateStr}</span></div>`;
+                prevDate = dateStr;
+            }
+
+            const isConsecutive  = senderId === prevSenderId;
+            const isLastInGroup  = i === threadMessages.length - 1 || 
+                                   (threadMessages[i+1]?.sender?._id || threadMessages[i+1]?.sender) !== senderId;
+            const isFirstInGroup = !isConsecutive;
+
+            prevSenderId = senderId;
+
+            const avatarHtml = msg.sender.profileImage
+                ? `<img src="${msg.sender.profileImage}" alt="${senderName}">`
+                : initials;
+
+            const receipt = isMine && isLastInGroup && msg.readByRecipient
+                ? `<div class="msg-receipt">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Seen
+                   </div>`
+                : '';
+
+            html += `
+                <div class="message-row ${isMine ? 'mine' : ''} ${isConsecutive ? 'consecutive' : ''} ${isFirstInGroup ? 'first-in-group' : ''}">
+                    <div class="msg-avatar">${avatarHtml}</div>
+                    <div class="msg-bubble-wrap">
+                        <div class="msg-bubble">${escapeHtml(msg.body)}</div>
+                        ${isLastInGroup ? `<div class="msg-time">${timeStr}</div>` : ''}
+                        ${receipt}
+                    </div>
+                </div>
+            `;
+        });
+
+        body.innerHTML = html;
+
+        // Scroll to bottom only if user was already there
+        if (wasAtBottom) {
+            scrollToBottom(body);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Send message
+    // ─────────────────────────────────────────────────────────────
+    async function sendMessage() {
+        const input  = document.getElementById('compose-input');
+        const sendBtn = document.getElementById('send-btn');
+        const body   = input.value.trim();
+
+        if (!body) return;
+
+        input.value = '';
+        autoResizeInput(input);
+        sendBtn.disabled = true;
+
+        // Optimistic render
+        const tempMsg = {
+            _id: 'temp-' + Date.now(),
+            collabRequest: collabReqId,
+            sender: { _id: currentUserId, fullName: 'You' },
+            body,
+            readByRecipient: false,
+            createdAt: new Date().toISOString()
+        };
+        threadMessages.push(tempMsg);
+        renderMessages();
+
+        try {
+            const res = await fetch('/api/messages/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    collabRequestId: collabReqId,
+                    senderId: currentUserId,
+                    body
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                // Replace temp with real message
+                threadMessages = threadMessages.filter(m => m._id !== tempMsg._id);
+                threadMessages.push(data.message);
+                lastMessageId = data.message._id;
+                renderMessages();
+            } else {
+                // Remove optimistic and restore input
+                threadMessages = threadMessages.filter(m => m._id !== tempMsg._id);
+                renderMessages();
+                input.value = body;
+                autoResizeInput(input);
+                notify.error(data.message || 'Failed to send');
+            }
+        } catch (err) {
+            threadMessages = threadMessages.filter(m => m._id !== tempMsg._id);
+            renderMessages();
+            input.value = body;
+            autoResizeInput(input);
+            notify.error('Could not reach server');
+        } finally {
+            sendBtn.disabled = input.value.trim().length === 0;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Compose wiring
+    // ─────────────────────────────────────────────────────────────
+    function showCompose() {
+        document.getElementById('compose-area').style.display = 'block';
+
+        const input   = document.getElementById('compose-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        input.addEventListener('input', () => {
+            autoResizeInput(input);
+            sendBtn.disabled = input.value.trim().length === 0;
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!sendBtn.disabled) sendMessage();
+            }
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Start polling for new messages every 6 seconds
+        pollingInterval = setInterval(() => loadThread(true), 6000);
+
+        // Focus
+        setTimeout(() => input.focus(), 100);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Access denied
+    // ─────────────────────────────────────────────────────────────
+    function showAccessDenied(title, sub) {
+        clearInterval(pollingInterval);
+        const body = document.getElementById('thread-body');
+        body.className = '';
+        body.innerHTML = `
+            <div class="access-denied">
+                <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <div class="access-denied-title">${title}</div>
+                <div class="access-denied-sub">${sub}</div>
+                <a href="/myspark.html" class="back-btn">Back to MySpark</a>
+            </div>
+        `;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Helpers
+    // ─────────────────────────────────────────────────────────────
+    function autoResizeInput(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+
+    function isAtBottom(el) {
+        return el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+    }
+
+    function scrollToBottom(el) {
+        el.scrollTop = el.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/\n/g, '<br>');
+    }
+
+    function formatDate(date) {
+        const now   = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const d     = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const diff  = (today - d) / 86400000;
+        if (diff === 0) return 'Today';
+        if (diff === 1) return 'Yesterday';
+        return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: diff > 300 ? 'numeric' : undefined });
+    }
+
+    function formatTime(date) {
+        return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Go
+    // ─────────────────────────────────────────────────────────────
+    init();
+    </script>
+</body>
+</html>
