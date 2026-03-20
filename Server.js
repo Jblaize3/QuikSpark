@@ -23,17 +23,9 @@ const __dirname = path.dirname(__filename);
 
 // Configure Mailchimp
 const mcKey = process.env.MAILCHIMP_API_KEY;
-
-
-
-
-
-
-
-
-
-
->>>>>>> Dev
+mailchimp.setConfig({
+    apiKey: mcKey,
+    server: mcKey?.split("-").pop()
 });
 
 // --- START: Uncaught Exception Handler ---
