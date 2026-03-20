@@ -3,3 +3,7 @@
 
 # Ignore Node modules
 node_modules/.env
+.env.txt
+.env
+.env.txt
+.env
