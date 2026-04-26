@@ -503,14 +503,11 @@
                 </a>
             </div>
             
-            <ul class="nav-links">
-                <li><a href="/discover.html">Discover</a></li>
-                <li><a href="/#feed">Spark Feed</a></li>
-                <li><a href="/myspark.html">MySpark</a></li>
-                <li><a href="/#collaborate">Collaborate</a></li>
-                <li><a href="/#events">Events</a></li>
-                <li><a href="/#about">About</a></li>
-            </ul>
+            <ul class="nav-links" id="navLinks">
+    <li><a href="/discover.html" id="nav-discover">Discover</a></li>
+    <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
+    <li><a href="/myspark.html" id="nav-myspark">My Spark</a></li>
+</ul>
         </div>
     </nav>
 
@@ -634,7 +631,7 @@
                         <button class="btn-primary" onclick="shortlistProfile('${user._id}')">
                             ⭐ Shortlist
                         </button>
-                        <button class="btn-secondary" onclick="alert('Messaging coming soon!')">
+                        <button class="btn-secondary" onclick="sendCollabRequest('${user._id}')">
                             💬 Message
                         </button>
                     </div>
@@ -761,6 +758,31 @@
 
         // Load profile on page load
         loadProfile();
+async function sendCollabRequest(targetUserId) {
+    const currentUserId = localStorage.getItem('currentUserId');
+    if (!currentUserId) {
+        window.location.href = '/profile-setup.html';
+        return;
+    }
+    try {
+        const res = await fetch('/api/collab/request', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                requesterId: currentUserId, 
+                targetId: targetUserId 
+            })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert('✅ Collaboration request sent!');
+        } else {
+            alert(data.message || 'Failed to send request');
+        }
+    } catch (err) {
+        alert('Something went wrong. Try again.');
+    }
+}
     </script>
 </body>
 </html>

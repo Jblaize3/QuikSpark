@@ -30,7 +30,7 @@
             z-index: 0;
             pointer-events: none;
         }
-
+        
         /* ── Navbar ─────────────────────────────────────────── */
         .navbar {
             padding: 18px 0;
@@ -510,6 +510,38 @@
             .thread-context-pill { display: none; }
             .msg-bubble-wrap { max-width: 85%; }
         }
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+.mobile-menu-btn span {
+    width: 24px;
+    height: 2px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+@media (max-width: 768px) {
+    .mobile-menu-btn { display: flex; }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(10,10,10,0.97);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        flex-direction: column;
+        padding: 20px 24px;
+        gap: 16px;
+    }
+    .nav-links.active { display: flex; }
+    .navbar .container { position: relative; }
+}
     </style>
 </head>
 <body>
@@ -583,6 +615,9 @@
             warning(m) { this.show(m,'warning'); }
         };
     }
+const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark': 'nav-myspark' };
+        const activePage = window.location.pathname.split('/').pop().replace('.html','');
+        if (navMap[activePage]) document.getElementById(navMap[activePage])?.classList.add('active');
     </script>
 
     <script>
