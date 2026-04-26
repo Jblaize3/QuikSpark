@@ -23,6 +23,38 @@
             position: relative;
             overflow-x: hidden;
         }
+	.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+.mobile-menu-btn span {
+    width: 24px;
+    height: 2px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+@media (max-width: 768px) {
+    .mobile-menu-btn { display: flex; }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(10,10,10,0.97);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        flex-direction: column;
+        padding: 20px 24px;
+        gap: 16px;
+    }
+    .nav-links.active { display: flex; }
+    .navbar .container { position: relative; }
+}
 
         /* Hero Background Image - Creative/Building theme */
         .hero-bg {
@@ -499,10 +531,12 @@
         <div class="container">
             <div class="logo">
                 <a href="/">
-                    <img src="/Images/ALT AWAY QUIKSPARK_DISCOVER.png" alt="QuikSpark Logo" class="logo-img">
+                    <img src="/Images/FINAL_TRANSPARENT_AWAY_COLORS.png" alt="QuikSpark" class="logo-img">
                 </a>
             </div>
-            
+            <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="document.getElementById('navLinks').classList.toggle('active');this.classList.toggle('active');">
+    <span></span><span></span><span></span>
+</button>
             <ul class="nav-links" id="navLinks">
     <li><a href="/discover.html" id="nav-discover">Discover</a></li>
     <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
@@ -736,7 +770,7 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('✅ Added to shortlist!');
+                    notify('✅ Added to shortlist!');
                 } else {
                     alert(result.message || 'Failed to add to shortlist');
                 }
@@ -755,6 +789,13 @@
                 alert(`Viewing: ${filename}\n\nFull portfolio view and file uploads coming soon!`);
             }
         }
+function notify(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:rgba(15,15,26,0.95);border:1px solid rgba(88,32,247,0.3);border-radius:12px;padding:14px 20px;color:#fff;font-size:0.9rem;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
 
         // Load profile on page load
         loadProfile();
@@ -775,7 +816,7 @@ async function sendCollabRequest(targetUserId) {
         });
         const data = await res.json();
         if (res.ok) {
-            alert('✅ Collaboration request sent!');
+            notify('✅ Collaboration request sent!');
         } else {
             alert(data.message || 'Failed to send request');
         }
