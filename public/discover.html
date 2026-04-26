@@ -627,6 +627,38 @@
             border-radius: 50%;
             opacity: 0.5;
         }
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+.mobile-menu-btn span {
+    width: 24px;
+    height: 2px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+@media (max-width: 768px) {
+    .mobile-menu-btn { display: flex; }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(10,10,10,0.97);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        flex-direction: column;
+        padding: 20px 24px;
+        gap: 16px;
+    }
+    .nav-links.active { display: flex; }
+    .navbar .container { position: relative; }
+}
     </style>
     <script src="notifications.js"></script>
 </head>
@@ -636,23 +668,20 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <a href="/">
-                    <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark Logo" class="logo-img">
-                </a>
-            </div>
-            
-            <ul class="nav-links">
-                <li><a href="/discover.html" class="active">Discover</a></li>
-                <li><a href="/#feed">Spark Feed</a></li>
-                <li><a href="/myspark.html">MySpark</a></li>
-                <li><a href="/#collaborate">Collaborate</a></li>
-                <li><a href="/#events">Events</a></li>
-                <li><a href="/#about">About</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div class="container">
+        <a href="/index.html">
+            <img src="/Images/FINAL_TRANSPARENT_AWAY_COLORS.png" alt="QuikSpark" class="logo-img">
+        </a>
+        <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="document.getElementById('navLinks').classList.toggle('active');this.classList.toggle('active');">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/discover.html" id="nav-discover">Discover</a></li>
+            <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
+            <li><a href="/myspark.html" id="nav-myspark">My Spark</a></li>
+        </ul>
+    </div>
+</nav>
 
     <div class="discover-container">
         <!-- Header -->
@@ -1005,6 +1034,9 @@
 
         // Load profiles on page load
         loadProfiles();
+const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark': 'nav-myspark' };
+        const activePage = window.location.pathname.split('/').pop().replace('.html','');
+        if (navMap[activePage]) document.getElementById(navMap[activePage])?.classList.add('active');
     </script>
 </body>
 </html>

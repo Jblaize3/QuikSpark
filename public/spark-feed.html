@@ -881,21 +881,20 @@
 
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="container">
-            <a href="/index.html">
-                <img src="/Images/FINAL_TRANSPARENT_AWAY_COLORS.png" alt="QuikSpark" class="logo-img">
-            </a>
-            <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="toggleNav()">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="/discover.html">Discover</a></li>
-                <li><a href="/spark-feed.html" class="active">Spark Feed</a></li>
-                <li><a href="/myspark.html">My Spark</a></li>
-                <li><a href="/about.html">About</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div class="container">
+        <a href="/index.html">
+            <img src="/Images/FINAL_TRANSPARENT_AWAY_COLORS.png" alt="QuikSpark" class="logo-img">
+        </a>
+        <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="document.getElementById('navLinks').classList.toggle('active');this.classList.toggle('active');">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/discover.html" id="nav-discover">Discover</a></li>
+            <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
+            <li><a href="/myspark.html" id="nav-myspark">My Spark</a></li>
+        </ul>
+    </div>
+</nav>
 
     <!-- Main layout -->
     <div class="feed-layout">
