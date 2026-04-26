@@ -528,13 +528,14 @@ window.getPortfolioItemType = function(url, filename) {
 
         .section-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 20px;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: rgba(255,255,255,0.9);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-left: 3px solid #5820F7;
+            padding-left: 14px;
         }
 
         .section-content {
@@ -909,6 +910,38 @@ window.getPortfolioItemType = function(url, filename) {
                 display: none;
             }
         }
+    .mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+.mobile-menu-btn span {
+    width: 24px;
+    height: 2px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+@media (max-width: 768px) {
+    .mobile-menu-btn { display: flex; }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(10,10,10,0.97);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        flex-direction: column;
+        padding: 20px 24px;
+        gap: 16px;
+    }
+    .nav-links.active { display: flex; }
+    .navbar .container { position: relative; }
+}
     </style>
     <script src="notifications.js"></script>
     <script src="portfolio-lightbox.js"></script>
@@ -926,13 +959,11 @@ window.getPortfolioItemType = function(url, filename) {
                 </a>
             </div>
             
-            <ul class="nav-links">
-                <li><a href="/discover.html">Discover</a></li>
-                <li><a href="/#feed">Spark Feed</a></li>
-                <li><a href="/myspark.html">MySpark</a></li>
-                <li><a href="/#collaborate">Collaborate</a></li>
-                <li><a href="/#events">Events</a></li>
-                <li><a href="/#about">About</a></li>
+            <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="document.getElementById('navLinks').classList.toggle('active');this.classList.toggle('active');"><span></span><span></span><span></span></button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/discover.html" id="nav-discover">Discover</a></li>
+                <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
+                <li><a href="/myspark.html" id="nav-myspark">My Spark</a></li>
             </ul>
         </div>
     </nav>
@@ -1038,8 +1069,8 @@ window.getPortfolioItemType = function(url, filename) {
                             <div class="profile-role">${user.role}</div>
                             <div class="profile-meta">
                                 <span>📍 ${user.location}</span>
-                                <span>⏱️ ${formatExperience(user.experience)}</span>
-                                <span>⚡ ${formatAvailability(user.availability)}</span>
+                                <span>${formatExperience(user.experience)}</span>
+                                <span>${formatAvailability(user.availability)}</span>
                             </div>
                             ${executionBadge ? `<div class="execution-badge">${executionBadge}</div>` : ''}
                         </div>
@@ -1057,36 +1088,36 @@ window.getPortfolioItemType = function(url, filename) {
                         <button class="btn-primary" onclick="shortlistProfile('${user._id}')">
                             ⭐ Shortlist
                         </button>
-                        <button class="btn-secondary" onclick="alert('Messaging coming soon!')">
-                            💬 Message
+                        <button class="btn-secondary" onclick="sendCollabRequest('${user._id}')">
+                            Collaborate
                         </button>
                     </div>
                 </div>
 
                 ${user.vision ? `
                     <div class="section-card">
-                        <h2 class="section-title">🎯 What They're Building</h2>
+                        <h2 class="section-title">What They're Building</h2>
                         <div class="section-content">${user.vision}</div>
                     </div>
                 ` : ''}
 
                 ${user.preferences ? `
                     <div class="section-card">
-                        <h2 class="section-title">🤝 Who They Want to Build With</h2>
+                        <h2 class="section-title">Who They Want to Build With</h2>
                         <div class="section-content">${user.preferences}</div>
                     </div>
                 ` : ''}
 
                 ${user.workStyle ? `
                     <div class="section-card">
-                        <h2 class="section-title">⚙️ Work Style</h2>
+                        <h2 class="section-title">How They Work</h2>
                         <div class="section-content">${user.workStyle}</div>
                     </div>
                 ` : ''}
 
                 ${user.uploadedFiles && user.uploadedFiles.length > 0 ? `
                     <div class="section-card">
-                        <h2 class="section-title">💼 Their Work</h2>
+                        <h2 class="section-title">Their Work</h2>
                         <div class="portfolio-grid">
                             ${user.uploadedFiles.map((file, index) => {
                                 const type = getPortfolioItemType(file.url || '', file.filename || '');
@@ -1145,7 +1176,7 @@ window.getPortfolioItemType = function(url, filename) {
 
                                         <div class="portfolio-actions">
                                             <button class="collab-btn" onclick="event.stopPropagation(); collabModal.open('${user._id}', '${file._id}', '${file.filename}')">
-                                                🤝 Request to Collaborate
+                                                Request to Collaborate
                                             </button>
                                             <button class="interest-btn-small" onclick="event.stopPropagation(); expressInterest('${user._id}', '${file._id}', this)" data-item-id="${file._id}">
                                                 💡
@@ -1158,7 +1189,7 @@ window.getPortfolioItemType = function(url, filename) {
                     </div>
                 ` : `
                     <div class="section-card">
-                        <h2 class="section-title">💼 Their Work</h2>
+                        <h2 class="section-title">Their Work</h2>
                         <div class="empty-state">
                             <div class="empty-icon">📂</div>
                             <div style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.6);">No work uploaded yet</div>
@@ -1294,7 +1325,7 @@ class CollabRequestModal {
         this.modal.innerHTML = `
             <div class="collab-modal">
                 <div class="collab-modal-header">
-                    <h2>🤝 Request to Collaborate</h2>
+                    <h2>Request to Collaborate</h2>
                     <button class="collab-modal-close" onclick="collabModal.close()">&times;</button>
                 </div>
                 <div class="collab-modal-context" id="collab-context"></div>
@@ -1447,6 +1478,43 @@ class CollabRequestModal {
 setTimeout(() => {
     window.collabModal = new CollabRequestModal();
 }, 200);
+let currentProfileId = null;
+
+async function sendCollabRequest(targetUserId) {
+    const currentUserId = localStorage.getItem('currentUserId');
+    if (!currentUserId) {
+        window.location.href = '/profile-setup.html';
+        return;
+    }
+    try {
+        const res = await fetch('/api/collab/request', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ requesterId: currentUserId, targetId: targetUserId })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            notify('✅ Collaboration request sent!');
+        } else {
+            notify(data.message || 'Failed to send request');
+        }
+    } catch (err) {
+        notify('Something went wrong. Try again.');
+    }
+}
+
+function notify(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:rgba(15,15,26,0.95);border:1px solid rgba(88,32,247,0.3);border-radius:12px;padding:14px 20px;color:#fff;font-size:0.9rem;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+// Active nav highlight
+const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark': 'nav-myspark' };
+const activePage = window.location.pathname.split('/').pop().replace('.html','');
+if (navMap[activePage]) document.getElementById(navMap[activePage])?.classList.add('active');
 </script>
 <script>
 // Notification System - Inline
