@@ -1089,7 +1089,7 @@ window.getPortfolioItemType = function(url, filename) {
                             ⭐ Shortlist
                         </button>
                         <button class="btn-secondary" onclick="sendCollabRequest('${user._id}')">
-                            Collaborate
+                            💬 Message
                         </button>
                     </div>
                 </div>
@@ -1239,9 +1239,9 @@ window.getPortfolioItemType = function(url, filename) {
                 const result = await response.json();
 
                 if (response.ok) {
-                    notify.success('✨ Added to your shortlist!');
+    showToast('✨ Added to your shortlist!');
                 } else {
-                    notify.error(result.message || 'Failed to add to shortlist');
+                    showToast(result.message || 'Failed to add to shortlist');
                 }
             } catch (error) {
                 console.error('Error shortlisting:', error);
