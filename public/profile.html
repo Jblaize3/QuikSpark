@@ -1245,7 +1245,7 @@ window.getPortfolioItemType = function(url, filename) {
                 }
             } catch (error) {
                 console.error('Error shortlisting:', error);
-                notify.error('Failed to add to shortlist');
+                showToast('Failed to add to shortlist');
             }
         }
 
@@ -1263,7 +1263,7 @@ window.getPortfolioItemType = function(url, filename) {
             
             if (!currentUserId) {
                 if (window.notify) {
-                    notify.warning('Please create a profile first!');
+                    showToast('Please create a profile first to shortlist others!');
                 }
                 setTimeout(() => window.location.href = '/profile-setup.html', 2000);
                 return;
@@ -1304,7 +1304,13 @@ window.getPortfolioItemType = function(url, filename) {
                 if (window.notify) notify.error('Failed to record interest');
             }
         }
-        
+        function showToast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;top:20px;right:20px;background:rgba(15,15,26,0.95);border:1px solid rgba(88,32,247,0.3);border-radius:12px;padding:14px 20px;color:#fff;font-size:0.9rem;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:fadeIn 0.3s ease;';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
         // Load profile on page load
         loadProfile();
     </script>
@@ -1487,11 +1493,11 @@ async function sendCollabRequest(targetUserId) {
         return;
     }
     try {
-        const res = await fetch('/api/collab/request', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ requesterId: currentUserId, targetId: targetUserId })
-        });
+        const res = await fetch('/api/collab/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fromUserId: currentUserId, toUserId: targetUserId })
+});
         const data = await res.json();
         if (res.ok) {
             notify('✅ Collaboration request sent!');
