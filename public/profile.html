@@ -943,8 +943,7 @@ window.getPortfolioItemType = function(url, filename) {
     .navbar .container { position: relative; }
 }
     </style>
-    <script src="notifications.js"></script>
-    <script src="portfolio-lightbox.js"></script>
+
 </head>
 <body>
     <!-- Hero Background -->
@@ -1224,7 +1223,7 @@ window.getPortfolioItemType = function(url, filename) {
             const currentUserId = localStorage.getItem('currentUserId');
             
             if (!currentUserId) {
-                notify.warning('Please create a profile first to shortlist others!');
+                showToast('Please create a profile first to shortlist others!');
                 setTimeout(() => window.location.href = '/profile-setup.html', 2000);
                 return;
             }
@@ -1253,7 +1252,7 @@ window.getPortfolioItemType = function(url, filename) {
     if (url && url.startsWith('http')) {
         window.open(url, '_blank');
     } else {
-        if (window.notify) notify.info('File preview not available');
+        showToast('File preview not available');
     }
 }
 
@@ -1271,7 +1270,7 @@ window.getPortfolioItemType = function(url, filename) {
             
             if (currentUserId === userId) {
                 if (window.notify) {
-                    notify.info("This is your own work!");
+                    showToast("This is your own work!");
                 }
                 return;
             }
@@ -1291,17 +1290,17 @@ window.getPortfolioItemType = function(url, filename) {
                 if (response.ok) {
                     if (isInterested) {
                         button.classList.remove('interested');
-                        if (window.notify) notify.info('Interest removed');
+                        showToast('Interest removed');
                     } else {
                         button.classList.add('interested');
-                        if (window.notify) notify.success('Interest recorded! They\'ll be notified.');
+                        showToast('Interest recorded!');
                     }
                 } else {
-                    if (window.notify) notify.error(result.message || 'Failed to record interest');
+                    showToast(result.message || 'Failed to record interest');
                 }
             } catch (error) {
                 console.error('Error expressing interest:', error);
-                if (window.notify) notify.error('Failed to record interest');
+                showToast('Failed to record interest');
             }
         }
         function showToast(msg) {
@@ -1400,12 +1399,12 @@ class CollabRequestModal {
     open(toUserId, portfolioItemId = null, portfolioItemTitle = null) {
         const currentUserId = localStorage.getItem('currentUserId');
         if (!currentUserId) {
-            if (window.notify) notify.warning('Please create a profile first!');
+            showToast('Please create a profile first!');
             setTimeout(() => window.location.href = '/profile-setup.html', 2000);
             return;
         }
         if (currentUserId === toUserId) {
-            if (window.notify) notify.info("This is your own profile!");
+            showToast("This is your own profile!");
             return;
         }
 
@@ -1440,7 +1439,7 @@ class CollabRequestModal {
         const timeline = this.modal.querySelector('#collab-timeline').value;
 
         if (!message) {
-            if (window.notify) notify.error('Please write a message');
+            showToast('Please add a message before sending.');
             return;
         }
 
@@ -1465,16 +1464,16 @@ class CollabRequestModal {
             const result = await response.json();
 
             if (response.ok) {
-                if (window.notify) notify.success('🚀 Request sent! They\'ll be notified.');
+                showToast('✅ Collaboration request sent!');
                 this.close();
             } else {
-                if (window.notify) notify.error(result.message || 'Failed to send request');
+                showToast(result.message || 'Failed to send request');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Send Request';
             }
         } catch (error) {
             console.error('Error:', error);
-            if (window.notify) notify.error('Failed to send request');
+            showToast('Failed to send request');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Send Request';
         }
