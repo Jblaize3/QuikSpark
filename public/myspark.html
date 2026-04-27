@@ -1665,7 +1665,7 @@
                                     Decline
                                 </button>
                             ` : request.status === 'accepted' ? `
-                                <button class="request-btn" style="background:linear-gradient(135deg,#5820F7,#7c3aed);color:#fff;border:none;cursor:pointer;padding:10px 20px;border-radius:10px;font-weight:600;font-size:0.9rem;" onclick="window.location.href='/thread.html?id=${request._id}'">
+                                <button class="request-btn" style="background:linear-gradient(135deg,#5820F7,#7c3aed);color:#fff;border:none;cursor:pointer;padding:10px 20px;border-radius:10px;font-weight:600;font-size:0.9rem;" onclick="window.location.href=\`/thread.html?id=${request._id}\`">
                                     Open Thread →
                                 </button>
                             ` : ''}
