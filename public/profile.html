@@ -1087,9 +1087,9 @@ window.getPortfolioItemType = function(url, filename) {
                         <button class="btn-primary" onclick="shortlistProfile('${user._id}')">
                             ⭐ Shortlist
                         </button>
-                        <button class="btn-secondary" onclick="sendCollabRequest('${user._id}')">
-                            💬 Message
-                        </button>
+                        <button class="btn-secondary" onclick="collabModal.open('${user._id}')">
+                        💬 Message
+                    </button>
                     </div>
                 </div>
 
