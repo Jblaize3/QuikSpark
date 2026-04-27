@@ -1349,9 +1349,9 @@
 
                 if (result.success && result.shortlistedProfiles && result.shortlistedProfiles.length > 0) {
                     const profiles = result.shortlistedProfiles;
-                    shortlistCount.textContent = `${profiles.length} saved`;
+                    if (shortlistCount) shortlistCount.textContent = `${profiles.length} saved`;
 
-                    shortlistGrid.innerHTML = profiles.map((profile, index) => `
+                    if (shortlistGrid) shortlistGrid.innerHTML = profiles.map((profile, index) => `
                         <div class="shortlist-card animate-in" style="animation-delay: ${index * 70}ms">
                             <div class="shortlist-card-header">
                                 <div class="shortlist-avatar">
@@ -1384,8 +1384,8 @@
                         </div>
                     `).join('');
                 } else {
-                    shortlistCount.textContent = '0 saved';
-                    shortlistGrid.innerHTML = `
+                    if (shortlistCount) shortlistCount.textContent = '0 saved';
+                    if (shortlistGrid) shortlistGrid.innerHTML = `
                         <div class="empty-shortlist">
                             <div class="empty-shortlist-icon">⭐</div>
                             <div style="font-size: 1.15rem; margin-bottom: 10px; color: rgba(255,255,255,0.8);">No saved profiles yet</div>
@@ -1423,17 +1423,17 @@
                     // Reload shortlist
                     loadShortlist();
                     if (window.notify) {
-                        window.notify.success('Removed from shortlist');
+                        showToast('Removed from shortlist');
                     }
                 } else {
                     if (window.notify) {
-                        window.notify.error(result.message || 'Failed to remove');
+                        showToast(result.message || 'Failed to remove');
                     }
                 }
             } catch (error) {
                 console.error('Error removing from shortlist:', error);
                 if (window.notify) {
-                    window.notify.error('Failed to remove from shortlist');
+                    showToast('Failed to remove from shortlist');
                 }
             }
         }
@@ -1599,13 +1599,13 @@
                                 <div class="request-name">${fromUser.fullName || 'Anonymous'}</div>
                                 <div class="request-role">${fromUser.role || 'Builder'}</div>
                                 <div class="request-meta">
-                                    <span>📍 ${fromUser.location || 'Unknown'}</span>
-                                    <span>⏰ ${timeAgo}</span>
+                                    <span>${fromUser.location || 'Unknown'}</span>
+                                    <span>${timeAgo}</span>
                                 </div>
                             </div>
                             ${request.status !== 'pending' ? `
                                 <span class="request-status status-${request.status}">
-                                    ${request.status === 'accepted' ? '✅ Accepted' : '❌ Declined'}
+                                    ${request.status === 'accepted' ? 'Accepted' : 'Declined'}
                                 </span>
                             ` : ''}
                         </div>
@@ -1636,15 +1636,19 @@
                         ` : ''}
 
                         <div class="request-actions">
-                            <a href="/profile.html?id=${fromUser._id}" class="view-profile-btn" target="_blank">
+                            <a href="/profile/${fromUser._id}" class="view-profile-btn" target="_blank">
                                 View Profile
                             </a>
                             ${request.status === 'pending' ? `
                                 <button class="request-btn accept-btn" onclick="acceptRequest('${request._id}')">
-                                    ✅ Accept
+                                    Accept
                                 </button>
                                 <button class="request-btn decline-btn" onclick="declineRequest('${request._id}')">
-                                    ❌ Decline
+                                    Decline
+                                </button>
+                            ` : request.status === 'accepted' ? `
+                                <button class="request-btn" style="background:linear-gradient(135deg,#5820F7,#7c3aed);color:#fff;border:none;cursor:pointer;padding:10px 20px;border-radius:10px;font-weight:600;font-size:0.9rem;" onclick="window.location.href='/thread.html?id=${request._id}'">
+                                    Open Thread →
                                 </button>
                             ` : ''}
                         </div>
@@ -1675,16 +1679,16 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    if (window.notify) notify.success('✅ Request accepted! Opening thread...');
+                    showToast('✅ Request accepted! Opening thread...');
 setTimeout(() => window.location.href = `/thread.html?id=${requestId}`, 800);
                 } else {
                     // Reverse animation on failure
                     if (card) card.classList.remove('accepting');
-                    if (window.notify) notify.error(result.message || 'Failed to accept request');
+                    showToast(result.message || 'Failed to accept request');
                 }
             } catch (error) {
                 if (card) card.classList.remove('accepting');
-                if (window.notify) notify.error('Failed to accept request');
+                showToast('Failed to accept request');
             }
         }
 
@@ -1710,15 +1714,15 @@ setTimeout(() => window.location.href = `/thread.html?id=${requestId}`, 800);
                 const result = await response.json();
 
                 if (response.ok) {
-                    if (window.notify) notify.info('Request declined');
+                    showToast('Request declined');
                     setTimeout(() => loadCollabRequests(), 400);
                 } else {
                     if (card) card.classList.remove('declining');
-                    if (window.notify) notify.error(result.message || 'Failed to decline request');
+                    showToast(result.message || 'Failed to decline request');
                 }
             } catch (error) {
                 if (card) card.classList.remove('declining');
-                if (window.notify) notify.error('Failed to decline request');
+                showToast('Failed to decline request');
             }
         }
 
@@ -1747,7 +1751,16 @@ setTimeout(() => window.location.href = `/thread.html?id=${requestId}`, 800);
 
         // Load requests when page loads (add this to the existing loadUserData function or after it)
         // Make sure to call loadCollabRequests() after the user data is loaded
-const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark': 'nav-myspark' };
+
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.textContent = msg;
+            t.style.cssText = 'position:fixed;top:20px;right:20px;background:rgba(15,15,26,0.95);border:1px solid rgba(88,32,247,0.3);border-radius:12px;padding:14px 20px;color:#fff;font-size:0.9rem;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark': 'nav-myspark' };
         const activePage = window.location.pathname.split('/').pop().replace('.html','');
         if (navMap[activePage]) document.getElementById(navMap[activePage])?.classList.add('active');
     </script>
