@@ -3,829 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spark Feed - QuikSpark</title>
+    <title>Spark Feed — QuikSpark</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --purple: #5820F7;
-            --purple-light: #7c3aed;
+            --purple-mid: #7c3aed;
             --periwinkle: #C2CAF3;
-            --bg: #0a0a0a;
-            --glass: rgba(255,255,255,0.04);
-            --glass-border: rgba(255,255,255,0.1);
+            --green: #10b981;
+            --bg: #080810;
+            --surface: rgba(255,255,255,0.03);
+            --surface-hover: rgba(255,255,255,0.055);
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(88,32,247,0.35);
+            --text: #ffffff;
             --text-dim: rgba(255,255,255,0.55);
-            --text-dimmer: rgba(255,255,255,0.35);
+            --text-dimmer: rgba(255,255,255,0.3);
+            --mono: 'DM Mono', monospace;
         }
 
         body {
             background: var(--bg);
             min-height: 100vh;
-            font-family: 'Inter', -apple-system, sans-serif;
-            color: #fff;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
             overflow-x: hidden;
         }
 
-        /* Animated background */
+        /* Ambient background */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(circle at 15% 50%, rgba(88,32,247,0.18) 0%, transparent 50%),
-                radial-gradient(circle at 85% 20%, rgba(124,58,237,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(194,202,243,0.08) 0%, transparent 40%);
+                radial-gradient(ellipse 80% 50% at 10% 20%, rgba(88,32,247,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 80%, rgba(124,58,237,0.08) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 30% at 50% 5%, rgba(194,202,243,0.05) 0%, transparent 40%);
             z-index: 0;
-            animation: pulse 8s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.75; }
+            pointer-events: none;
         }
 
         /* Navbar */
         .navbar {
-            padding: 20px 0;
-            background: rgba(10,10,10,0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
+            padding: 18px 0;
+            background: rgba(8,8,16,0.92);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 200;
         }
 
         .navbar .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .logo-img {
-            width: clamp(160px, 20vw, 260px);
+            width: clamp(140px, 16vw, 220px);
             height: auto;
-            opacity: 0.8;
-            filter: brightness(1.15) contrast(0.9) saturate(0.85);
-            mix-blend-mode: screen;
-            transition: all 0.3s;
         }
-
-        .logo-img:hover { opacity: 1; }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 28px;
+            gap: 32px;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: rgba(255,255,255,0.65);
-            font-size: 15px;
-            transition: color 0.3s;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
         }
 
         .nav-links a:hover,
         .nav-links a.active { color: var(--periwinkle); }
 
-        /* Page layout */
-        .feed-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 24px 80px;
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 1fr 360px;
-            gap: 32px;
-            align-items: start;
-        }
-
-        /* Page header */
-        .page-header {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .page-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff 0%, var(--periwinkle) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
-            animation: shimmer 4s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.85; }
-        }
-
-        .page-subtitle {
-            color: var(--text-dim);
-            font-size: 1.1rem;
-            max-width: 540px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        /* Live indicator */
-        .live-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16,185,129,0.1);
-            border: 1px solid rgba(16,185,129,0.25);
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #10b981;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        .live-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10b981;
-            animation: blink 1.5s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Feed column */
-        .feed-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Post a Spark button / composer */
-        .spark-composer {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .spark-composer::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(88,32,247,0.06) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        .spark-composer:hover {
-            border-color: rgba(88,32,247,0.4);
-            background: rgba(255,255,255,0.06);
-        }
-
-        .composer-inner {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .composer-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple), var(--purple-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            font-weight: 700;
-            flex-shrink: 0;
-            box-shadow: 0 0 0 2px rgba(88,32,247,0.3);
-        }
-
-        .composer-prompt {
-            flex: 1;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 12px 18px;
-            color: var(--text-dimmer);
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .post-spark-btn {
-            background: var(--purple);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .post-spark-btn:hover {
-            background: var(--purple-light);
-            transform: translateY(-1px);
-        }
-
-        /* Spark Card */
-        .spark-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 28px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            animation: fadeUp 0.4s ease both;
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .spark-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(88,32,247,0.5), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .spark-card:hover {
-            border-color: rgba(88,32,247,0.3);
-            background: rgba(255,255,255,0.06);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-        }
-
-        .spark-card:hover::before { opacity: 1; }
-
-        .spark-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-
-        .spark-author {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .spark-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple), var(--purple-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            overflow: hidden;
-            box-shadow: 0 0 0 2px rgba(88,32,247,0.25);
-        }
-
-        .spark-avatar img {
-            width: 100%; height: 100%; object-fit: cover;
-        }
-
-        .spark-author-info {}
-
-        .spark-author-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #fff;
-        }
-
-        .spark-author-role {
-            font-size: 0.8rem;
-            color: var(--periwinkle);
-        }
-
-        .spark-time {
-            font-size: 0.78rem;
-            color: var(--text-dimmer);
-        }
-
-        /* Stage badge */
-        .stage-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-
-        .stage-concept {
-            background: rgba(194,202,243,0.12);
-            border: 1px solid rgba(194,202,243,0.25);
-            color: var(--periwinkle);
-        }
-
-        .stage-prototype {
-            background: rgba(88,32,247,0.15);
-            border: 1px solid rgba(88,32,247,0.3);
-            color: #a78bfa;
-        }
-
-        .stage-building {
-            background: rgba(16,185,129,0.1);
-            border: 1px solid rgba(16,185,129,0.25);
-            color: #10b981;
-        }
-
-        .stage-launched {
-            background: rgba(245,158,11,0.1);
-            border: 1px solid rgba(245,158,11,0.25);
-            color: #f59e0b;
-        }
-
-        /* Project title */
-        .spark-project-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-
-        .spark-why-now {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            line-height: 1.65;
-            margin-bottom: 20px;
-        }
-
-        /* Detail grid */
-        .spark-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .spark-detail {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 10px;
-            padding: 12px 14px;
-        }
-
-        .spark-detail-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dimmer);
-            margin-bottom: 4px;
-        }
-
-        .spark-detail-value {
-            font-size: 0.88rem;
-            color: rgba(255,255,255,0.85);
-            font-weight: 500;
-        }
-
-        /* Tags */
-        .spark-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .spark-tag {
-            background: rgba(88,32,247,0.12);
-            border: 1px solid rgba(88,32,247,0.25);
-            color: var(--periwinkle);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 500;
-        }
-
-        /* Actions */
-        .spark-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .btn-spark-interest {
-            flex: 1;
-            background: var(--purple);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 11px 20px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-spark-interest:hover {
-            background: var(--purple-light);
-            transform: translateY(-1px);
-        }
-
-        .btn-spark-save {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.7);
-            border-radius: 10px;
-            padding: 11px 16px;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-spark-save:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-        }
-
-        .spark-interest-count {
-            font-size: 0.8rem;
-            color: var(--text-dimmer);
-            margin-left: auto;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            position: sticky;
-            top: 100px;
-        }
-
-        .sidebar-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 24px;
-        }
-
-        .sidebar-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--purple);
-            margin-bottom: 16px;
-        }
-
-        /* Filter pills */
-        .filter-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .filter-pill {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.65);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-pill:hover,
-        .filter-pill.active {
-            background: rgba(88,32,247,0.2);
-            border-color: rgba(88,32,247,0.4);
-            color: var(--periwinkle);
-        }
-
-        /* Stats */
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .stat-row:last-child { border-bottom: none; }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-dim);
-        }
-
-        .stat-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--periwinkle);
-        }
-
-        /* Post Spark Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: #0f0f1a;
-            border: 1px solid rgba(88,32,247,0.3);
-            border-radius: 24px;
-            padding: 40px;
-            width: 100%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            animation: slideUp 0.3s ease;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(88,32,247,0.1);
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px; right: 20px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover {
-            background: rgba(255,255,255,0.12);
-            color: #fff;
-        }
-
-        .modal-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            background: linear-gradient(135deg, #fff 0%, var(--periwinkle) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .modal-subtitle {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            margin-bottom: 28px;
-            line-height: 1.5;
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.78rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dimmer);
-            margin-bottom: 8px;
-        }
-
-        .form-label span {
-            color: var(--purple);
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 13px 16px;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            outline: none;
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 90px;
-            line-height: 1.6;
-        }
-
-        .form-input::placeholder,
-        .form-textarea::placeholder {
-            color: rgba(255,255,255,0.3);
-        }
-
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            border-color: rgba(88,32,247,0.5);
-            background: rgba(255,255,255,0.08);
-            box-shadow: 0 0 0 3px rgba(88,32,247,0.1);
-        }
-
-        .form-select option {
-            background: #1a1a2e;
-            color: #fff;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        /* Compensation pills */
-        .comp-pills {
-            display: flex;
-            gap: 10px;
-        }
-
-        .comp-pill {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-
-        .comp-pill:hover,
-        .comp-pill.active {
-            background: rgba(88,32,247,0.2);
-            border-color: rgba(88,32,247,0.4);
-            color: var(--periwinkle);
-        }
-
-        /* Submit button */
-        .submit-spark-btn {
-            width: 100%;
-            background: var(--purple);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 15px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 8px;
-            letter-spacing: 0.02em;
-        }
-
-        .submit-spark-btn:hover {
-            background: var(--purple-light);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(88,32,247,0.4);
-        }
-
-        .submit-spark-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-dim);
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-        }
-
-        .empty-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 8px;
-        }
-
-        .empty-sub {
-            font-size: 0.9rem;
-            color: var(--text-dimmer);
-        }
-
-        /* Loading skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-            background-size: 200% 100%;
-            animation: skeleton-shimmer 1.5s infinite;
-            border-radius: 8px;
-        }
-
-        @keyframes skeleton-shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* Notification */
-        .notify-toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: rgba(15,15,26,0.95);
-            border: 1px solid rgba(88,32,247,0.3);
-            border-radius: 12px;
-            padding: 14px 20px;
-            color: #fff;
-            font-size: 0.9rem;
-            z-index: 9999;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.3s;
-            max-width: 320px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        }
-
-        .notify-toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .notify-toast.success { border-color: rgba(16,185,129,0.4); }
-        .notify-toast.error { border-color: rgba(239,68,68,0.4); }
-
-        /* Mobile menu */
         .mobile-menu-btn {
             display: none;
             flex-direction: column;
@@ -837,138 +103,967 @@
         }
 
         .mobile-menu-btn span {
-            width: 24px;
+            width: 22px;
             height: 2px;
-            background: rgba(255,255,255,0.7);
+            background: var(--text-dim);
             border-radius: 2px;
             transition: all 0.3s;
         }
 
-        /* Responsive */
+        /* Page layout */
+        .page-wrap {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 52px 28px 80px;
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* Page header */
+        .feed-header {
+            grid-column: 1 / -1;
+            margin-bottom: 8px;
+        }
+
+        .feed-header-inner {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .feed-eyebrow {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feed-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: livepulse 2s ease-in-out infinite;
+        }
+
+        @keyframes livepulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--green); }
+            50% { opacity: 0.5; box-shadow: 0 0 4px var(--green); }
+        }
+
+        .feed-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            color: var(--text);
+        }
+
+        .feed-title span {
+            color: var(--periwinkle);
+        }
+
+        .feed-subtitle {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 8px;
+            max-width: 480px;
+        }
+
+        /* Composer */
+        .composer {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .composer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(88,32,247,0.05) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .composer:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-hover);
+        }
+
+        .composer:hover::before { opacity: 1; }
+
+        .composer-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .composer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--purple-mid));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 2px rgba(88,32,247,0.25);
+        }
+
+        .composer-prompt {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 11px 16px;
+            color: var(--text-dimmer);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: color 0.2s;
+        }
+
+        .composer:hover .composer-prompt { color: var(--text-dim); }
+
+        .composer-action {
+            background: var(--purple);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 10px 18px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        .composer-action:hover {
+            background: var(--purple-mid);
+            transform: translateY(-1px);
+        }
+
+        /* Feed column */
+        .feed-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        /* Spark Card */
+        .spark-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 26px 28px;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+            animation: cardIn 0.4s ease both;
+        }
+
+        .spark-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(88,32,247,0.6) 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .spark-card:hover {
+            border-color: rgba(88,32,247,0.25);
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(88,32,247,0.1);
+        }
+
+        .spark-card:hover::before { opacity: 1; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card header */
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            gap: 12px;
+        }
+
+        .card-author {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .card-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--purple-mid));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 1.5px solid rgba(88,32,247,0.3);
+        }
+
+        .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .card-author-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .card-author-role {
+            font-size: 0.78rem;
+            color: var(--periwinkle);
+            margin-top: 1px;
+        }
+
+        .card-meta-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .card-time {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--text-dimmer);
+        }
+
+        /* Stage badge */
+        .stage-badge {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            border-radius: 4px;
+        }
+
+        .stage-concept {
+            background: rgba(194,202,243,0.1);
+            color: var(--periwinkle);
+            border: 1px solid rgba(194,202,243,0.2);
+        }
+
+        .stage-prototype {
+            background: rgba(88,32,247,0.12);
+            color: #a78bfa;
+            border: 1px solid rgba(88,32,247,0.25);
+        }
+
+        .stage-building {
+            background: rgba(16,185,129,0.1);
+            color: var(--green);
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+
+        .stage-launched {
+            background: rgba(245,158,11,0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245,158,11,0.25);
+        }
+
+        /* Card content */
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        .card-why {
+            color: var(--text-dim);
+            font-size: 0.88rem;
+            line-height: 1.65;
+            margin-bottom: 18px;
+        }
+
+        /* Looking for — the hook */
+        .card-ask {
+            background: rgba(88,32,247,0.08);
+            border: 1px solid rgba(88,32,247,0.18);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .card-ask-label {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--purple);
+            white-space: nowrap;
+            padding-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .card-ask-value {
+            font-size: 0.88rem;
+            color: var(--periwinkle);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Details row */
+        .card-details {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .card-detail {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+        }
+
+        /* Tags */
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 18px;
+        }
+
+        .card-tag {
+            background: rgba(88,32,247,0.1);
+            border: 1px solid rgba(88,32,247,0.2);
+            color: var(--periwinkle);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.76rem;
+            font-weight: 500;
+        }
+
+        /* Actions */
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .btn-interested {
+            flex: 1;
+            background: var(--purple);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 10px 18px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-interested:hover {
+            background: var(--purple-mid);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(88,32,247,0.3);
+        }
+
+        .btn-save {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.09);
+            color: var(--text-dim);
+            border-radius: 9px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-save:hover {
+            background: rgba(255,255,255,0.09);
+            color: var(--text);
+        }
+
+        .card-interest-count {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--text-dimmer);
+            margin-left: auto;
+        }
+
+        /* Ghost cards (empty state) */
+        .ghost-card {
+            background: var(--surface);
+            border: 1px dashed rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 26px 28px;
+            opacity: 0.45;
+        }
+
+        .ghost-line {
+            height: 12px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.06);
+            margin-bottom: 10px;
+        }
+
+        .ghost-line.short { width: 40%; }
+        .ghost-line.mid { width: 65%; }
+        .ghost-line.long { width: 85%; }
+        .ghost-line.full { width: 100%; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .empty-mark {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .empty-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 8px;
+        }
+
+        .empty-sub {
+            font-size: 0.88rem;
+            color: var(--text-dimmer);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .btn-first-spark {
+            display: inline-block;
+            background: var(--purple);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-first-spark:hover {
+            background: var(--purple-mid);
+            transform: translateY(-1px);
+        }
+
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.6s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: sticky;
+            top: 88px;
+        }
+
+        .sidebar-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .sidebar-label {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin-bottom: 14px;
+        }
+
+        /* Filters */
+        .filter-group { margin-bottom: 14px; }
+        .filter-group:last-child { margin-bottom: 0; }
+
+        .filter-group-label {
+            font-size: 0.72rem;
+            color: var(--text-dimmer);
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-family: var(--mono);
+        }
+
+        .filter-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-pill {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-dim);
+            padding: 5px 11px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-family: var(--mono);
+            cursor: pointer;
+            transition: all 0.18s;
+            letter-spacing: 0.04em;
+        }
+
+        .filter-pill:hover,
+        .filter-pill.active {
+            background: rgba(88,32,247,0.15);
+            border-color: rgba(88,32,247,0.35);
+            color: var(--periwinkle);
+        }
+
+        /* Stats */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-row:last-child { border-bottom: none; }
+
+        .stat-label {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--periwinkle);
+        }
+
+        /* "This is where projects start" banner */
+        .feed-tagline {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 0 0 32px;
+        }
+
+        .feed-tagline p {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-dimmer);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: #0e0e1c;
+            border: 1px solid rgba(88,32,247,0.25);
+            border-radius: 20px;
+            padding: 36px;
+            width: 100%;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalIn 0.3s ease;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(88,32,247,0.08);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px; right: 18px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.09);
+            color: var(--text-dim);
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        .modal-eyebrow {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin-bottom: 8px;
+        }
+
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .modal-sub {
+            color: var(--text-dim);
+            font-size: 0.86rem;
+            margin-bottom: 28px;
+            line-height: 1.55;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: block;
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dimmer);
+            margin-bottom: 8px;
+        }
+
+        .form-label .req { color: var(--purple); }
+
+        .form-hint {
+            font-size: 0.78rem;
+            color: var(--text-dimmer);
+            margin-top: 5px;
+            font-style: italic;
+            text-transform: none;
+            letter-spacing: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder { color: rgba(255,255,255,0.22); }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: rgba(88,32,247,0.5);
+            background: rgba(255,255,255,0.07);
+            box-shadow: 0 0 0 3px rgba(88,32,247,0.08);
+        }
+
+        .form-select option { background: #12121e; color: #fff; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* Comp pills */
+        .comp-pills { display: flex; gap: 8px; }
+
+        .comp-pill {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-dim);
+            padding: 9px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.18s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .comp-pill:hover,
+        .comp-pill.active {
+            background: rgba(88,32,247,0.15);
+            border-color: rgba(88,32,247,0.35);
+            color: var(--periwinkle);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--purple);
+            color: #fff;
+            border: none;
+            border-radius: 11px;
+            padding: 14px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-submit:hover {
+            background: var(--purple-mid);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(88,32,247,0.4);
+        }
+
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(12,12,22,0.97);
+            border: 1px solid rgba(88,32,247,0.3);
+            border-radius: 11px;
+            padding: 13px 18px;
+            color: #fff;
+            font-size: 0.87rem;
+            z-index: 9999;
+            transform: translateY(70px);
+            opacity: 0;
+            transition: all 0.3s;
+            max-width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-color: rgba(16,185,129,0.4); }
+        .toast.error { border-color: rgba(239,68,68,0.35); }
+
+        /* Gate prompt */
+        .gate-prompt {
+            display: none;
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(12,12,22,0.97);
+            border: 1px solid rgba(88,32,247,0.3);
+            border-radius: 12px;
+            padding: 14px 22px;
+            color: var(--text-dim);
+            font-size: 0.88rem;
+            z-index: 500;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .gate-prompt a {
+            color: var(--periwinkle);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        /* Mobile */
         @media (max-width: 900px) {
-            .feed-layout {
+            .page-wrap {
                 grid-template-columns: 1fr;
-                padding: 40px 16px 60px;
+                padding: 36px 16px 60px;
+                gap: 20px;
             }
-
             .sidebar { position: static; }
-
             .mobile-menu-btn { display: flex; }
-
             .nav-links {
                 display: none;
                 position: absolute;
                 top: 100%;
                 left: 0; right: 0;
-                background: rgba(10,10,10,0.97);
-                border-bottom: 1px solid var(--glass-border);
+                background: rgba(8,8,16,0.98);
+                border-bottom: 1px solid var(--border);
                 flex-direction: column;
                 padding: 20px 24px;
                 gap: 16px;
             }
-
             .nav-links.active { display: flex; }
-
             .navbar .container { position: relative; }
-
             .form-row { grid-template-columns: 1fr; }
-
-            .spark-details { grid-template-columns: 1fr; }
+            .feed-header-inner { flex-direction: column; align-items: flex-start; }
         }
-.mobile-menu-btn {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-}
-.mobile-menu-btn span {
-    width: 24px;
-    height: 2px;
-    background: rgba(255,255,255,0.7);
-    border-radius: 2px;
-    transition: all 0.3s;
-}
-@media (max-width: 768px) {
-    .mobile-menu-btn { display: flex; }
-    .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0; right: 0;
-        background: rgba(10,10,10,0.97);
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        flex-direction: column;
-        padding: 20px 24px;
-        gap: 16px;
-    }
-    .nav-links.active { display: flex; }
-    .navbar .container { position: relative; }
-}
     </style>
 </head>
 <body>
 
     <!-- Navbar -->
     <nav class="navbar">
-    <div class="container">
-        <a href="/index.html">
-            <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark" class="logo-img">
-        </a>
-        <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="document.getElementById('navLinks').classList.toggle('active');this.classList.toggle('active');">
-            <span></span><span></span><span></span>
-        </button>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="/discover.html" id="nav-discover">Discover</a></li>
-            <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
-            <li><a href="/myspark.html" id="nav-myspark">My Spark</a></li>
-        </ul>
-    </div>
-</nav>
+        <div class="container">
+            <a href="/index.html">
+                <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark" class="logo-img">
+            </a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="document.getElementById('navLinks').classList.toggle('active');this.classList.toggle('active');">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/discover.html" id="nav-discover">Discover</a></li>
+                <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
+                <li><a href="/myspark.html" id="nav-myspark">My Spark</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <!-- Main layout -->
-    <div class="feed-layout">
+    <!-- Page -->
+    <div class="page-wrap">
 
-        <!-- Page header -->
-        <div class="page-header">
-            <div class="live-badge">
-                <div class="live-dot"></div>
-                Live Feed
+        <!-- Header -->
+        <div class="feed-header">
+            <div class="feed-header-inner">
+                <div>
+                    <div class="feed-eyebrow">Live feed</div>
+                    <h1 class="feed-title">What's being <span>built</span> right now.</h1>
+                    <p class="feed-subtitle">Live projects looking for builders. Find something worth joining — or share what you're working on.</p>
+                </div>
             </div>
-            <h1 class="page-title">Spark Feed</h1>
-            <p class="page-subtitle">What people are building right now. Find a Spark that excites you and reach out.</p>
+        </div>
+
+        <!-- Tagline -->
+        <div class="feed-tagline">
+            <p>This is where projects start.</p>
         </div>
 
         <!-- Feed column -->
-        <div class="feed-column">
+        <div class="feed-col">
 
             <!-- Composer -->
-            <div class="spark-composer" onclick="openModal()">
-                <div class="composer-inner">
-                    <div class="composer-avatar" id="composerInitials">?</div>
-                    <div class="composer-prompt">What are you building? Post a Spark...</div>
-                    <button class="post-spark-btn" onclick="event.stopPropagation(); openModal()">Post a Spark ⚡</button>
+            <div class="composer" id="composerTrigger" onclick="handleComposerClick()">
+                <div class="composer-row">
+                    <div class="composer-avatar" id="composerInitial">?</div>
+                    <div class="composer-prompt" id="composerPrompt">What are you building this week?</div>
+                    <button class="composer-action" onclick="event.stopPropagation(); handleComposerClick()">Share Your Spark</button>
                 </div>
             </div>
 
-            <!-- Feed -->
+            <!-- Sparks container -->
             <div id="sparksContainer">
+                <!-- Loading skeletons -->
                 <div class="spark-card">
-                    <div style="display:flex; gap:12px; flex-direction:column;">
-                        <div class="skeleton" style="height:14px; width:40%;"></div>
-                        <div class="skeleton" style="height:20px; width:70%;"></div>
-                        <div class="skeleton" style="height:14px; width:90%;"></div>
-                        <div class="skeleton" style="height:14px; width:80%;"></div>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <div class="skeleton" style="height:12px;width:35%;"></div>
+                        <div class="skeleton" style="height:18px;width:65%;"></div>
+                        <div class="skeleton" style="height:12px;width:90%;"></div>
+                        <div class="skeleton" style="height:12px;width:75%;"></div>
                     </div>
                 </div>
                 <div class="spark-card">
-                    <div style="display:flex; gap:12px; flex-direction:column;">
-                        <div class="skeleton" style="height:14px; width:35%;"></div>
-                        <div class="skeleton" style="height:20px; width:60%;"></div>
-                        <div class="skeleton" style="height:14px; width:85%;"></div>
-                        <div class="skeleton" style="height:14px; width:75%;"></div>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <div class="skeleton" style="height:12px;width:28%;"></div>
+                        <div class="skeleton" style="height:18px;width:55%;"></div>
+                        <div class="skeleton" style="height:12px;width:85%;"></div>
+                        <div class="skeleton" style="height:12px;width:70%;"></div>
                     </div>
                 </div>
             </div>
@@ -980,42 +1075,47 @@
 
             <!-- Filter by stage -->
             <div class="sidebar-card">
-                <div class="sidebar-title">Filter by Stage</div>
-                <div class="filter-pills">
-                    <div class="filter-pill active" onclick="filterSparks('all', this)">All</div>
-                    <div class="filter-pill" onclick="filterSparks('concept', this)">🧱 Concept</div>
-                    <div class="filter-pill" onclick="filterSparks('prototype', this)">⚡ Prototype</div>
-                    <div class="filter-pill" onclick="filterSparks('building', this)">🚀 Building</div>
-                    <div class="filter-pill" onclick="filterSparks('launched', this)">✅ Launched</div>
+                <div class="sidebar-label">Filter by stage</div>
+                <div class="filter-group">
+                    <div class="filter-pills">
+                        <div class="filter-pill active" onclick="setFilter('stage','all',this)">All</div>
+                        <div class="filter-pill" onclick="setFilter('stage','concept',this)">Idea</div>
+                        <div class="filter-pill" onclick="setFilter('stage','prototype',this)">Prototype</div>
+                        <div class="filter-pill" onclick="setFilter('stage','building',this)">Building</div>
+                        <div class="filter-pill" onclick="setFilter('stage','launched',this)">Launched</div>
+                    </div>
+                </div>
+                <div class="sidebar-label" style="margin-top:16px;">Compensation</div>
+                <div class="filter-group">
+                    <div class="filter-pills">
+                        <div class="filter-pill active" onclick="setFilter('comp','all',this)">All</div>
+                        <div class="filter-pill" onclick="setFilter('comp','paid',this)">Paid</div>
+                        <div class="filter-pill" onclick="setFilter('comp','passion-project',this)">Passion</div>
+                        <div class="filter-pill" onclick="setFilter('comp','tbd',this)">TBD</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Filter by compensation -->
-            <div class="sidebar-card">
-                <div class="sidebar-title">Compensation</div>
-                <div class="filter-pills">
-                    <div class="filter-pill active" onclick="filterComp('all', this)">All</div>
-                    <div class="filter-pill" onclick="filterComp('paid', this)">Paid</div>
-                    <div class="filter-pill" onclick="filterComp('passion-project', this)">Passion Project</div>
-                    <div class="filter-pill" onclick="filterComp('tbd', this)">TBD</div>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="sidebar-card">
-                <div class="sidebar-title">Community</div>
+            <!-- Stats — only show if data exists -->
+            <div class="sidebar-card" id="statsCard" style="display:none;">
+                <div class="sidebar-label">Community</div>
                 <div class="stat-row">
                     <span class="stat-label">Active Sparks</span>
-                    <span class="stat-value" id="statSparks">—</span>
+                    <span class="stat-value" id="statTotal">—</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Posted this week</span>
                     <span class="stat-value" id="statWeek">—</span>
                 </div>
-                <div class="stat-row">
-                    <span class="stat-label">Collaborations started</span>
-                    <span class="stat-value" id="statCollabs">—</span>
-                </div>
+            </div>
+
+            <!-- Profile CTA for non-logged users -->
+            <div class="sidebar-card" id="profileCta" style="display:none;">
+                <div class="sidebar-label">Get started</div>
+                <p style="font-size:0.85rem;color:var(--text-dim);line-height:1.55;margin-bottom:14px;">Create your builder profile to post Sparks and connect with collaborators.</p>
+                <button onclick="window.location.href='/profile-setup.html'" style="width:100%;background:var(--purple);color:#fff;border:none;border-radius:9px;padding:11px;font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
+                    Build Your Profile
+                </button>
             </div>
 
         </div>
@@ -1023,39 +1123,44 @@
     </div>
 
     <!-- Post a Spark Modal -->
-    <div class="modal-overlay" id="sparkModal" onclick="handleOverlayClick(event)">
+    <div class="modal-overlay" id="sparkModal" onclick="handleModalOverlay(event)">
         <div class="modal">
             <button class="modal-close" onclick="closeModal()">✕</button>
-            <h2 class="modal-title">Post a Spark ⚡</h2>
-            <p class="modal-subtitle">Be specific. The clearer your intent, the better your collaborators.</p>
+            <div class="modal-eyebrow">New Spark</div>
+            <h2 class="modal-title">Share what you're building.</h2>
+            <p class="modal-sub">The clearer your intent, the better your collaborators. Others will see this and decide to reach out.</p>
 
             <form id="sparkForm" onsubmit="submitSpark(event)">
 
                 <div class="form-group">
-                    <label class="form-label">What are you building? <span>*</span></label>
+                    <label class="form-label">What are you building? <span class="req">*</span>
+                        <span class="form-hint">One line. Be specific — vague projects get ignored.</span>
+                    </label>
                     <input class="form-input" id="sparkTitle" type="text" placeholder="e.g. AI workflow tool for indie film editors" required maxlength="100">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Why now?</label>
-                    <textarea class="form-textarea" id="sparkWhyNow" placeholder="What's the opportunity or urgency? What drove you to build this?" rows="3"></textarea>
+                    <label class="form-label">Why now?
+                        <span class="form-hint">What's the opportunity? What drove you to build this?</span>
+                    </label>
+                    <textarea class="form-textarea" id="sparkWhyNow" placeholder="The problem you're solving, the gap you see, or the moment that made you start." rows="3"></textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Stage <span>*</span></label>
+                        <label class="form-label">Stage <span class="req">*</span></label>
                         <select class="form-select" id="sparkStage" required>
-                            <option value="" disabled selected>Select stage</option>
-                            <option value="concept">🧱 Concept</option>
-                            <option value="prototype">⚡ Prototype</option>
-                            <option value="building">🚀 Actively building</option>
-                            <option value="launched">✅ Launched</option>
+                            <option value="" disabled selected>Select</option>
+                            <option value="concept">Idea</option>
+                            <option value="prototype">Prototype</option>
+                            <option value="building">Actively building</option>
+                            <option value="launched">Launched</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Timeline</label>
                         <select class="form-select" id="sparkTimeline">
-                            <option value="" disabled selected>Select timeline</option>
+                            <option value="" disabled selected>Select</option>
                             <option value="1-2 weeks">1-2 weeks</option>
                             <option value="3-4 weeks">3-4 weeks</option>
                             <option value="1-3 months">1-3 months</option>
@@ -1066,217 +1171,211 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Who do you need? <span>*</span></label>
-                    <input class="form-input" id="sparkLookingFor" type="text" placeholder="e.g. ML engineer + UX designer, or full-stack developer" required maxlength="150">
+                    <label class="form-label">Who do you need? <span class="req">*</span>
+                        <span class="form-hint">Role, skill set, specific ask. This is the hook.</span>
+                    </label>
+                    <input class="form-input" id="sparkLookingFor" type="text" placeholder="e.g. ML engineer with product sense, or brand designer who codes" required maxlength="150">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Compensation</label>
                     <div class="comp-pills" id="compPills">
-                        <div class="comp-pill" onclick="selectComp('paid', this)">Paid</div>
-                        <div class="comp-pill active" onclick="selectComp('passion-project', this)">Passion Project</div>
-                        <div class="comp-pill" onclick="selectComp('tbd', this)">TBD</div>
+                        <div class="comp-pill" onclick="selectComp('paid',this)">Paid</div>
+                        <div class="comp-pill active" onclick="selectComp('passion-project',this)">Passion Project</div>
+                        <div class="comp-pill" onclick="selectComp('tbd',this)">TBD</div>
                     </div>
                     <input type="hidden" id="sparkComp" value="passion-project">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Tags (optional)</label>
-                    <input class="form-input" id="sparkTags" type="text" placeholder="e.g. SaaS, AI, Healthcare, Fintech" maxlength="100">
+                    <label class="form-label">Tags <span style="color:var(--text-dimmer);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+                    <input class="form-input" id="sparkTags" type="text" placeholder="e.g. SaaS, AI, Healthcare" maxlength="100">
                 </div>
 
-                <button type="submit" class="submit-spark-btn" id="submitSparkBtn">
-                    Post Your Spark ⚡
-                </button>
+                <button type="submit" class="btn-submit" id="submitBtn">Post Your Spark</button>
 
             </form>
         </div>
     </div>
 
-    <!-- Toast notification -->
-    <div class="notify-toast" id="toast"></div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script>
         // ─── State ───────────────────────────────────────────
         let allSparks = [];
-        let filteredSparks = [];
         let stageFilter = 'all';
         let compFilter = 'all';
         const currentUserId = localStorage.getItem('currentUserId');
 
-        // ─── Init ────────────────────────────────────────────
+        const prompts = [
+            'What are you building this week?',
+            'What do you need help with right now?',
+            'Who are you looking to bring on?',
+            'What idea have you been sitting on?',
+            'What are you building and why now?'
+        ];
+
+        // ─── Init ─────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
-            setComposerInitials();
+            // Set composer prompt
+            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+            document.getElementById('composerPrompt').textContent = prompt;
+
+            // Set composer avatar if logged in
+            if (currentUserId) {
+                const name = localStorage.getItem('currentUserName');
+                if (name) {
+                    document.getElementById('composerInitial').textContent = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+                } else {
+                    document.getElementById('composerInitial').textContent = '✦';
+                }
+            } else {
+                document.getElementById('composerInitial').textContent = '✦';
+                document.getElementById('profileCta').style.display = 'block';
+            }
+
+            // Active nav
+            const navMap = { 'spark-feed': 'nav-feed', 'discover': 'nav-discover', 'myspark': 'nav-myspark' };
+            const page = window.location.pathname.split('/').pop().replace('.html','');
+            if (navMap[page]) document.getElementById(navMap[page])?.classList.add('active');
+
             loadSparks();
         });
 
-        function setComposerInitials() {
-            const el = document.getElementById('composerInitials');
-            const name = localStorage.getItem('currentUserName');
-            if (name) {
-                el.textContent = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-            } else {
-                el.textContent = '✦';
-            }
-        }
-
-        // ─── Load Sparks ─────────────────────────────────────
+        // ─── Load Sparks ──────────────────────────────────────
         async function loadSparks() {
             try {
                 const res = await fetch('/api/sparks');
                 const data = await res.json();
                 if (data.success) {
                     allSparks = data.sparks || [];
-                    filteredSparks = allSparks;
                     updateStats();
-                    renderSparks();
+                    render();
                 } else {
                     renderEmpty();
                 }
             } catch (err) {
-                console.error('Failed to load sparks:', err);
                 renderEmpty();
             }
         }
 
         // ─── Render ───────────────────────────────────────────
-        function renderSparks() {
-            const container = document.getElementById('sparksContainer');
+        function render() {
+            let sparks = allSparks;
+            if (stageFilter !== 'all') sparks = sparks.filter(s => s.stage === stageFilter);
+            if (compFilter !== 'all') sparks = sparks.filter(s => s.compensation === compFilter);
 
-            if (filteredSparks.length === 0) {
-                renderEmpty();
-                return;
-            }
+            if (sparks.length === 0) { renderEmpty(); return; }
 
-            container.innerHTML = filteredSparks.map((spark, i) => {
-                const initials = (spark.authorName || 'QS').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                const timeAgo = getTimeAgo(new Date(spark.createdAt));
-                const stageBadgeClass = {
-                    concept: 'stage-concept',
-                    prototype: 'stage-prototype',
-                    building: 'stage-building',
-                    launched: 'stage-launched'
-                }[spark.stage] || 'stage-concept';
+            const stageClass = { concept:'stage-concept', prototype:'stage-prototype', building:'stage-building', launched:'stage-launched' };
+            const stageLabel = { concept:'Idea', prototype:'Prototype', building:'Building', launched:'Launched' };
+            const compLabel = { 'paid':'Paid', 'passion-project':'Passion Project', 'tbd':'TBD' };
 
-                const stageLabel = {
-                    concept: '🧱 Concept',
-                    prototype: '⚡ Prototype',
-                    building: '🚀 Building',
-                    launched: '✅ Launched'
-                }[spark.stage] || spark.stage;
-
-                const compLabel = {
-                    'paid': '💳 Paid',
-                    'passion-project': '🔥 Passion Project',
-                    'tbd': '🤝 TBD'
-                }[spark.compensation] || spark.compensation;
-
-                const tags = spark.tags ? spark.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+            document.getElementById('sparksContainer').innerHTML = sparks.map((s, i) => {
+                const initials = (s.authorName || 'QS').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+                const ago = timeAgo(new Date(s.createdAt));
+                const tags = s.tags ? s.tags.split(',').map(t=>t.trim()).filter(Boolean) : [];
+                const sc = stageClass[s.stage] || 'stage-concept';
+                const sl = stageLabel[s.stage] || s.stage;
+                const cl = compLabel[s.compensation] || s.compensation;
 
                 return `
-                    <div class="spark-card" style="animation-delay: ${i * 0.06}s">
-                        <div class="spark-card-top">
-                            <div class="spark-author">
-                                <div class="spark-avatar">
-                                    ${spark.authorImage ? `<img src="${spark.authorImage}" alt="${spark.authorName}">` : initials}
-                                </div>
-                                <div class="spark-author-info">
-                                    <div class="spark-author-name">${spark.authorName || 'Anonymous'}</div>
-                                    <div class="spark-author-role">${spark.authorRole || 'Builder'}</div>
-                                </div>
+                <div class="spark-card" style="animation-delay:${i*0.05}s">
+                    <div class="card-top">
+                        <div class="card-author">
+                            <div class="card-avatar">
+                                ${s.authorImage ? `<img src="${s.authorImage}" alt="${s.authorName}">` : initials}
                             </div>
-                            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-                                <span class="stage-badge ${stageBadgeClass}">${stageLabel}</span>
-                                <span class="spark-time">${timeAgo}</span>
+                            <div>
+                                <div class="card-author-name">${s.authorName || 'Anonymous'}</div>
+                                <div class="card-author-role">${s.authorRole || 'Builder'}</div>
                             </div>
                         </div>
-
-                        <h3 class="spark-project-title">${spark.title}</h3>
-
-                        ${spark.whyNow ? `<p class="spark-why-now">${spark.whyNow}</p>` : ''}
-
-                        <div class="spark-details">
-                            <div class="spark-detail">
-                                <div class="spark-detail-label">Looking for</div>
-                                <div class="spark-detail-value">${spark.lookingFor}</div>
-                            </div>
-                            ${spark.timeline ? `
-                            <div class="spark-detail">
-                                <div class="spark-detail-label">Timeline</div>
-                                <div class="spark-detail-value">${spark.timeline}</div>
-                            </div>` : ''}
-                            <div class="spark-detail">
-                                <div class="spark-detail-label">Compensation</div>
-                                <div class="spark-detail-value">${compLabel}</div>
-                            </div>
-                        </div>
-
-                        ${tags.length > 0 ? `
-                        <div class="spark-tags">
-                            ${tags.map(t => `<span class="spark-tag">${t}</span>`).join('')}
-                        </div>` : ''}
-
-                        <div class="spark-actions">
-                            <button class="btn-spark-interest" onclick="expressInterest('${spark._id}')">
-                                I'm interested →
-                            </button>
-                            <button class="btn-spark-save" onclick="saveSpark('${spark._id}')">⭐</button>
-                            <span class="spark-interest-count">${spark.interestCount || 0} interested</span>
+                        <div class="card-meta-right">
+                            <span class="stage-badge ${sc}">${sl}</span>
+                            <span class="card-time">${ago}</span>
                         </div>
                     </div>
-                `;
+
+                    <h3 class="card-title">${s.title}</h3>
+
+                    ${s.whyNow ? `<p class="card-why">${s.whyNow}</p>` : ''}
+
+                    <div class="card-ask">
+                        <span class="card-ask-label">Looking for</span>
+                        <span class="card-ask-value">${s.lookingFor}</span>
+                    </div>
+
+                    <div class="card-details">
+                        ${s.timeline ? `<span class="card-detail">${s.timeline}</span>` : ''}
+                        <span class="card-detail">${cl}</span>
+                    </div>
+
+                    ${tags.length ? `
+                    <div class="card-tags">
+                        ${tags.map(t=>`<span class="card-tag">${t}</span>`).join('')}
+                    </div>` : ''}
+
+                    <div class="card-actions">
+                        <button class="btn-interested" onclick="expressInterest('${s._id}')">I'm Interested →</button>
+                        <button class="btn-save" onclick="saveSpark('${s._id}')">Save</button>
+                        <span class="card-interest-count">${s.interestCount || 0} interested</span>
+                    </div>
+                </div>`;
             }).join('');
         }
 
         function renderEmpty() {
             document.getElementById('sparksContainer').innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon">⚡</div>
-                    <div class="empty-title">No Sparks yet</div>
-                    <div class="empty-sub">Be the first to post what you're building.</div>
+                    <div class="empty-mark">◈</div>
+                    <div class="empty-title">Be the first to spark something.</div>
+                    <div class="empty-sub">Post what you're building and find the people to build it with.<br>The first few posts shape the community.</div>
+                    <button class="btn-first-spark" onclick="handleComposerClick()">Post Your First Spark</button>
+                </div>
+                <div class="ghost-card" style="margin-top:16px;">
+                    <div class="ghost-line short" style="margin-bottom:14px;"></div>
+                    <div class="ghost-line mid" style="margin-bottom:8px;"></div>
+                    <div class="ghost-line long" style="margin-bottom:8px;"></div>
+                    <div class="ghost-line full"></div>
+                </div>
+                <div class="ghost-card" style="margin-top:10px;">
+                    <div class="ghost-line short" style="margin-bottom:14px;"></div>
+                    <div class="ghost-line long" style="margin-bottom:8px;"></div>
+                    <div class="ghost-line mid"></div>
                 </div>
             `;
         }
 
         // ─── Stats ────────────────────────────────────────────
         function updateStats() {
-            document.getElementById('statSparks').textContent = allSparks.length;
+            const total = allSparks.length;
+            if (total === 0) return;
             const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            const weekCount = allSparks.filter(s => new Date(s.createdAt) > oneWeekAgo).length;
-            document.getElementById('statWeek').textContent = weekCount;
-            const collabs = allSparks.reduce((sum, s) => sum + (s.interestCount || 0), 0);
-            document.getElementById('statCollabs').textContent = collabs;
+            const week = allSparks.filter(s => new Date(s.createdAt) > oneWeekAgo).length;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statWeek').textContent = week || '—';
+            document.getElementById('statsCard').style.display = 'block';
         }
 
         // ─── Filters ──────────────────────────────────────────
-        function filterSparks(stage, el) {
-            stageFilter = stage;
-            document.querySelectorAll('.sidebar .filter-pills:first-of-type .filter-pill').forEach(p => p.classList.remove('active'));
+        function setFilter(type, value, el) {
+            if (type === 'stage') {
+                stageFilter = value;
+                document.querySelectorAll('.filter-group:first-of-type .filter-pill').forEach(p => p.classList.remove('active'));
+            } else {
+                compFilter = value;
+                document.querySelectorAll('.filter-group:last-of-type .filter-pill').forEach(p => p.classList.remove('active'));
+            }
             el.classList.add('active');
-            applyFilters();
+            render();
         }
 
-        function filterComp(comp, el) {
-            compFilter = comp;
-            document.querySelectorAll('.sidebar .filter-pills:last-of-type .filter-pill').forEach(p => p.classList.remove('active'));
-            el.classList.add('active');
-            applyFilters();
-        }
-
-        function applyFilters() {
-            filteredSparks = allSparks.filter(s => {
-                if (stageFilter !== 'all' && s.stage !== stageFilter) return false;
-                if (compFilter !== 'all' && s.compensation !== compFilter) return false;
-                return true;
-            });
-            renderSparks();
-        }
-
-        // ─── Modal ────────────────────────────────────────────
-        function openModal() {
+        // ─── Composer / Modal ─────────────────────────────────
+        function handleComposerClick() {
             if (!currentUserId) {
-                showToast('Create a profile first to post a Spark!', 'error');
-                setTimeout(() => window.location.href = '/profile-setup.html', 1800);
+                window.location.href = '/profile-setup.html';
                 return;
             }
             document.getElementById('sparkModal').classList.add('active');
@@ -1288,7 +1387,7 @@
             document.body.style.overflow = '';
         }
 
-        function handleOverlayClick(e) {
+        function handleModalOverlay(e) {
             if (e.target === document.getElementById('sparkModal')) closeModal();
         }
 
@@ -1298,12 +1397,12 @@
             document.getElementById('sparkComp').value = value;
         }
 
-        // ─── Submit Spark ─────────────────────────────────────
+        // ─── Submit ───────────────────────────────────────────
         async function submitSpark(e) {
             e.preventDefault();
-            if (!currentUserId) return;
+            if (!currentUserId) { window.location.href = '/profile-setup.html'; return; }
 
-            const btn = document.getElementById('submitSparkBtn');
+            const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.textContent = 'Posting...';
 
@@ -1324,90 +1423,71 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const data = await res.json();
-
                 if (res.ok && data.success) {
-                    showToast('Your Spark is live! ⚡', 'success');
+                    showToast('Your Spark is live.', 'success');
                     closeModal();
                     document.getElementById('sparkForm').reset();
                     document.getElementById('sparkComp').value = 'passion-project';
-                    document.querySelectorAll('#compPills .comp-pill').forEach((p, i) => {
-                        p.classList.toggle('active', i === 1);
-                    });
+                    document.querySelectorAll('#compPills .comp-pill').forEach((p,i) => p.classList.toggle('active', i===1));
                     loadSparks();
                 } else {
                     showToast(data.message || 'Failed to post. Try again.', 'error');
                 }
-            } catch (err) {
-                showToast('Something went wrong. Check your connection.', 'error');
+            } catch {
+                showToast('Something went wrong.', 'error');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Post Your Spark ⚡';
+                btn.textContent = 'Post Your Spark';
             }
         }
 
         // ─── Interest ─────────────────────────────────────────
         async function expressInterest(sparkId) {
             if (!currentUserId) {
-                showToast('Create a profile to express interest!', 'error');
-                setTimeout(() => window.location.href = '/profile-setup.html', 1800);
+                window.location.href = '/profile-setup.html';
                 return;
             }
-
             try {
                 const res = await fetch(`/api/sparks/${sparkId}/interest`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: currentUserId })
                 });
-
                 const data = await res.json();
                 if (res.ok) {
-                    showToast('Interest sent! The poster will be notified.', 'success');
+                    showToast('Interest sent. The poster will be notified.', 'success');
                     loadSparks();
                 } else {
                     showToast(data.message || 'Failed to send interest.', 'error');
                 }
-            } catch (err) {
+            } catch {
                 showToast('Something went wrong.', 'error');
             }
         }
 
-        async function saveSpark(sparkId) {
-            showToast('Spark saved to your shortlist ⭐', 'success');
-                }
-
-        // ─── Toast ────────────────────────────────────────────
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `notify-toast ${type} show`;
-            setTimeout(() => toast.classList.remove('show'), 3500);
+        function saveSpark(sparkId) {
+            if (!currentUserId) { window.location.href = '/profile-setup.html'; return; }
+            showToast('Saved to your shortlist.', 'success');
         }
 
-        // ─── Time ago ─────────────────────────────────────────
-        function getTimeAgo(date) {
-            const seconds = Math.floor((new Date() - date) / 1000);
-            const intervals = {
-                year: 31536000, month: 2592000, week: 604800,
-                day: 86400, hour: 3600, minute: 60
-            };
-            for (const [unit, secs] of Object.entries(intervals)) {
-                const interval = Math.floor(seconds / secs);
-                if (interval >= 1) return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+        // ─── Utilities ────────────────────────────────────────
+        function timeAgo(date) {
+            const s = Math.floor((new Date() - date) / 1000);
+            const intervals = { year:31536000, month:2592000, week:604800, day:86400, hour:3600, minute:60 };
+            for (const [u, sec] of Object.entries(intervals)) {
+                const n = Math.floor(s / sec);
+                if (n >= 1) return `${n}${u[0]} ago`;
             }
-            return 'Just now';
+            return 'just now';
         }
 
-        // ─── Nav ──────────────────────────────────────────────
-        function toggleNav() {
-            document.getElementById('navLinks').classList.toggle('active');
+        function showToast(msg, type='success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = `toast ${type} show`;
+            setTimeout(() => t.classList.remove('show'), 3500);
         }
-const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark': 'nav-myspark' };
-        const activePage = window.location.pathname.split('/').pop().replace('.html','');
-        if (navMap[activePage]) document.getElementById(navMap[activePage])?.classList.add('active');
-
     </script>
 </body>
 </html>
