@@ -995,9 +995,91 @@
             .form-row { grid-template-columns: 1fr; }
             .feed-header-inner { flex-direction: column; align-items: flex-start; }
         }
+
+        /* Animated canvas background */
+        #bgCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Pulsing header glow */
+        .feed-title {
+            position: relative;
+        }
+
+        /* Composer focus glow */
+        .composer:focus-within,
+        .composer.focused {
+            border-color: rgba(88,32,247,0.45);
+            box-shadow: 0 0 0 3px rgba(88,32,247,0.08), 0 0 40px rgba(88,32,247,0.06);
+        }
+
+        /* CTA pulse */
+        .composer-action {
+            animation: ctapulse 3s ease-in-out infinite;
+        }
+
+        @keyframes ctapulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(88,32,247,0); }
+            50% { box-shadow: 0 0 16px 2px rgba(88,32,247,0.25); }
+        }
+
+        /* Drifting header phrases */
+        .drift-phrases {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .drift-phrase {
+            position: absolute;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(194,202,243,0.07);
+            white-space: nowrap;
+            animation: drift linear infinite;
+        }
+
+        @keyframes drift {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-60px) translateX(20px); opacity: 0; }
+        }
+
+        /* Live dot pulse enhanced */
+        .feed-eyebrow::before {
+            animation: livepulse 1.8s ease-in-out infinite;
+        }
+
+        /* Card shimmer on hover */
+        .spark-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(88,32,247,0.04) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .spark-card:hover::after { opacity: 1; }
+
     </style>
 </head>
 <body>
+
+
+    <!-- Ambient canvas background -->
+    <canvas id="bgCanvas"></canvas>
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -1030,6 +1112,8 @@
             </div>
         </div>
 
+
+                <div class="drift-phrases" id="driftPhrases"></div>
         <!-- Tagline -->
         <div class="feed-tagline">
             <p>This is where projects start.</p>
@@ -1488,6 +1572,112 @@
             t.className = `toast ${type} show`;
             setTimeout(() => t.classList.remove('show'), 3500);
         }
+
+        // ─── Ambient Canvas Background ────────────────────────
+        (function() {
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+            let W, H, particles = [], connections = [];
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+
+            function Particle() {
+                this.x = Math.random() * W;
+                this.y = Math.random() * H;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.r = Math.random() * 1.5 + 0.5;
+                this.alpha = Math.random() * 0.4 + 0.1;
+            }
+
+            function init() {
+                resize();
+                particles = [];
+                for (let i = 0; i < 55; i++) particles.push(new Particle());
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+
+                // Draw connections
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (dist < 140) {
+                            const alpha = (1 - dist/140) * 0.12;
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(88,32,247,${alpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Draw particles
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(194,202,243,${p.alpha})`;
+                    ctx.fill();
+
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > W) p.vx *= -1;
+                    if (p.y < 0 || p.y > H) p.vy *= -1;
+                });
+
+                requestAnimationFrame(draw);
+            }
+
+            window.addEventListener('resize', init);
+            init();
+            draw();
+        })();
+
+        // ─── Drifting Phrases ─────────────────────────────────
+        (function() {
+            const phrases = [
+                'Looking for a co-founder',
+                'Building an AI tool',
+                'Need a designer',
+                'Prototype stage',
+                'Open to collaborators',
+                'Building in public',
+                'Looking for engineers',
+                'Idea to product',
+                'Need a technical partner',
+                'Accepting collaborations'
+            ];
+
+            const container = document.getElementById('driftPhrases');
+            if (!container) return;
+
+            function spawnPhrase() {
+                const el = document.createElement('div');
+                el.className = 'drift-phrase';
+                el.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+                el.style.left = Math.random() * 80 + '%';
+                el.style.top = (Math.random() * 60 + 20) + '%';
+                const dur = Math.random() * 8 + 8;
+                el.style.animationDuration = dur + 's';
+                el.style.animationDelay = '0s';
+                container.appendChild(el);
+                setTimeout(() => el.remove(), dur * 1000);
+            }
+
+            // Spawn phrases periodically
+            spawnPhrase();
+            setInterval(spawnPhrase, 3500);
+        })();
+
     </script>
 </body>
 </html>
