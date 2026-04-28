@@ -627,38 +627,6 @@
             border-radius: 50%;
             opacity: 0.5;
         }
-.mobile-menu-btn {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-}
-.mobile-menu-btn span {
-    width: 24px;
-    height: 2px;
-    background: rgba(255,255,255,0.7);
-    border-radius: 2px;
-    transition: all 0.3s;
-}
-@media (max-width: 768px) {
-    .mobile-menu-btn { display: flex; }
-    .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0; right: 0;
-        background: rgba(10,10,10,0.97);
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        flex-direction: column;
-        padding: 20px 24px;
-        gap: 16px;
-    }
-    .nav-links.active { display: flex; }
-    .navbar .container { position: relative; }
-}
     </style>
     <script src="notifications.js"></script>
 </head>
@@ -668,20 +636,23 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-    <div class="container">
-        <a href="/index.html">
-            <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark" class="logo-img">
-        </a>
-        <button class="mobile-menu-btn" aria-label="Toggle menu" onclick="document.getElementById('navLinks').classList.toggle('active');this.classList.toggle('active');">
-            <span></span><span></span><span></span>
-        </button>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="/discover.html" id="nav-discover">Discover</a></li>
-            <li><a href="/spark-feed.html" id="nav-feed">Spark Feed</a></li>
-            <li><a href="/myspark.html" id="nav-myspark">My Spark</a></li>
-        </ul>
-    </div>
-</nav>
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark Logo" class="logo-img">
+                </a>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="/discover.html" class="active">Discover</a></li>
+                <li><a href="/#feed">Spark Feed</a></li>
+                <li><a href="/myspark.html">MySpark</a></li>
+                <li><a href="/#collaborate">Collaborate</a></li>
+                <li><a href="/#events">Events</a></li>
+                <li><a href="/#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <div class="discover-container">
         <!-- Header -->
@@ -736,7 +707,7 @@
                     <label class="filter-label">Stage</label>
                     <select class="filter-select" id="stageFilter" onchange="applyFilters()">
                         <option value="">All stages</option>
-                        <option value="live-product">🚀 Live product</option>
+                        <option value="live-product">Live product</option>
                         <option value="prototype">⚙️ Actively building</option>
                         <option value="idea-stage">💡 Idea stage</option>
                     </select>
@@ -821,7 +792,7 @@
                 console.error('Error loading profiles:', error);
                 document.getElementById('profilesContainer').innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-icon" style="font-size:2rem;opacity:0.4;margin-bottom:16px;">!</div>
                         <div class="empty-text">Unable to load profiles</div>
                         <div class="empty-subtext">${error.message}</div>
                     </div>
@@ -929,10 +900,10 @@
                 // Get execution status
                 let executionBadge = '';
                 if (profile.workTypes && profile.workTypes.length > 0) {
-                    if (profile.workTypes.includes('live-product')) executionBadge = '🚀 Live product';
-                    else if (profile.workTypes.includes('prototype')) executionBadge = '⚡ Actively building';
-                    else if (profile.workTypes.includes('concept')) executionBadge = '🧱 Idea stage';
-                    else executionBadge = '🔨 Building';
+                    if (profile.workTypes.includes('live-product')) executionBadge = 'Live product';
+                    else if (profile.workTypes.includes('prototype')) executionBadge = 'Actively building';
+                    else if (profile.workTypes.includes('concept')) executionBadge = 'Idea stage';
+                    else executionBadge = 'Building';
                 }
 
                 card.innerHTML = `
@@ -945,7 +916,7 @@
                             <div class="profile-card-role">${profile.role}</div>
                             <div class="profile-card-meta">
                                 <span>📍 ${profile.location}</span>
-                                <span>⚡ ${formatAvailability(profile.availability)}</span>
+                                <span>${formatAvailability(profile.availability)}</span>
                             </div>
                             ${executionBadge ? `<div class="execution-badge">${executionBadge}</div>` : ''}
                         </div>
@@ -973,7 +944,7 @@
 
                     <div class="profile-card-actions">
                         <button class="btn-save" onclick="event.stopPropagation(); saveProfile('${profile._id}')">
-                            ⭐ Shortlist
+                            Save
                         </button>
                         <button class="btn-view" onclick="event.stopPropagation(); window.location.href='/profile/${profile._id}'">
                             View Profile
@@ -1034,9 +1005,6 @@
 
         // Load profiles on page load
         loadProfiles();
-const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark': 'nav-myspark' };
-        const activePage = window.location.pathname.split('/').pop().replace('.html','');
-        if (navMap[activePage]) document.getElementById(navMap[activePage])?.classList.add('active');
     </script>
 </body>
 </html>

@@ -818,8 +818,6 @@
         }
 
         .request-actions {
-            position: relative;
-            z-index: 10;
             display: flex;
             gap: 12px;
         }
@@ -1133,7 +1131,7 @@
                 console.error('Error loading profile:', error);
                 document.getElementById('content').innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">⚠️</div>
+                        <div class="empty-state-icon" style="font-size:2rem;opacity:0.4;margin-bottom:16px;">!</div>
                         <div class="empty-state-text">Unable to load profile</div>
                         <div class="empty-state-subtext">${error.message}</div>
                         <button class="upload-btn" onclick="window.location.href='/profile-setup.html'" style="margin-top: 20px;">
@@ -1190,7 +1188,7 @@
                             <div class="profile-meta">
                                 <span>📍 ${user.location}</span>
                                 <span>⏱️ ${formatExperience(user.experience)}</span>
-                                <span>⚡ ${formatAvailability(user.availability)}</span>
+                                <span>${formatAvailability(user.availability)}</span>
                                 ${user.workTypes && user.workTypes.length > 0 ? 
                                     `<span style="background: rgba(88, 32, 247, 0.1); padding: 4px 12px; border-radius: 12px; color: #5820F7; font-weight: 600;">${getExecutionStatus(user.workTypes)}</span>`
                                     : ''
@@ -1309,7 +1307,7 @@
                             }).join('')
                             : `
                                 <div class="empty-state" style="grid-column: 1 / -1;">
-                                    <div class="empty-state-icon">📂</div>
+                                    <div class="empty-state-icon"></div>
                                     <div class="empty-state-text">Nothing here yet</div>
                                     <div class="empty-state-subtext">Early ideas, sketches, experiments, or links to Notion/Figma/GitHub — all welcome</div>
                                 </div>
@@ -1343,11 +1341,11 @@
 
         function getExecutionStatus(workTypes) {
             // Determine execution signal based on work types
-            if (workTypes.includes('live-product')) return '🚀 Live product';
-            if (workTypes.includes('prototype') || workTypes.includes('experiment-mvp')) return '⚡ Actively building';
-            if (workTypes.includes('concept')) return '🧱 Idea stage';
+            if (workTypes.includes('live-product')) return 'Live product';
+            if (workTypes.includes('prototype') || workTypes.includes('experiment-mvp')) return 'Actively building';
+            if (workTypes.includes('concept')) return 'Idea stage';
             if (workTypes.includes('open-source')) return '💻 Open source';
-            return '🔨 Building';
+            return 'Building';
         }
 
         // Load shortlisted profiles
@@ -1380,8 +1378,8 @@
                             
                             <div class="shortlist-details">
                                 ${profile.location ? `<span class="shortlist-detail">📍 ${profile.location}</span>` : ''}
-                                ${profile.experience ? `<span class="shortlist-detail">⚡ ${profile.experience}</span>` : ''}
-                                ${profile.availability ? `<span class="shortlist-detail">🕐 ${profile.availability}</span>` : ''}
+                                ${profile.experience ? `<span class="shortlist-detail">${profile.experience}</span>` : ''}
+                                ${profile.availability ? `<span class="shortlist-detail"> ${profile.availability}</span>` : ''}
                             </div>
 
                             ${profile.vision ? `
@@ -1402,7 +1400,7 @@
                     if (shortlistCount) shortlistCount.textContent = '0 saved';
                     if (shortlistGrid) shortlistGrid.innerHTML = `
                         <div class="empty-shortlist">
-                            <div class="empty-shortlist-icon">⭐</div>
+                            <div class="empty-shortlist-icon" style="font-size:2rem;opacity:0.3;margin-bottom:16px;">◈</div>
                             <div style="font-size: 1.15rem; margin-bottom: 10px; color: rgba(255,255,255,0.8);">No saved profiles yet</div>
                             <div style="font-size: 0.95rem;">Visit the Discover page to find and shortlist collaborators</div>
                         </div>
@@ -1573,7 +1571,7 @@
             if (!requests || requests.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-requests">
-                        <div class="empty-requests-icon">📭</div>
+                        <div class="empty-requests-icon"></div>
                         <p>${currentRequestFilter === 'pending' 
                             ? 'No pending requests' 
                             : currentRequestFilter === 'accepted'
@@ -1593,10 +1591,10 @@
             };
 
             const timelineLabels = {
-                'asap': '⚡ ASAP',
+                'asap': 'ASAP',
                 '1-2-weeks': '📅 1-2 weeks',
                 '1-month': '📆 1 month',
-                'flexible': '🕐 Flexible'
+                'flexible': ' Flexible'
             };
 
             grid.innerHTML = requests.map((request, index) => {
@@ -1632,7 +1630,7 @@
 
                         ${request.portfolioItem ? `
                             <div class="request-portfolio-ref">
-                                💼 Regarding: <strong>${request.portfolioItem}</strong>
+                                Regarding: <strong>${request.portfolioItem}</strong>
                             </div>
                         ` : ''}
 
@@ -1699,7 +1697,7 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    showToast('✅ Request accepted! Opening thread...');
+                    showToast('Request accepted. Opening thread...');
 setTimeout(() => window.location.href = `/thread.html?id=${requestId}`, 800);
                 } else {
                     // Reverse animation on failure

@@ -943,7 +943,8 @@ window.getPortfolioItemType = function(url, filename) {
     .navbar .container { position: relative; }
 }
     </style>
-
+    <script src="notifications.js"></script>
+    <script src="portfolio-lightbox.js"></script>
 </head>
 <body>
     <!-- Hero Background -->
@@ -1033,7 +1034,7 @@ window.getPortfolioItemType = function(url, filename) {
                 console.error('Error loading profile:', error);
                 document.getElementById('content').innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-icon" style="font-size:2rem;opacity:0.4;margin-bottom:16px;">!</div>
                         <div style="font-size: 1.2rem; margin-bottom: 10px; color: rgba(255, 255, 255, 0.7);">Profile not found</div>
                         <div style="color: rgba(255, 255, 255, 0.4);">${error.message}</div>
                         <button class="btn-primary" onclick="window.location.href='/discover.html'" style="margin-top: 20px;">
@@ -1050,10 +1051,10 @@ window.getPortfolioItemType = function(url, filename) {
             // Get execution status
             let executionBadge = '';
             if (user.workTypes && user.workTypes.length > 0) {
-                if (user.workTypes.includes('live-product')) executionBadge = '🚀 Live product';
-                else if (user.workTypes.includes('prototype')) executionBadge = '⚡ Actively building';
-                else if (user.workTypes.includes('concept')) executionBadge = '🧱 Idea stage';
-                else executionBadge = '🔨 Building';
+                if (user.workTypes.includes('live-product')) executionBadge = 'Live product';
+                else if (user.workTypes.includes('prototype')) executionBadge = 'Actively building';
+                else if (user.workTypes.includes('concept')) executionBadge = 'Idea stage';
+                else executionBadge = 'Building';
             }
 
             document.getElementById('content').innerHTML = `
@@ -1085,11 +1086,11 @@ window.getPortfolioItemType = function(url, filename) {
 
                     <div class="profile-actions">
                         <button class="btn-primary" onclick="shortlistProfile('${user._id}')">
-                            ⭐ Shortlist
+                            Save
                         </button>
-                        <button class="btn-secondary" onclick="collabModal.open('${user._id}')">
-                        💬 Message
-                    </button>
+                        <button class="btn-secondary" onclick="sendCollabRequest('${user._id}')">
+                            Message
+                        </button>
                     </div>
                 </div>
 
@@ -1190,7 +1191,7 @@ window.getPortfolioItemType = function(url, filename) {
                     <div class="section-card">
                         <h2 class="section-title">Their Work</h2>
                         <div class="empty-state">
-                            <div class="empty-icon">📂</div>
+                            <div class="empty-icon"></div>
                             <div style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.6);">No work uploaded yet</div>
                         </div>
                     </div>
@@ -1223,7 +1224,7 @@ window.getPortfolioItemType = function(url, filename) {
             const currentUserId = localStorage.getItem('currentUserId');
             
             if (!currentUserId) {
-                showToast('Please create a profile first to shortlist others!');
+                notify.warning('Please create a profile first to shortlist others!');
                 setTimeout(() => window.location.href = '/profile-setup.html', 2000);
                 return;
             }
@@ -1252,7 +1253,7 @@ window.getPortfolioItemType = function(url, filename) {
     if (url && url.startsWith('http')) {
         window.open(url, '_blank');
     } else {
-        showToast('File preview not available');
+        if (window.notify) notify.info('File preview not available');
     }
 }
 
@@ -1270,7 +1271,7 @@ window.getPortfolioItemType = function(url, filename) {
             
             if (currentUserId === userId) {
                 if (window.notify) {
-                    showToast("This is your own work!");
+                    notify.info("This is your own work!");
                 }
                 return;
             }
@@ -1290,17 +1291,17 @@ window.getPortfolioItemType = function(url, filename) {
                 if (response.ok) {
                     if (isInterested) {
                         button.classList.remove('interested');
-                        showToast('Interest removed');
+                        if (window.notify) notify.info('Interest removed');
                     } else {
                         button.classList.add('interested');
-                        showToast('Interest recorded!');
+                        if (window.notify) notify.success('Interest recorded! They\'ll be notified.');
                     }
                 } else {
-                    showToast(result.message || 'Failed to record interest');
+                    if (window.notify) notify.error(result.message || 'Failed to record interest');
                 }
             } catch (error) {
                 console.error('Error expressing interest:', error);
-                showToast('Failed to record interest');
+                if (window.notify) notify.error('Failed to record interest');
             }
         }
         function showToast(msg) {
@@ -1358,7 +1359,7 @@ class CollabRequestModal {
                             <option value="asap">⚡ ASAP</option>
                             <option value="1-2-weeks">📅 1-2 weeks</option>
                             <option value="1-month">📆 1 month</option>
-                            <option value="flexible">🕐 Flexible</option>
+                            <option value="flexible"> Flexible</option>
                         </select>
                     </div>
                     <div class="collab-modal-actions">
@@ -1399,12 +1400,12 @@ class CollabRequestModal {
     open(toUserId, portfolioItemId = null, portfolioItemTitle = null) {
         const currentUserId = localStorage.getItem('currentUserId');
         if (!currentUserId) {
-            showToast('Please create a profile first!');
+            if (window.notify) notify.warning('Please create a profile first!');
             setTimeout(() => window.location.href = '/profile-setup.html', 2000);
             return;
         }
         if (currentUserId === toUserId) {
-            showToast("This is your own profile!");
+            if (window.notify) notify.info("This is your own profile!");
             return;
         }
 
@@ -1439,7 +1440,7 @@ class CollabRequestModal {
         const timeline = this.modal.querySelector('#collab-timeline').value;
 
         if (!message) {
-            showToast('Please add a message before sending.');
+            if (window.notify) notify.error('Please write a message');
             return;
         }
 
@@ -1464,16 +1465,16 @@ class CollabRequestModal {
             const result = await response.json();
 
             if (response.ok) {
-                showToast('✅ Collaboration request sent!');
+                if (window.notify) notify.success('🚀 Request sent! They\'ll be notified.');
                 this.close();
             } else {
-                showToast(result.message || 'Failed to send request');
+                if (window.notify) notify.error(result.message || 'Failed to send request');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Send Request';
             }
         } catch (error) {
             console.error('Error:', error);
-            showToast('Failed to send request');
+            if (window.notify) notify.error('Failed to send request');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Send Request';
         }
@@ -1499,7 +1500,7 @@ async function sendCollabRequest(targetUserId) {
 });
         const data = await res.json();
         if (res.ok) {
-            notify('✅ Collaboration request sent!');
+            notify('Collaboration request sent.');
         } else {
             notify(data.message || 'Failed to send request');
         }
