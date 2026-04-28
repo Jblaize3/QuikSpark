@@ -578,7 +578,7 @@
             font-weight: 700;
             color: var(--purple);
             margin-bottom: 16px;
-            opacity: 0.6;
+            opacity: 0.85;
         }
 
         .empty-title {
@@ -1002,7 +1002,7 @@
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.85;
         }
 
         /* Pulsing header glow */
@@ -1029,11 +1029,11 @@
 
         /* Drifting header phrases */
         .drift-phrases {
-            position: absolute;
+            position: fixed;
             inset: 0;
             overflow: hidden;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
         }
 
         .drift-phrase {
@@ -1042,7 +1042,7 @@
             font-size: 0.68rem;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: rgba(194,202,243,0.07);
+            color: rgba(194,202,243,0.12);
             white-space: nowrap;
             animation: drift linear infinite;
         }
@@ -1080,6 +1080,7 @@
 
     <!-- Ambient canvas background -->
     <canvas id="bgCanvas"></canvas>
+    <div class="drift-phrases" id="driftPhrases"></div>
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -1113,7 +1114,6 @@
         </div>
 
 
-                <div class="drift-phrases" id="driftPhrases"></div>
         <!-- Tagline -->
         <div class="feed-tagline">
             <p>This is where projects start.</p>
@@ -1664,8 +1664,8 @@
                 const el = document.createElement('div');
                 el.className = 'drift-phrase';
                 el.textContent = phrases[Math.floor(Math.random() * phrases.length)];
-                el.style.left = Math.random() * 80 + '%';
-                el.style.top = (Math.random() * 60 + 20) + '%';
+                el.style.left = Math.random() * 85 + '%';
+                el.style.top = (Math.random() * 70 + 10) + '%';
                 const dur = Math.random() * 8 + 8;
                 el.style.animationDuration = dur + 's';
                 el.style.animationDelay = '0s';
