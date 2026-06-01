@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuikSpark — Where Visions Find Their People</title>
+    <title>QuikSpark — Where Ideas Become Businesses</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -38,7 +38,6 @@
             overflow-x: hidden;
         }
 
-        /* Ambient background */
         body::before {
             content: '';
             position: fixed;
@@ -50,7 +49,6 @@
             pointer-events: none;
         }
 
-        /* ── NAV ── */
         .navbar {
             padding: 18px 0;
             position: sticky;
@@ -68,6 +66,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .logo-img { width: clamp(130px, 15vw, 200px); height: auto; }
@@ -108,7 +107,23 @@
             transform: translateY(-1px);
         }
 
-        /* ── HERO ── */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .mobile-menu-btn span {
+            width: 22px;
+            height: 2px;
+            background: var(--text-dim);
+            border-radius: 2px;
+        }
+
         .hero {
             max-width: 1200px;
             margin: 0 auto;
@@ -148,9 +163,7 @@
             max-width: 900px;
         }
 
-        .hero-title .accent {
-            color: var(--periwinkle);
-        }
+        .hero-title .accent { color: var(--periwinkle); }
 
         .hero-sub {
             font-size: 1.1rem;
@@ -216,7 +229,6 @@
             letter-spacing: 0.08em;
         }
 
-        /* ── USE CASES ── */
         .use-cases {
             max-width: 1200px;
             margin: 0 auto;
@@ -300,7 +312,6 @@
             font-weight: 400;
         }
 
-        /* ── DIVIDER ── */
         .divider {
             max-width: 1200px;
             margin: 0 auto;
@@ -308,7 +319,6 @@
             border-top: 1px solid var(--border);
         }
 
-        /* ── HOW IT WORKS ── */
         .how {
             max-width: 1200px;
             margin: 0 auto;
@@ -363,7 +373,6 @@
             color: var(--text-dim);
         }
 
-        /* ── CTA STRIP ── */
         .cta-strip {
             background: var(--purple);
             position: relative;
@@ -425,7 +434,6 @@
             transform: translateY(-2px);
         }
 
-        /* ── FOOTER ── */
         footer {
             border-top: 1px solid var(--border);
             position: relative;
@@ -444,6 +452,7 @@
 
         .footer-logo { margin-bottom: 12px; }
         .footer-logo img { width: 140px; height: auto; }
+
         .footer-tagline {
             font-size: 0.82rem;
             color: var(--text-dimmer);
@@ -486,7 +495,6 @@
             letter-spacing: 0.06em;
         }
 
-        /* ── MODAL ── */
         .modal {
             display: none;
             position: fixed;
@@ -588,9 +596,7 @@
             background: rgba(255,255,255,0.07);
         }
 
-        .checkbox-group {
-            margin-bottom: 24px;
-        }
+        .checkbox-group { margin-bottom: 24px; }
 
         .checkbox-group > label {
             font-family: var(--mono);
@@ -643,24 +649,6 @@
             box-shadow: 0 8px 24px rgba(88,32,247,0.4);
         }
 
-        /* ── MOBILE ── */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .mobile-menu-btn span {
-            width: 22px;
-            height: 2px;
-            background: var(--text-dim);
-            border-radius: 2px;
-        }
-
         @media (max-width: 900px) {
             .use-cases-grid { grid-template-columns: 1fr; }
             .how-steps { grid-template-columns: 1fr; gap: 32px; }
@@ -680,14 +668,12 @@
                 gap: 16px;
             }
             .nav-right.active { display: flex; }
-            .navbar { position: relative; }
             .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Nav -->
     <nav class="navbar">
         <div class="nav-inner">
             <a href="/index.html">
@@ -703,7 +689,6 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <section class="hero">
         <div class="hero-eyebrow">Now in early access</div>
         <h1 class="hero-title">
@@ -719,15 +704,14 @@
         <p class="hero-microcopy">Free to join. No pitch deck required.</p>
     </section>
 
-    <!-- Use Cases -->
     <section class="use-cases">
         <div class="use-cases-label">Who it's for</div>
         <h2 class="use-cases-title">From the idea in your notes app<br>to something people can actually see.</h2>
         <div class="use-cases-grid">
             <div class="use-case">
-                <div class="use-case-who">The aspiring builder</div>
-                <div class="use-case-title">First venture. First launch. First real shot at something.</div>
-                <p class="use-case-body">You do not need an existing network to start. Whether you need a videographer, a designer or a developer, the right collaborator is here. In person or remote.</p>
+                <div class="use-case-who">The entrepreneur</div>
+                <div class="use-case-title">Launching a brand and needs creative execution.</div>
+                <p class="use-case-body">A food pop-up founder finds a brand identity designer and a content creator to launch their concept. Vision in. Brand out.</p>
             </div>
             <div class="use-case">
                 <div class="use-case-who">The creator</div>
@@ -735,16 +719,15 @@
                 <p class="use-case-body">An independent musician finds a director for the music video, a photographer for press shots and a designer for the cover art. All in one place.</p>
             </div>
             <div class="use-case">
-                <div class="use-case-who">The entrepreneur</div>
-                <div class="use-case-title">Launching a brand and needs creative execution.</div>
-                <p class="use-case-body">A food pop-up founder finds a brand identity designer and a content creator to launch their concept. Vision in. Brand out.</p>
+                <div class="use-case-who">The aspiring builder</div>
+                <div class="use-case-title">First venture. First launch. First real shot at something.</div>
+                <p class="use-case-body">You do not need an existing network to start. Whether you need a videographer, a designer or a developer, the right collaborator is here. In person or remote.</p>
             </div>
         </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- How it works -->
     <section class="how">
         <div class="how-label">How it works</div>
         <h2 class="how-title">Two ways in. One outcome.</h2>
@@ -767,7 +750,6 @@
         </div>
     </section>
 
-    <!-- CTA Strip -->
     <div class="cta-strip">
         <div class="cta-inner">
             <div class="cta-text">
@@ -778,7 +760,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-inner">
             <div>
@@ -808,13 +789,11 @@
         </div>
     </footer>
 
-    <!-- Early Access Modal -->
     <div id="earlyAccessModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" id="closeModal">&times;</button>
             <h2>Get Early Access</h2>
             <p class="modal-subtitle">Be first in. Get launch updates, founder spotlights and early access when we go live.</p>
-
             <form id="earlyAccessForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -826,21 +805,19 @@
                         <input type="text" id="lastName" name="lastName" required placeholder="Last">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="email">Email Address *</label>
                     <input type="email" id="email" name="email" required placeholder="you@example.com">
                 </div>
-
                 <div class="checkbox-group">
                     <label>I'm here to</label>
                     <div class="checkbox-option">
-                        <input type="checkbox" id="creator" name="interest" value="finding-creator">
-                        <label for="creator">Find a creative professional or builder</label>
+                        <input type="checkbox" id="finding-creator" name="interest" value="finding-creator">
+                        <label for="finding-creator">Find a creative professional or builder</label>
                     </div>
                     <div class="checkbox-option">
-                        <input type="checkbox" id="entrepreneur" name="interest" value="working-entrepreneur">
-                        <label for="entrepreneur">Discover projects to work on</label>
+                        <input type="checkbox" id="discover-projects" name="interest" value="discover-projects">
+                        <label for="discover-projects">Discover projects to work on</label>
                     </div>
                     <div class="checkbox-option">
                         <input type="checkbox" id="collaborating" name="interest" value="collaborating">
@@ -855,19 +832,16 @@
                         <label for="all">All of the above</label>
                     </div>
                 </div>
-
                 <button type="submit" class="submit-btn">Join Early Access</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Mobile menu
         document.getElementById('mobileMenuBtn').addEventListener('click', () => {
             document.getElementById('navRight').classList.toggle('active');
         });
 
-        // Modal
         const modal = document.getElementById('earlyAccessModal');
         const closeBtn = document.getElementById('closeModal');
 
@@ -888,7 +862,6 @@
             }
         });
 
-        // Form submission
         document.getElementById('earlyAccessForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
