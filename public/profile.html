@@ -1253,7 +1253,7 @@ window.getPortfolioItemType = function(url, filename) {
     if (url && url.startsWith('http')) {
         window.open(url, '_blank');
     } else {
-        if (window.notify) notify.info('File preview not available');
+        if (window.notify) notify('File preview not available');
     }
 }
 
@@ -1271,7 +1271,7 @@ window.getPortfolioItemType = function(url, filename) {
             
             if (currentUserId === userId) {
                 if (window.notify) {
-                    notify.info("This is your own work!");
+                    notify("This is your own work!");
                 }
                 return;
             }
@@ -1291,17 +1291,17 @@ window.getPortfolioItemType = function(url, filename) {
                 if (response.ok) {
                     if (isInterested) {
                         button.classList.remove('interested');
-                        if (window.notify) notify.info('Interest removed');
+                        if (window.notify) notify('Interest removed');
                     } else {
                         button.classList.add('interested');
-                        if (window.notify) notify.success('Interest recorded! They\'ll be notified.');
+                        if (window.notify) notify('Interest recorded! They\'ll be notified.');
                     }
                 } else {
-                    if (window.notify) notify.error(result.message || 'Failed to record interest');
+                    if (window.notify) notify(result.message || 'Failed to record interest');
                 }
             } catch (error) {
                 console.error('Error expressing interest:', error);
-                if (window.notify) notify.error('Failed to record interest');
+                if (window.notify) notify('Failed to record interest');
             }
         }
         function showToast(msg) {
@@ -1405,7 +1405,7 @@ class CollabRequestModal {
             return;
         }
         if (currentUserId === toUserId) {
-            if (window.notify) notify.info("This is your own profile!");
+            if (window.notify) notify("This is your own profile!");
             return;
         }
 
@@ -1440,7 +1440,7 @@ class CollabRequestModal {
         const timeline = this.modal.querySelector('#collab-timeline').value;
 
         if (!message) {
-            if (window.notify) notify.error('Please write a message');
+            if (window.notify) notify('Please write a message');
             return;
         }
 
@@ -1465,16 +1465,16 @@ class CollabRequestModal {
             const result = await response.json();
 
             if (response.ok) {
-                if (window.notify) notify.success('🚀 Request sent! They\'ll be notified.');
+                if (window.notify) notify('🚀 Request sent! They\'ll be notified.');
                 this.close();
             } else {
-                if (window.notify) notify.error(result.message || 'Failed to send request');
+                if (window.notify) notify(result.message || 'Failed to send request');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Send Request';
             }
         } catch (error) {
             console.error('Error:', error);
-            if (window.notify) notify.error('Failed to send request');
+            if (window.notify) notify('Failed to send request');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Send Request';
         }
