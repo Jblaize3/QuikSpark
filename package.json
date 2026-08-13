@@ -5,7 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "claude:test": "node claude_test.js",
+    "claude:terminal": "node claude-cli.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

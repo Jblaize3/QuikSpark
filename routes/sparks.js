@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
         }
 
         // Fetch author info from portfolio
-        const Portfolio = mongoose.model('Portfolio');
+        const Portfolio = mongoose.model('User');
         const author = await Portfolio.findById(userId).lean();
 
         if (!author) {
