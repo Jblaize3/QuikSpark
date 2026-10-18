@@ -597,6 +597,17 @@
             <div class="form-step active" data-step="1">
                 <h2 class="step-title">Who is the builder?</h2>
                 <p class="step-subtitle">Let us start with the basics. This stays private until you match.</p>
+                <p class="step-subtitle" style="margin-top:-8px;">Already have an account? <a href="/login.html" style="color:var(--periwinkle);font-weight:600;">Log in</a></p>
+
+                <div class="form-group">
+                    <label class="form-label">Email <span class="required">*</span></label>
+                    <input type="email" class="form-input" name="email" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" name="password" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required>
+                </div>
 
                 <div class="form-group">
                     <label class="form-label">Full Name <span class="required">*</span></label>
@@ -977,6 +988,26 @@
                     }
                 }
             }
+            if (isValid && step === 1) {
+                const emailInput = currentStepDiv.querySelector('input[name="email"]');
+                const pwInput = currentStepDiv.querySelector('input[name="password"]');
+                const problem =
+                    (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim()) && { input: emailInput, msg: 'Enter a valid email address' }) ||
+                    (pwInput.value.length < 8 && { input: pwInput, msg: 'Password must be at least 8 characters' });
+                if (problem) {
+                    problem.input.classList.add('error');
+                    problem.input.focus();
+                    let errorMsg = problem.input.parentElement.querySelector('.error-message');
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('div');
+                        errorMsg.className = 'error-message';
+                        problem.input.parentElement.appendChild(errorMsg);
+                    }
+                    errorMsg.textContent = problem.msg;
+                    errorMsg.classList.add('visible');
+                    isValid = false;
+                }
+            }
             return isValid;
         }
 
@@ -1026,9 +1057,14 @@
                 });
 
                 const result = await response.json();
-                if (!response.ok) throw new Error(result.message || 'Failed to create profile');
+                if (!response.ok) {
+                    const err = new Error(result.message || 'Failed to create profile');
+                    err.status = response.status;
+                    throw err;
+                }
 
                 localStorage.setItem('currentUserId', result.userId);
+                if (result.user && result.user.fullName) localStorage.setItem('currentUserName', result.user.fullName);
 
                 document.querySelector('.setup-container > form').style.display = 'none';
                 document.querySelector('.form-nav').style.display = 'none';
@@ -1038,6 +1074,11 @@
 
             } catch (error) {
                 alert('Failed to create profile: ' + error.message);
+                // Email problems live on step 1, so take them back there
+                if (error.status === 409 || error.status === 400) {
+                    currentStep = 1;
+                    showStep(1);
+                }
             }
         }
 

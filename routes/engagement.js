@@ -1,10 +1,11 @@
 import express from 'express';
 import User from '../models/User.js';
+import { requireAuth, matchesAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Track portfolio item view
-router.post('/view/:userId/:itemId', async (req, res) => {
+router.post('/view/:userId/:itemId', requireAuth, async (req, res) => {
   try {
     const { userId, itemId } = req.params;
     
@@ -46,7 +47,7 @@ router.post('/view/:userId/:itemId', async (req, res) => {
 });
 
 // Express interest in collaborating on a portfolio item
-router.post('/interest/:userId/:itemId', async (req, res) => {
+router.post('/interest/:userId/:itemId', requireAuth, matchesAuth('body', 'interestedUserId'), async (req, res) => {
   try {
     const { userId, itemId } = req.params;
     const { interestedUserId } = req.body; // User expressing interest
@@ -117,7 +118,7 @@ router.post('/interest/:userId/:itemId', async (req, res) => {
 });
 
 // Remove interest
-router.post('/remove-interest/:userId/:itemId', async (req, res) => {
+router.post('/remove-interest/:userId/:itemId', requireAuth, matchesAuth('body', 'interestedUserId'), async (req, res) => {
   try {
     const { userId, itemId } = req.params;
     const { interestedUserId } = req.body;

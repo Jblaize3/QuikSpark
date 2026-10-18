@@ -16,6 +16,9 @@ import collabRoutes from './routes/collab.js';
 import messageRoutes from './routes/messages.js';
 import sparkRoutes from './routes/sparks.js';
 import stripeRoutes from './routes/stripe.js';
+import authRoutes from './routes/auth.js';
+import { requireAuth } from './middleware/auth.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -34,9 +37,13 @@ process.on('uncaughtException', function (err) {
 
 const app = express();
 
+// Render sits behind a proxy; this makes req.ip the real client address for rate limits
+app.set('trust proxy', 1);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use('/api/auth', authRoutes);
 app.use('/api/sparks', sparkRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/shortlist', shortlistRoutes);
@@ -150,7 +157,7 @@ setInterval(retryUnsyncedSignups, 15 * 60 * 1000);
 
 const matchmaker = new MatchmakingService(process.env.ANTHROPIC_API_KEY);
 
-app.post("/api/match/analyze", async (req, res) => {
+app.post("/api/match/analyze", requireAuth, async (req, res) => {
     try {
         const { user1, user2 } = req.body;
         if (!user1 || !user2) {
@@ -164,7 +171,7 @@ app.post("/api/match/analyze", async (req, res) => {
     }
 });
 
-app.post("/api/test/match", async (req, res) => {
+app.post("/api/test/match", requireAuth, async (req, res) => {
     try {
         const mockUsers = [
             {

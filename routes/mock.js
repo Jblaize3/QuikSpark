@@ -1,10 +1,11 @@
 import express from 'express';
 import User from '../models/User.js';
+import { requireAuth, matchesAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Add mock portfolio data to a user (for testing)
-router.post('/add-mock-portfolio/:userId', async (req, res) => {
+router.post('/add-mock-portfolio/:userId', requireAuth, matchesAuth('params', 'userId'), async (req, res) => {
   try {
     const { userId } = req.params;
     
@@ -91,7 +92,7 @@ router.post('/add-mock-portfolio/:userId', async (req, res) => {
 });
 
 // Clear portfolio data (for testing)
-router.post('/clear-portfolio/:userId', async (req, res) => {
+router.post('/clear-portfolio/:userId', requireAuth, matchesAuth('params', 'userId'), async (req, res) => {
   try {
     const { userId } = req.params;
     

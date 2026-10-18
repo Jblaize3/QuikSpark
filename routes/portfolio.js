@@ -1,12 +1,24 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
+import { issueSession, requireAuth, rateLimit } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Create a new portfolio/profile
-router.post('/create', async (req, res) => {
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  message: 'Too many sign-up attempts. Please try again later.'
+});
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Create a new account + profile, and log the new user in
+router.post('/create', signupLimiter, async (req, res) => {
   try {
     const {
+      email: rawEmail,
+      password,
       fullName,
       location,
       experience,
@@ -22,6 +34,21 @@ router.post('/create', async (req, res) => {
       vision
     } = req.body;
 
+    const email = String(rawEmail || '').trim().toLowerCase();
+
+    if (!EMAIL_PATTERN.test(email)) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid email address' });
+    }
+    if (typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    }
+    if (password.length > 72) {
+      return res.status(400).json({ success: false, message: 'Password must be 72 characters or fewer' });
+    }
+    if (await User.exists({ email })) {
+      return res.status(409).json({ success: false, message: 'An account with this email already exists. Try logging in instead.' });
+    }
+
     // Validate required fields
     if (!fullName || !location || !experience || !role || !purpose || !availability) {
       return res.status(400).json({
@@ -32,6 +59,8 @@ router.post('/create', async (req, res) => {
 
     // Create new user profile
     const newUser = new User({
+      email,
+      passwordHash: await bcrypt.hash(password, 12),
       fullName,
       location,
       experience,
@@ -48,6 +77,7 @@ router.post('/create', async (req, res) => {
     });
 
     await newUser.save();
+    issueSession(res, newUser._id);
 
     res.status(201).json({
       success: true,
@@ -62,6 +92,9 @@ router.post('/create', async (req, res) => {
     });
 
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ success: false, message: 'An account with this email already exists. Try logging in instead.' });
+    }
     console.error('Error creating profile:', error);
     res.status(500).json({
       success: false,
@@ -72,7 +105,7 @@ router.post('/create', async (req, res) => {
 });
 
 // Get a profile by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', requireAuth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -99,7 +132,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Get all active profiles (for discovery/swipe interface)
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
   try {
     const { limit = 10, skip = 0 } = req.query;
 
