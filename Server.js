@@ -17,6 +17,7 @@ import messageRoutes from './routes/messages.js';
 import sparkRoutes from './routes/sparks.js';
 import stripeRoutes from './routes/stripe.js';
 import authRoutes from './routes/auth.js';
+import paymentRoutes, { webhookHandler } from './routes/payments.js';
 import { requireAuth } from './middleware/auth.js';
 
 dotenv.config();
@@ -40,12 +41,16 @@ const app = express();
 // Render sits behind a proxy; this makes req.ip the real client address for rate limits
 app.set('trust proxy', 1);
 
+// Stripe webhook needs the raw request body, so it goes before express.json()
+app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), webhookHandler);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/sparks', sparkRoutes);
 app.use('/api/stripe', stripeRoutes);
+app.use('/api/payments', paymentRoutes);
 app.use('/api/shortlist', shortlistRoutes);
 app.use('/api/mock', mockRoutes);
 app.use('/api/engagement', engagementRoutes);

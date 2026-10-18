@@ -86,6 +86,50 @@
             z-index: 1;
         }
 
+        /* ── Payments ────────────────────────────────────────── */
+        .payments-area {
+            flex-shrink: 0;
+            margin: 14px 0 0;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+        .pay-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .pay-title { font-weight: 700; color: #fff; font-size: 0.95rem; }
+        .pay-sub { color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; margin-top: 3px; line-height: 1.4; }
+        .pay-btn {
+            background: #5820F7; color: #fff; border: none; border-radius: 100px;
+            padding: 9px 18px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: background 0.2s;
+        }
+        .pay-btn:hover { background: #7c3aed; }
+        .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pay-btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+        .pay-btn.ghost:hover { background: rgba(255,255,255,0.06); }
+        .pay-form { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+        .pay-input-wrap { position: relative; }
+        .pay-input-wrap span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.5); }
+        .pay-input {
+            width: 140px; padding: 9px 12px 9px 26px; border-radius: 10px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.9rem; font-family: inherit; outline: none;
+        }
+        .pay-input:focus { border-color: rgba(88, 32, 247, 0.6); }
+        .pay-split { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+        .pay-msg { margin-top: 10px; font-size: 0.82rem; color: #f59e0b; }
+        .pay-banner { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; color: rgba(255,255,255,0.8); }
+        .pay-list { margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .pay-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; }
+        .pay-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .pay-amount { font-weight: 700; color: #fff; }
+        .pay-badge { display: inline-block; padding: 2px 9px; border-radius: 100px; font-size: 0.72rem; font-weight: 700; margin-left: 8px; }
+        .pay-badge.held { background: rgba(194,202,243,0.15); color: #C2CAF3; }
+        .pay-badge.released { background: rgba(16,185,129,0.15); color: #10b981; }
+        .pay-badge.refunded, .pay-badge.failed { background: rgba(239,68,68,0.15); color: #ef4444; }
+
         /* ── Thread Header ───────────────────────────────────── */
         .thread-header {
             padding: 24px 0 20px;
@@ -570,6 +614,8 @@
         <!-- Loading state (shown first, replaced once data arrives) -->
         <div id="thread-header-area" class="thread-header" style="display:none;"></div>
 
+        <div id="payments-area" class="payments-area" style="display:none;"></div>
+
         <div id="thread-body" class="thread-loading">
             <div class="spinner"></div>
             Loading thread...
@@ -682,6 +728,7 @@ const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark'
                 await loadCollabRequestDetails();
                 renderHeader();
                 showCompose();
+                initPayments();
             }
 
             const newMessages = data.messages || [];
@@ -939,6 +986,169 @@ const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark'
 
         // Focus
         setTimeout(() => input.focus(), 100);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Payments
+    // ─────────────────────────────────────────────────────────────
+    let payments = [];
+    let me = null;
+    let showFundForm = false;
+    let payMessage = '';
+
+    const money = (cents) => '$' + (cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    async function initPayments() {
+        try {
+            const meRes = await fetch('/api/auth/me');
+            if (meRes.ok) me = (await meRes.json()).user;
+        } catch (e) {}
+        await loadPayments();
+
+        const status = params.get('payment');
+        if (status) {
+            history.replaceState(null, '', `/thread.html?id=${encodeURIComponent(collabReqId)}`);
+            if (status === 'canceled') {
+                window.notify && notify.info('Payment canceled. You were not charged.');
+            } else if (status === 'success') {
+                window.notify && notify.success('Payment received. Confirming with Stripe...');
+                // Stripe tells us about the payment a moment after the redirect
+                for (let i = 0; i < 15 && !payments.some(p => p.status === 'held'); i++) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    await loadPayments();
+                }
+            }
+        }
+    }
+
+    async function loadPayments() {
+        try {
+            const res = await fetch(`/api/payments/thread/${collabReqId}`);
+            const data = await res.json();
+            if (res.ok) payments = data.payments || [];
+        } catch (e) {}
+        renderPayments();
+    }
+
+    function renderPayments() {
+        const area = document.getElementById('payments-area');
+        const name = escapeHtml(otherUser?.fullName || 'your collaborator');
+
+        const rows = payments.map(p => {
+            const badge = `<span class="pay-badge ${p.status}">${{ held: 'Held', released: 'Released', refunded: 'Refunded', failed: 'Needs review' }[p.status] || p.status}</span>`;
+            const who = p.role === 'payer' ? `You paid ${money(p.amountCents)}` : `${name} paid ${money(p.amountCents)}`;
+            const detail = p.role === 'payer'
+                ? `${name} receives ${money(p.payoutCents)} (QuikSpark fee ${money(p.platformFeeCents)})`
+                : `You receive ${money(p.payoutCents)} (QuikSpark fee ${money(p.platformFeeCents)})`;
+            const note = {
+                held: p.role === 'payer' ? 'Held safely until you release it.' : 'Held until they release it.',
+                released: 'Sent to the collaborator.',
+                refunded: 'Returned to the payer.',
+                failed: 'Something did not add up. Contact us and we will sort it out.'
+            }[p.status] || '';
+            const action = p.canRelease
+                ? `<button class="pay-btn" data-release="${p.id}" data-payout="${p.payoutCents}">Release Payment</button>`
+                : '';
+            return `<div class="pay-row">
+                <div><span class="pay-amount">${who}</span>${badge}
+                    <div class="pay-sub">${detail}. ${note}</div></div>
+                ${action}
+            </div>`;
+        }).join('');
+
+        const banner = me && !me.stripeOnboardingComplete
+            ? `<div class="pay-banner"><span>Set up payouts so you can receive payments from collaborators.</span>
+                <button class="pay-btn ghost" id="payout-setup-btn">Set up payouts</button></div>`
+            : '';
+
+        const form = showFundForm
+            ? `<div class="pay-form">
+                    <div class="pay-input-wrap"><span>$</span>
+                        <input class="pay-input" id="fund-amount" type="number" min="25" max="10000" step="0.01" placeholder="Amount" inputmode="decimal"></div>
+                    <button class="pay-btn" id="fund-go">Continue to payment</button>
+                    <button class="pay-btn ghost" id="fund-cancel">Cancel</button>
+                    <span class="pay-split" id="fund-split">Minimum $25</span>
+               </div>`
+            : '';
+
+        area.innerHTML = `
+            <div class="pay-head">
+                <div>
+                    <div class="pay-title">Payments</div>
+                    <div class="pay-sub">Fund the project to pay ${name}. Your money is held until you click Release. ${name} gets 90% and QuikSpark keeps 10%.</div>
+                </div>
+                ${showFundForm ? '' : '<button class="pay-btn" id="fund-open">Fund project</button>'}
+            </div>
+            ${form}
+            ${payMessage ? `<div class="pay-msg">${escapeHtml(payMessage)}</div>` : ''}
+            ${banner}
+            ${rows ? `<div class="pay-list">${rows}</div>` : ''}
+        `;
+        area.style.display = 'block';
+
+        document.getElementById('fund-open')?.addEventListener('click', () => { showFundForm = true; payMessage = ''; renderPayments(); document.getElementById('fund-amount')?.focus(); });
+        document.getElementById('fund-cancel')?.addEventListener('click', () => { showFundForm = false; payMessage = ''; renderPayments(); });
+        document.getElementById('fund-go')?.addEventListener('click', startFunding);
+        document.getElementById('payout-setup-btn')?.addEventListener('click', startPayoutSetup);
+        const amountInput = document.getElementById('fund-amount');
+        amountInput?.addEventListener('input', () => {
+            const cents = Math.round(Number(amountInput.value) * 100);
+            const split = document.getElementById('fund-split');
+            split.textContent = cents >= 2500
+                ? `${name.replace(/&amp;/g, '&')} receives ${money(Math.floor(cents * 0.9))} · QuikSpark fee ${money(cents - Math.floor(cents * 0.9))}`
+                : 'Minimum $25';
+        });
+        area.querySelectorAll('[data-release]').forEach(btn => btn.addEventListener('click', () => releasePayment(btn)));
+    }
+
+    async function startFunding() {
+        const btn = document.getElementById('fund-go');
+        const amount = document.getElementById('fund-amount').value;
+        btn.disabled = true; btn.textContent = 'Opening checkout...';
+        try {
+            const res = await fetch('/api/payments/fund', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ collabRequestId: collabReqId, amount })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Could not start the payment');
+            window.location.href = data.url;
+        } catch (err) {
+            payMessage = err.message;
+            renderPayments();
+            document.getElementById('fund-amount').value = amount;
+        }
+    }
+
+    async function releasePayment(btn) {
+        const payout = Number(btn.dataset.payout);
+        const who = otherUser?.fullName || 'your collaborator';
+        if (!confirm(`Release ${money(payout)} to ${who}? This cannot be undone.`)) return;
+        btn.disabled = true; btn.textContent = 'Releasing...';
+        try {
+            const res = await fetch(`/api/payments/${btn.dataset.release}/release`, { method: 'POST' });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Could not release the payment');
+            window.notify && notify.success('Payment released.');
+        } catch (err) {
+            window.notify && notify.error(err.message);
+        }
+        await loadPayments();
+    }
+
+    async function startPayoutSetup() {
+        const btn = document.getElementById('payout-setup-btn');
+        btn.disabled = true; btn.textContent = 'Opening...';
+        try {
+            const res = await fetch('/api/stripe/connect/onboard', { method: 'POST' });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Could not start payout setup');
+            window.location.href = data.url;
+        } catch (err) {
+            window.notify && notify.error(err.message);
+            btn.disabled = false; btn.textContent = 'Set up payouts';
+        }
     }
 
     // ─────────────────────────────────────────────────────────────
