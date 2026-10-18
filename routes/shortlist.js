@@ -1,10 +1,11 @@
 import express from 'express';
 import User from '../models/User.js';
+import { requireAuth, matchesAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Add profile to shortlist
-router.post('/add/:profileId', async (req, res) => {
+router.post('/add/:profileId', requireAuth, matchesAuth('body', 'userId'), async (req, res) => {
   try {
     const { profileId } = req.params;
     const { userId } = req.body; // Current user's ID
@@ -62,7 +63,7 @@ await user.save({ validateModifiedOnly: true });
 });
 
 // Remove profile from shortlist
-router.post('/remove/:profileId', async (req, res) => {
+router.post('/remove/:profileId', requireAuth, matchesAuth('body', 'userId'), async (req, res) => {
   try {
     const { profileId } = req.params;
     const { userId } = req.body;
@@ -106,7 +107,7 @@ router.post('/remove/:profileId', async (req, res) => {
 });
 
 // Get all shortlisted profiles for a user
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', requireAuth, matchesAuth('params', 'userId'), async (req, res) => {
   try {
     const { userId } = req.params;
     

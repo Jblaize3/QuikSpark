@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in — QuikSpark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #07070f;
+            --surface: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.09);
+            --border-active: rgba(88,32,247,0.5);
+            --purple: #5820F7;
+            --purple-mid: #7c3aed;
+            --periwinkle: #C2CAF3;
+            --text: #f4f3f0;
+            --text-dim: rgba(244,243,240,0.55);
+            --text-dimmer: rgba(244,243,240,0.28);
+            --error: #ef4444;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 10% 20%, rgba(88,32,247,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 80%, rgba(124,58,237,0.05) 0%, transparent 55%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .navbar {
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7,7,15,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-img { width: clamp(130px, 15vw, 200px); height: auto; }
+        .nav-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--periwinkle); }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 440px;
+            margin: 0 auto;
+            padding: 72px 24px 80px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 2.6rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        h1 .accent { color: var(--periwinkle); }
+
+        .sub {
+            color: var(--text-dim);
+            text-align: center;
+            font-size: 0.98rem;
+            margin-bottom: 36px;
+            line-height: 1.5;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: 'Space Grotesk', sans-serif;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            border-color: var(--border-active);
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 0 0 3px rgba(88,32,247,0.12);
+        }
+        .form-input::placeholder { color: var(--text-dimmer); }
+
+        .error-box {
+            display: none;
+            color: var(--error);
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .error-box.visible { display: block; }
+
+        .btn {
+            width: 100%;
+            padding: 15px 28px;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.02em;
+            background: var(--purple);
+            color: white;
+            box-shadow: 0 4px 16px rgba(88,32,247,0.3);
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+        .btn:hover { background: var(--purple-mid); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(88,32,247,0.4); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .alt {
+            text-align: center;
+            margin-top: 28px;
+            color: var(--text-dim);
+            font-size: 0.92rem;
+        }
+        .alt a { color: var(--periwinkle); text-decoration: none; font-weight: 600; }
+        .alt a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .nav-inner { padding: 0 20px; }
+            .wrap { padding-top: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="/index.html">
+                <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark" class="logo-img">
+            </a>
+            <a href="/about.html" class="nav-link">About Us</a>
+        </div>
+    </nav>
+
+    <main class="wrap">
+        <h1>Welcome <span class="accent">back.</span></h1>
+        <p class="sub">Log in to pick up where you left off.</p>
+
+        <form id="loginForm" novalidate>
+            <div class="error-box" id="errorBox" role="alert"></div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-input" type="password" id="password" name="password" placeholder="Your password" autocomplete="current-password" required>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">Log in</button>
+        </form>
+
+        <p class="alt">New here? <a href="/profile-setup.html">Create your profile</a></p>
+    </main>
+
+    <script>
+        // Only follow ?next= to a page on this site
+        function safeNext() {
+            const next = new URLSearchParams(location.search).get('next');
+            if (next && next.startsWith('/') && !next.startsWith('//') && !next.includes('\\')) return next;
+            return '/discover.html';
+        }
+
+        const form = document.getElementById('loginForm');
+        const errorBox = document.getElementById('errorBox');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showError(msg) {
+            errorBox.textContent = msg;
+            errorBox.classList.add('visible');
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorBox.classList.remove('visible');
+
+            const email = form.email.value.trim();
+            const password = form.password.value;
+            if (!email || !password) return showError('Enter your email and password.');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging in...';
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(data.message || 'Login failed. Please try again.');
+
+                try {
+                    localStorage.setItem('currentUserId', data.user.id);
+                    localStorage.setItem('currentUserName', data.user.fullName || '');
+                } catch (_) {}
+                window.location.href = safeNext();
+            } catch (err) {
+                showError(err.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Log in';
+            }
+        });
+    </script>
+</body>
+</html>

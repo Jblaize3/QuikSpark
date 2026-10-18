@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Message from '../models/Message.js';
 import CollabRequest from '../models/CollabRequest.js';
+import { requireAuth, matchesAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const router = express.Router();
 // Fetch all messages in a thread
 // Hard rule: only works if collabRequest is accepted
 // ─────────────────────────────────────────────
-router.get('/thread/:collabRequestId', async (req, res) => {
+router.get('/thread/:collabRequestId', requireAuth, matchesAuth('query', 'userId'), async (req, res) => {
   try {
     const { collabRequestId } = req.params;
     const { userId } = req.query; // Who's asking
@@ -64,7 +65,7 @@ router.get('/thread/:collabRequestId', async (req, res) => {
 // POST /api/messages/send
 // Send a message in an accepted thread
 // ─────────────────────────────────────────────
-router.post('/send', async (req, res) => {
+router.post('/send', requireAuth, matchesAuth('body', 'senderId'), async (req, res) => {
   try {
     const { collabRequestId, senderId, body } = req.body;
 
@@ -120,7 +121,7 @@ router.post('/send', async (req, res) => {
 // Get all active threads for a user
 // Returns one entry per thread, with latest message preview
 // ─────────────────────────────────────────────
-router.get('/inbox/:userId', async (req, res) => {
+router.get('/inbox/:userId', requireAuth, matchesAuth('params', 'userId'), async (req, res) => {
   try {
     const { userId } = req.params;
 

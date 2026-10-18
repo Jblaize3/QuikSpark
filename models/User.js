@@ -142,9 +142,34 @@ const userSchema = new mongoose.Schema({
   stripeOnboardingComplete: {
     type: Boolean,
     default: false
+  },
+
+  // Login. Optional at the schema level so profiles created before logins existed
+  // still load. The signup route requires both. Leave email unset (never null) for
+  // those profiles so the sparse unique index ignores them.
+  email: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    unique: true,
+    sparse: true
+  },
+  passwordHash: {
+    type: String,
+    select: false
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: {
+    // Profiles are returned to other users all over the app (discover, shortlist,
+    // populated requests). Never let private fields leave the server.
+    transform(doc, ret) {
+      delete ret.passwordHash;
+      delete ret.email;
+      delete ret.stripeAccountId;
+      return ret;
+    }
+  }
 });
 
 // Indexes for faster queries

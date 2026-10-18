@@ -1,11 +1,12 @@
 import express from 'express';
 import CollabRequest from '../models/CollabRequest.js';
 import User from '../models/User.js';
+import { requireAuth, matchesAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Send a collaboration request
-router.post('/send', async (req, res) => {
+router.post('/send', requireAuth, matchesAuth('body', 'fromUserId'), async (req, res) => {
   try {
     const { fromUserId, toUserId, portfolioItemId, message, need, timeline } = req.body;
     
@@ -86,7 +87,7 @@ router.post('/send', async (req, res) => {
 });
 
 // Get all requests received by a user (inbox)
-router.get('/received/:userId', async (req, res) => {
+router.get('/received/:userId', requireAuth, matchesAuth('params', 'userId'), async (req, res) => {
   try {
     const { userId } = req.params;
     const { status } = req.query; // optional filter
@@ -116,7 +117,7 @@ router.get('/received/:userId', async (req, res) => {
 });
 
 // Get all requests sent by a user
-router.get('/sent/:userId', async (req, res) => {
+router.get('/sent/:userId', requireAuth, matchesAuth('params', 'userId'), async (req, res) => {
   try {
     const { userId } = req.params;
     
@@ -140,7 +141,7 @@ router.get('/sent/:userId', async (req, res) => {
 });
 
 // Accept a collaboration request
-router.post('/accept/:requestId', async (req, res) => {
+router.post('/accept/:requestId', requireAuth, matchesAuth('body', 'userId'), async (req, res) => {
   try {
     const { requestId } = req.params;
     const { userId } = req.body; // User accepting (should be toUser)
@@ -190,7 +191,7 @@ router.post('/accept/:requestId', async (req, res) => {
 });
 
 // Decline a collaboration request
-router.post('/decline/:requestId', async (req, res) => {
+router.post('/decline/:requestId', requireAuth, matchesAuth('body', 'userId'), async (req, res) => {
   try {
     const { requestId } = req.params;
     const { userId } = req.body; // User declining (should be toUser)

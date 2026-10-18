@@ -1,12 +1,13 @@
 import express from 'express';
 import Spark from '../models/Spark.js';
 import mongoose from 'mongoose';
+import { requireAuth, matchesAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // ─── GET /api/sparks ─────────────────────────────────────
 // Fetch all active sparks, newest first
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
     try {
         const { stage, compensation, limit = 50 } = req.query;
 
@@ -29,7 +30,7 @@ router.get('/', async (req, res) => {
 
 // ─── POST /api/sparks ────────────────────────────────────
 // Create a new spark
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, matchesAuth('body', 'userId'), async (req, res) => {
     try {
         const { userId, title, whyNow, stage, lookingFor, timeline, compensation, tags } = req.body;
 
@@ -74,7 +75,7 @@ router.post('/', async (req, res) => {
 
 // ─── POST /api/sparks/:id/interest ───────────────────────
 // Express interest in a spark
-router.post('/:id/interest', async (req, res) => {
+router.post('/:id/interest', requireAuth, matchesAuth('body', 'userId'), async (req, res) => {
     try {
         const { userId } = req.body;
         const { id } = req.params;
@@ -113,7 +114,7 @@ router.post('/:id/interest', async (req, res) => {
 
 // ─── DELETE /api/sparks/:id ───────────────────────────────
 // Deactivate a spark (soft delete)
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAuth, matchesAuth('body', 'userId'), async (req, res) => {
     try {
         const { userId } = req.body;
         const { id } = req.params;
