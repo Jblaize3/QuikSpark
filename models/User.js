@@ -131,9 +131,17 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  isActive: {
+    isActive: {
     type: Boolean,
     default: true
+  },
+  stripeAccountId: {
+    type: String,
+    default: null
+  },
+  stripeOnboardingComplete: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
