@@ -660,6 +660,34 @@
                 display: none;
             }
         }
+        /* Conversations (threads from requests you sent or received) */
+        .conversations-section { margin-top: 40px; }
+        .convo-list { display: flex; flex-direction: column; gap: 10px; }
+        .convo-row {
+            display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px; cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit;
+        }
+        .convo-row:hover { background: rgba(88, 32, 247, 0.12); border-color: rgba(88, 32, 247, 0.35); }
+        .convo-avatar {
+            width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; color: #fff; background: linear-gradient(135deg, #5820F7, #7c3aed);
+        }
+        .convo-main { flex: 1; min-width: 0; }
+        .convo-name { font-weight: 700; color: #fff; font-size: 0.95rem; }
+        .convo-role { font-weight: 500; color: rgba(255, 255, 255, 0.45); font-size: 0.8rem; margin-left: 8px; }
+        .convo-preview { color: rgba(255, 255, 255, 0.55); font-size: 0.85rem; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .convo-meta { display: flex; align-items: center; gap: 10px; color: rgba(255, 255, 255, 0.4); font-size: 0.78rem; flex-shrink: 0; }
+        .convo-dot { width: 9px; height: 9px; border-radius: 50%; background: #5820F7; box-shadow: 0 0 8px rgba(88, 32, 247, 0.8); }
+        .convo-empty { color: rgba(255, 255, 255, 0.45); font-size: 0.9rem; padding: 18px 4px; }
+        .sent-requests { margin-top: 22px; }
+        .sent-requests-title { color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
+        .sent-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 4px; font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .sent-row:last-child { border-bottom: none; }
+        .sent-status { font-weight: 600; }
+        .sent-status.pending { color: #f59e0b; }
+        .sent-status.declined { color: #ef4444; }
+
         /* Collaboration Requests Section */
         .collab-requests-section {
             margin-top: 40px;
@@ -1229,7 +1257,16 @@
                         </div>
                     ` : ''}
                 </div>
-<!-- Collaboration Requests Section -->
+<!-- Conversations Section -->
+                <div class="conversations-section" id="conversations-section">
+                    <h2 class="section-title">💬 Conversations</h2>
+                    <div class="convo-list" id="convo-list">
+                        <div class="loading-state">Loading conversations...</div>
+                    </div>
+                    <div class="sent-requests" id="sent-requests" style="display:none;"></div>
+                </div>
+
+                <!-- Collaboration Requests Section -->
                 <div class="collab-requests-section" id="collab-requests-section">
                     <h2 class="section-title">📥 Collaboration Requests</h2>
                     
@@ -1481,6 +1518,64 @@
             loadProfile();
             loadShortlist();
             loadCollabRequests();
+            loadConversations();
+        }
+
+        function escHtml(v) {
+            return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        // Threads you are part of, whether you sent the request or received it,
+        // plus the status of requests you sent that are not accepted yet.
+        async function loadConversations() {
+            const userId = localStorage.getItem('currentUserId');
+            if (!userId) return;
+            // The page body is drawn by loadProfile(), so wait until the section exists
+            let list = null;
+            for (let i = 0; i < 100 && !(list = document.getElementById('convo-list')); i++) {
+                await new Promise(r => setTimeout(r, 50));
+            }
+            if (!list) return;
+            try {
+                const [inboxRes, sentRes] = await Promise.all([
+                    fetch(`/api/messages/inbox/${userId}`),
+                    fetch(`/api/collab/sent/${userId}`)
+                ]);
+                const inbox = await inboxRes.json();
+                const sent = await sentRes.json();
+
+                const threads = inbox.threads || [];
+                list.innerHTML = threads.length ? threads.map(t => {
+                    const name = t.otherUser?.fullName || 'Collaborator';
+                    const last = t.latestMessage;
+                    const preview = last
+                        ? `${(last.sender?._id || last.sender) === userId ? 'You: ' : ''}${last.body}`
+                        : 'No messages yet. Say hello.';
+                    const when = last ? getTimeAgo(new Date(last.createdAt)) : '';
+                    return `<a class="convo-row" href="/thread.html?id=${encodeURIComponent(t.collabRequestId)}">
+                        <div class="convo-avatar">${escHtml(name.trim().charAt(0).toUpperCase())}</div>
+                        <div class="convo-main">
+                            <div><span class="convo-name">${escHtml(name)}</span><span class="convo-role">${escHtml(t.otherUser?.role || '')}</span></div>
+                            <div class="convo-preview">${escHtml(preview)}</div>
+                        </div>
+                        <div class="convo-meta">${t.hasUnread ? '<span class="convo-dot" title="New messages"></span>' : ''}<span>${escHtml(when)}</span></div>
+                    </a>`;
+                }).join('') : '<div class="convo-empty">No conversations yet. Once a collaboration request is accepted, the thread shows up here for both of you.</div>';
+
+                const waiting = (sent.requests || []).filter(r => r.status !== 'accepted');
+                const box = document.getElementById('sent-requests');
+                if (waiting.length) {
+                    box.innerHTML = '<div class="sent-requests-title">Requests you sent</div>' + waiting.map(r =>
+                        `<div class="sent-row"><span>${escHtml(r.toUser?.fullName || 'Someone')}</span><span><span class="sent-status ${escHtml(r.status)}">${r.status === 'pending' ? 'Waiting for reply' : 'Declined'}</span> &middot; ${escHtml(getTimeAgo(new Date(r.createdAt)))}</span></div>`
+                    ).join('');
+                    box.style.display = 'block';
+                } else {
+                    box.style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Error loading conversations:', err);
+                list.innerHTML = '<div class="convo-empty">Could not load conversations. Refresh to try again.</div>';
+            }
         }
 
         function scrollToCollabRequests() {
