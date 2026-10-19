@@ -1,7 +1,7 @@
 import express from 'express';
 import User from '../models/User.js';
 import { requireAuth, requireAuthPage } from '../middleware/auth.js';
-import { getStripe } from '../lib/stripeClient.js';
+import { getStripe, createRecipientAccount, createOnboardingLinkUrl, isRecipientReady } from '../lib/stripeClient.js';
 
 const router = express.Router();
 
@@ -17,26 +17,12 @@ async function createOnboardingLink(stripe, user) {
   let accountId = user.stripeAccountId;
 
   if (!accountId) {
-    const account = await stripe.accounts.create({
-      type: 'express',
-      ...(user.email ? { email: user.email } : {}),
-      capabilities: {
-        card_payments: { requested: true },
-        transfers: { requested: true }
-      }
-    });
-    accountId = account.id;
+    accountId = await createRecipientAccount(stripe, { email: user.email });
     user.stripeAccountId = accountId;
     await user.save({ validateModifiedOnly: true });
   }
 
-  const link = await stripe.accountLinks.create({
-    account: accountId,
-    refresh_url: `${baseUrl()}/api/stripe/connect/refresh`,
-    return_url: `${baseUrl()}/api/stripe/connect/return`,
-    type: 'account_onboarding'
-  });
-  return link.url;
+  return createOnboardingLinkUrl(stripe, accountId, baseUrl());
 }
 
 // POST /api/stripe/connect/onboard
@@ -66,8 +52,7 @@ router.get('/connect/return', requireAuthPage, async (req, res) => {
     const user = await User.findById(req.auth.userId);
     if (!stripe || !user || !user.stripeAccountId) return res.redirect('/myspark.html');
 
-    const account = await stripe.accounts.retrieve(user.stripeAccountId);
-    const complete = !!(account.details_submitted && account.payouts_enabled);
+    const complete = await isRecipientReady(stripe, user.stripeAccountId);
     if (complete !== !!user.stripeOnboardingComplete) {
       user.stripeOnboardingComplete = complete;
       await user.save({ validateModifiedOnly: true });
