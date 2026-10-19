@@ -263,7 +263,8 @@ async function markHeld(stripe, session) {
 
 export async function webhookHandler(req, res) {
   const stripe = getStripe();
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  // Signing secrets never contain whitespace or quotes, so strip anything a copy-paste adds
+  const secret = String(process.env.STRIPE_WEBHOOK_SECRET || '').replace(/\s+/g, '').replace(/^["']|["']$/g, '');
   if (!stripe || !secret) return res.status(503).send('Webhook not configured');
 
   let event;
