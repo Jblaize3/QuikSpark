@@ -216,6 +216,9 @@
             return '/discover.html';
         }
 
+        // Already logged in? Skip the form.
+        fetch('/api/auth/me').then(r => { if (r.ok) window.location.replace(safeNext()); }).catch(() => {});
+
         const form = document.getElementById('loginForm');
         const errorBox = document.getElementById('errorBox');
         const submitBtn = document.getElementById('submitBtn');

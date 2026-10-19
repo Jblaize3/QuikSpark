@@ -60,6 +60,13 @@ app.use('/api/messages', messageRoutes);
 connectDB();
 
 app.use('/api/portfolio', portfolioRoutes);
+
+// Typed addresses without .html (quik-spark.com/about) go to the real page
+app.get(/^\/(about|login|discover|myspark|spark-feed|profile-setup|thread)\/?$/, (req, res) => {
+    const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    res.redirect(301, `/${req.params[0]}.html${query}`);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/", (req, res) => {
@@ -212,6 +219,14 @@ app.post("/api/test/match", requireAuth, async (req, res) => {
         console.error("Test match error:", error);
         res.status(500).json({ success: false, message: error.message });
     }
+});
+
+// Anything nothing else answered: JSON for the API, a friendly page for everything else
+app.use((req, res) => {
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ success: false, message: 'Not found' });
+    }
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
 const PORT = process.env.PORT || 3000;

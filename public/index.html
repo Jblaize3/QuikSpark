@@ -857,6 +857,19 @@
             document.body.style.overflow = 'hidden';
         });
 
+        // Links like /index.html#early-access open the signup form straight away
+        if (location.hash === '#early-access') {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Someone already logged in should get into the app, not see "Log in" again
+        fetch('/api/auth/me').then(r => r.ok ? r.json() : null).then(me => {
+            if (!me) return;
+            const link = document.querySelector('#navRight a[href="/login.html"]');
+            if (link) { link.textContent = 'My Spark'; link.setAttribute('href', '/myspark.html'); }
+        }).catch(() => {});
+
         closeBtn.addEventListener('click', () => {
             modal.classList.remove('active');
             document.body.style.overflow = '';
