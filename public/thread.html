@@ -679,7 +679,7 @@ const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark'
     let otherUser       = null;
     let collabRequest   = null;
     let pollingInterval = null;
-    let lastMessageId   = null;
+    let lastMessageId   = undefined; // not null, so an empty thread still renders once
 
     // ─────────────────────────────────────────────────────────────
     // Boot
