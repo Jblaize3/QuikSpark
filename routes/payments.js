@@ -4,7 +4,7 @@ import Payment from '../models/Payment.js';
 import CollabRequest from '../models/CollabRequest.js';
 import User from '../models/User.js';
 import { requireAuth } from '../middleware/auth.js';
-import { getStripe } from '../lib/stripeClient.js';
+import { getStripe, isRecipientReady } from '../lib/stripeClient.js';
 
 const router = express.Router();
 
@@ -63,8 +63,7 @@ function publicPayment(payment, userId) {
 async function payeeIsReady(stripe, payee) {
   if (!payee.stripeAccountId) return false;
   if (payee.stripeOnboardingComplete) return true;
-  const account = await stripe.accounts.retrieve(payee.stripeAccountId);
-  const ready = !!(account.details_submitted && account.payouts_enabled);
+  const ready = await isRecipientReady(stripe, payee.stripeAccountId);
   if (ready) {
     payee.stripeOnboardingComplete = true;
     await payee.save({ validateModifiedOnly: true });
