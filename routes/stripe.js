@@ -1,18 +1,9 @@
 import express from 'express';
-import Stripe from 'stripe';
 import User from '../models/User.js';
 import { requireAuth, requireAuthPage } from '../middleware/auth.js';
+import { getStripe } from '../lib/stripeClient.js';
 
 const router = express.Router();
-
-// Created on first use so a missing key returns a clear error instead of stopping
-// the whole server from starting.
-let stripeClient = null;
-function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) return null;
-  if (!stripeClient) stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
-  return stripeClient;
-}
 
 const baseUrl = () => String(process.env.BASE_URL || '').replace(/\/+$/, '');
 
