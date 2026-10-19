@@ -1038,8 +1038,8 @@ const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark'
             const badge = `<span class="pay-badge ${p.status}">${{ held: 'Held', released: 'Released', refunded: 'Refunded', failed: 'Needs review' }[p.status] || p.status}</span>`;
             const who = p.role === 'payer' ? `You paid ${money(p.amountCents)}` : `${name} paid ${money(p.amountCents)}`;
             const detail = p.role === 'payer'
-                ? `${name} receives ${money(p.payoutCents)} (QuikSpark fee ${money(p.platformFeeCents)})`
-                : `You receive ${money(p.payoutCents)} (QuikSpark fee ${money(p.platformFeeCents)})`;
+                ? `${name} receives ${money(p.payoutCents)} (servicing fee ${money(p.platformFeeCents)})`
+                : `You receive ${money(p.payoutCents)} (servicing fee ${money(p.platformFeeCents)})`;
             const note = {
                 held: p.role === 'payer' ? 'Held safely until you release it.' : 'Held until they release it.',
                 released: 'Sent to the collaborator.',
@@ -1075,7 +1075,7 @@ const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark'
             <div class="pay-head">
                 <div>
                     <div class="pay-title">Payments</div>
-                    <div class="pay-sub">Fund the project to pay ${name}. Your money is held until you click Release. ${name} gets 90% and QuikSpark keeps 10%.</div>
+                    <div class="pay-sub">Fund the project to pay ${name}. Your money is held until you click Release. ${name} receives 90% after a 10% servicing fee.</div>
                 </div>
                 ${showFundForm ? '' : '<button class="pay-btn" id="fund-open">Fund project</button>'}
             </div>
@@ -1095,7 +1095,7 @@ const navMap = { 'discover': 'nav-discover', 'spark-feed': 'nav-feed', 'myspark'
             const cents = Math.round(Number(amountInput.value) * 100);
             const split = document.getElementById('fund-split');
             split.textContent = cents >= 2500
-                ? `${name.replace(/&amp;/g, '&')} receives ${money(Math.floor(cents * 0.9))} · QuikSpark fee ${money(cents - Math.floor(cents * 0.9))}`
+                ? `${name.replace(/&amp;/g, '&')} receives ${money(Math.floor(cents * 0.9))} · servicing fee ${money(cents - Math.floor(cents * 0.9))}`
                 : 'Minimum $25';
         });
         area.querySelectorAll('[data-release]').forEach(btn => btn.addEventListener('click', () => releasePayment(btn)));
