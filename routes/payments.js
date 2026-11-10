@@ -5,6 +5,7 @@ import CollabRequest from '../models/CollabRequest.js';
 import User from '../models/User.js';
 import { requireAuth } from '../middleware/auth.js';
 import { getStripe, isRecipientReady } from '../lib/stripeClient.js';
+import { notifyPaymentHeld, notifyPaymentReleased } from '../lib/notify.js';
 
 const router = express.Router();
 
@@ -213,9 +214,10 @@ router.post('/:id/release', requireAuth, async (req, res) => {
     const updated = await Payment.findOneAndUpdate(
       { _id: payment._id, status: 'held' },
       { status: 'released', stripeChargeId: chargeId, stripeTransferId: transfer.id, releasedAt: new Date() },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
+    if (updated) notifyPaymentReleased(updated);
     res.json({ success: true, payment: publicPayment(updated || payment, req.auth.userId) });
   } catch (err) {
     console.error('Release payment error:', err.message);
@@ -255,10 +257,12 @@ async function markHeld(stripe, session) {
     console.warn('Stripe webhook: could not read charge yet, will look it up at release:', err.message);
   }
 
-  await Payment.updateOne(
+  const result = await Payment.updateOne(
     { _id: payment._id, status: 'pending' },
     { status: 'held', stripePaymentIntentId: intentId, stripeChargeId: chargeId, paidAt: new Date() }
   );
+  // Only the delivery that actually flipped it to held sends email; Stripe retries do not
+  if (result.modifiedCount === 1) notifyPaymentHeld(payment);
 }
 
 export async function webhookHandler(req, res) {

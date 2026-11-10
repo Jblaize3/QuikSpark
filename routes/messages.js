@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import Message from '../models/Message.js';
 import CollabRequest from '../models/CollabRequest.js';
 import { requireAuth, matchesAuth } from '../middleware/auth.js';
+import { notifyNewMessage } from '../lib/notify.js';
 
 const router = express.Router();
 
@@ -96,6 +97,14 @@ router.post('/send', requireAuth, matchesAuth('body', 'senderId'), async (req, r
       return res.status(403).json({ success: false, message: 'Not authorized to send messages in this thread' });
     }
 
+    // Email the other person only for the first unread message from this sender,
+    // so a burst of messages is one email. Reading the thread resets this.
+    const alreadyUnread = await Message.exists({
+      collabRequest: collabRequestId,
+      sender: senderId,
+      readByRecipient: false
+    });
+
     const message = new Message({
       collabRequest: collabRequestId,
       participants: [collabRequest.fromUser, collabRequest.toUser],
@@ -104,6 +113,7 @@ router.post('/send', requireAuth, matchesAuth('body', 'senderId'), async (req, r
     });
 
     await message.save();
+    if (!alreadyUnread) notifyNewMessage({ collabRequest, senderId, body: message.body });
 
     // Return populated message so frontend can render immediately
     const populated = await message.populate('sender', 'fullName profileImage role');

@@ -687,6 +687,9 @@
         .sent-status { font-weight: 600; }
         .sent-status.pending { color: #f59e0b; }
         .sent-status.declined { color: #ef4444; }
+        .withdraw-btn { background: none; border: none; padding: 0; color: rgba(194, 202, 243, 0.8); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; }
+        .withdraw-btn:hover { color: #C2CAF3; }
+        .withdraw-btn:disabled { opacity: 0.5; cursor: default; }
 
         /* Collaboration Requests Section */
         .collab-requests-section {
@@ -1098,8 +1101,8 @@
     .navbar .container { position: relative; }
 }
     </style>
-    <script src="notifications.js"></script>
-    <script src="portfolio-lightbox.js"></script>
+    <script src="/notifications.js"></script>
+    <script src="/portfolio-lightbox.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -1562,19 +1565,41 @@
                     </a>`;
                 }).join('') : '<div class="convo-empty">No conversations yet. Once a collaboration request is accepted, the thread shows up here for both of you.</div>';
 
-                const waiting = (sent.requests || []).filter(r => r.status !== 'accepted');
+                const waiting = (sent.requests || []).filter(r => r.status === 'pending' || r.status === 'declined');
                 const box = document.getElementById('sent-requests');
                 if (waiting.length) {
                     box.innerHTML = '<div class="sent-requests-title">Requests you sent</div>' + waiting.map(r =>
-                        `<div class="sent-row"><span>${escHtml(r.toUser?.fullName || 'Someone')}</span><span><span class="sent-status ${escHtml(r.status)}">${r.status === 'pending' ? 'Waiting for reply' : 'Declined'}</span> &middot; ${escHtml(getTimeAgo(new Date(r.createdAt)))}</span></div>`
+                        `<div class="sent-row"><span>${escHtml(r.toUser?.fullName || 'Someone')}</span><span><span class="sent-status ${escHtml(r.status)}">${r.status === 'pending' ? 'Waiting for reply' : 'Declined'}</span> &middot; ${escHtml(getTimeAgo(new Date(r.createdAt)))}${r.status === 'pending' ? ` &middot; <button type="button" class="withdraw-btn" data-id="${escHtml(r._id)}">Withdraw</button>` : ''}</span></div>`
                     ).join('');
                     box.style.display = 'block';
+                    box.querySelectorAll('.withdraw-btn').forEach(btn => btn.addEventListener('click', () => withdrawRequest(btn)));
                 } else {
+                    box.innerHTML = '';
                     box.style.display = 'none';
                 }
             } catch (err) {
                 console.error('Error loading conversations:', err);
                 list.innerHTML = '<div class="convo-empty">Could not load conversations. Refresh to try again.</div>';
+            }
+        }
+
+        async function withdrawRequest(btn) {
+            if (!confirm('Withdraw this request? They will not see it anymore.')) return;
+            const userId = localStorage.getItem('currentUserId');
+            btn.disabled = true;
+            try {
+                const res = await fetch(`/api/collab/withdraw/${encodeURIComponent(btn.dataset.id)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(data.message || 'Could not withdraw the request');
+                showToast('Request withdrawn');
+                loadConversations();
+            } catch (err) {
+                showToast(err.message);
+                btn.disabled = false;
             }
         }
 

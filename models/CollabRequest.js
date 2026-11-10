@@ -46,7 +46,7 @@ const collabRequestSchema = new mongoose.Schema({
   // Request status
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'declined'],
+    enum: ['pending', 'accepted', 'declined', 'withdrawn'],
     default: 'pending'
   },
   

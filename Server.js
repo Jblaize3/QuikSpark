@@ -3,14 +3,15 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import mailchimp from "@mailchimp/mailchimp_marketing";
-import MatchmakingService from "./matchmaking-service.js";
+import MatchmakingService, { profileFromUser } from "./matchmaking-service.js";
+import User from './models/User.js';
+import { consumeUsage, refundUsage, dayKey, envInt } from './lib/usage.js';
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import EarlyAccess from './models/EarlyAccess.js';
 import connectDB from './config/database.js';
 import portfolioRoutes from './routes/portfolio.js';
 import shortlistRoutes from './routes/shortlist.js';
-import mockRoutes from './routes/mock.js';
 import engagementRoutes from './routes/engagement.js';
 import collabRoutes from './routes/collab.js';
 import messageRoutes from './routes/messages.js';
@@ -46,13 +47,32 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), web
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+
+// The site and its API share one origin, so browsers never need CORS for our own
+// pages. Only the addresses below (plus anything in ALLOWED_ORIGINS, comma
+// separated) are allowed to call the API from another origin. Requests with no
+// Origin header (same-origin, curl, Stripe) are unaffected.
+const allowedOrigins = new Set([
+    'https://quik-spark.com',
+    'https://www.quik-spark.com',
+    ...(process.env.BASE_URL ? [process.env.BASE_URL.trim().replace(/\/+$/, '')] : []),
+    ...(process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim().replace(/\/+$/, '')).filter(Boolean)
+]);
+const isProd = process.env.NODE_ENV === 'production' || !!process.env.RENDER;
+app.use(cors({
+    origin(origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.has(origin)) return callback(null, true);
+        if (!isProd && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return callback(null, true);
+        return callback(null, false);
+    },
+    credentials: true
+}));
 app.use('/api/auth', authRoutes);
 app.use('/api/sparks', sparkRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/shortlist', shortlistRoutes);
-app.use('/api/mock', mockRoutes);
 app.use('/api/engagement', engagementRoutes);
 app.use('/api/collab', collabRoutes);
 app.use('/api/messages', messageRoutes);
@@ -60,6 +80,13 @@ app.use('/api/messages', messageRoutes);
 connectDB();
 
 app.use('/api/portfolio', portfolioRoutes);
+
+// Typed addresses without .html (quik-spark.com/about) go to the real page
+app.get(/^\/(about|login|discover|myspark|spark-feed|profile-setup|thread|forgot-password|reset-password)\/?$/, (req, res) => {
+    const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    res.redirect(301, `/${req.params[0]}.html${query}`);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/", (req, res) => {
@@ -160,58 +187,81 @@ async function retryUnsyncedSignups() {
 setTimeout(retryUnsyncedSignups, 30 * 1000);
 setInterval(retryUnsyncedSignups, 15 * 60 * 1000);
 
-const matchmaker = new MatchmakingService(process.env.ANTHROPIC_API_KEY);
+let matchmaker = new MatchmakingService(process.env.ANTHROPIC_API_KEY);
+export function setMatchmaker(fake) { matchmaker = fake; }
 
+// Every analysis costs real money, so it is capped per person and for the whole
+// site per day. These are launch caps; they become plan limits once Pro exists.
+const MATCH_PER_USER_PER_DAY = envInt('MATCH_DAILY_LIMIT_PER_USER', 5);
+const MATCH_SITE_PER_DAY = envInt('MATCH_DAILY_LIMIT_GLOBAL', 100);
+
+// Body: { otherUserId }. The logged-in user is always one side; both profiles are
+// read from the database, never taken from the request.
 app.post("/api/match/analyze", requireAuth, async (req, res) => {
+    const day = dayKey();
+    const userKey = `match:user:${req.auth.userId}:${day}`;
+    const siteKey = `match:site:${day}`;
+    let userCharged = false;
+    let siteCharged = false;
     try {
-        const { user1, user2 } = req.body;
-        if (!user1 || !user2) {
-            return res.status(400).json({ success: false, message: "Both user profiles are required" });
+        const otherUserId = String(req.body?.otherUserId || '');
+        if (!mongoose.isValidObjectId(otherUserId)) {
+            return res.status(400).json({ success: false, message: "otherUserId is required" });
         }
-        const matchResult = await matchmaker.matchUsers(user1, user2);
-        res.json({ success: true, match: matchResult });
+        if (otherUserId === req.auth.userId) {
+            return res.status(400).json({ success: false, message: "Pick someone other than yourself" });
+        }
+
+        const [me, other] = await Promise.all([
+            User.findById(req.auth.userId),
+            User.findById(otherUserId)
+        ]);
+        if (!me) return res.status(401).json({ success: false, code: 'AUTH_REQUIRED', message: 'Please log in to continue' });
+        if (!other || other.isActive === false) {
+            return res.status(404).json({ success: false, message: "That profile was not found" });
+        }
+
+        const mine = await consumeUsage(userKey, MATCH_PER_USER_PER_DAY);
+        if (!mine.ok) {
+            return res.status(429).json({
+                success: false,
+                code: 'MATCH_LIMIT',
+                message: `You've used all ${MATCH_PER_USER_PER_DAY} match analyses for today. Try again tomorrow.`
+            });
+        }
+        userCharged = true;
+
+        const site = await consumeUsage(siteKey, MATCH_SITE_PER_DAY);
+        if (!site.ok) {
+            await refundUsage(userKey);
+            userCharged = false;
+            return res.status(429).json({
+                success: false,
+                code: 'MATCH_BUSY',
+                message: "AI matching is at capacity right now. Please try again tomorrow."
+            });
+        }
+        siteCharged = true;
+
+        const matchResult = await matchmaker.matchUsers(profileFromUser(me), profileFromUser(other));
+        res.json({ success: true, match: matchResult, remainingToday: MATCH_PER_USER_PER_DAY - mine.count });
     } catch (error) {
         console.error("Match analysis error:", error);
+        // The person got nothing, so they don't lose a use
+        try {
+            if (userCharged) await refundUsage(userKey);
+            if (siteCharged) await refundUsage(siteKey);
+        } catch (e) { console.error("Usage refund failed:", e); }
         res.status(500).json({ success: false, message: "Failed to analyze match" });
     }
 });
 
-app.post("/api/test/match", requireAuth, async (req, res) => {
-    try {
-        const mockUsers = [
-            {
-                email: "sarah@example.com",
-                firstName: "Sarah",
-                lastName: "Chen",
-                role: "Technical Co-founder",
-                skills: ["Full-stack development", "AI/ML", "Product design"],
-                interests: ["SaaS", "Healthcare tech"],
-                lookingFor: "Business co-founder",
-                goals: "Build healthcare AI platform",
-                experience: "5 years as senior engineer",
-                workingStyle: "Data-driven, collaborative",
-                availability: "20+ hours/week"
-            },
-            {
-                email: "mike@example.com",
-                firstName: "Mike",
-                lastName: "Rodriguez",
-                role: "Business Co-founder",
-                skills: ["Business development", "Sales", "Healthcare"],
-                interests: ["Healthcare tech", "B2B SaaS"],
-                lookingFor: "Technical co-founder",
-                goals: "Make healthcare accessible",
-                experience: "8 years in healthcare",
-                workingStyle: "Results-oriented",
-                availability: "Full-time"
-            }
-        ];
-        const matchResult = await matchmaker.matchUsers(mockUsers[0], mockUsers[1]);
-        res.json({ success: true, message: "Test match between Sarah (technical) and Mike (business)", match: matchResult });
-    } catch (error) {
-        console.error("Test match error:", error);
-        res.status(500).json({ success: false, message: error.message });
+// Anything nothing else answered: JSON for the API, a friendly page for everything else
+app.use((req, res) => {
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ success: false, message: 'Not found' });
     }
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
 const PORT = process.env.PORT || 3000;

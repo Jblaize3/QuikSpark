@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found — QuikSpark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <meta name="robots" content="noindex">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #07070f;
+            --border: rgba(255,255,255,0.09);
+            --purple: #5820F7;
+            --purple-mid: #7c3aed;
+            --text: #f4f3f0;
+            --text-dim: rgba(244,243,240,0.55);
+        }
+
+        body {
+            background: var(--black);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 10% 20%, rgba(88,32,247,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 80%, rgba(124,58,237,0.05) 0%, transparent 55%);
+            pointer-events: none;
+        }
+
+        .navbar {
+            padding: 18px 32px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7,7,15,0.92);
+            position: relative;
+            z-index: 1;
+        }
+        .logo-img { height: 36px; width: auto; display: block; }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 48px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .code {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: clamp(4rem, 14vw, 7rem);
+            line-height: 1;
+            color: var(--purple);
+        }
+
+        h1 { font-size: 1.6rem; margin: 18px 0 10px; }
+        p { color: var(--text-dim); max-width: 420px; line-height: 1.55; }
+
+        .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; justify-content: center; }
+        .btn {
+            display: inline-block;
+            padding: 12px 26px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--purple); color: #fff; }
+        .btn-primary:hover { background: var(--purple-mid); }
+        .btn-ghost { border: 1px solid var(--border); color: var(--text); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.06); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/index.html">
+            <img src="/Images/ALT%20AWAY%20QUIKSPARK_DISCOVER.png" alt="QuikSpark" class="logo-img">
+        </a>
+    </nav>
+
+    <main>
+        <div class="code">404</div>
+        <h1>That page doesn't exist.</h1>
+        <p>The link may be old or mistyped. Head back and pick up from somewhere familiar.</p>
+        <div class="actions">
+            <a class="btn btn-primary" href="/index.html">Go home</a>
+            <a class="btn btn-ghost" href="/myspark.html">My Spark</a>
+        </div>
+    </main>
+</body>
+</html>

@@ -157,6 +157,30 @@ const userSchema = new mongoose.Schema({
   passwordHash: {
     type: String,
     select: false
+  },
+
+  // Email confirmation. Activity emails only go to confirmed addresses. Only a
+  // hash of each token is stored, so a database leak cannot be used to take over
+  // an account.
+  emailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerifyTokenHash: {
+    type: String,
+    select: false
+  },
+  emailVerifyExpires: {
+    type: Date,
+    select: false
+  },
+  passwordResetTokenHash: {
+    type: String,
+    select: false
+  },
+  passwordResetExpires: {
+    type: Date,
+    select: false
   }
 }, {
   timestamps: true,
@@ -167,6 +191,11 @@ const userSchema = new mongoose.Schema({
       delete ret.passwordHash;
       delete ret.email;
       delete ret.stripeAccountId;
+      delete ret.emailVerified;
+      delete ret.emailVerifyTokenHash;
+      delete ret.emailVerifyExpires;
+      delete ret.passwordResetTokenHash;
+      delete ret.passwordResetExpires;
       return ret;
     }
   }

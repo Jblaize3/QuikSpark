@@ -205,6 +205,8 @@
             <button type="submit" class="btn" id="submitBtn">Log in</button>
         </form>
 
+        <p class="alt" style="margin-top:18px;"><a href="/forgot-password.html">Forgot your password?</a></p>
+
         <p class="alt">New here? <a href="/profile-setup.html">Create your profile</a></p>
     </main>
 
@@ -215,6 +217,9 @@
             if (next && next.startsWith('/') && !next.startsWith('//') && !next.includes('\\')) return next;
             return '/discover.html';
         }
+
+        // Already logged in? Skip the form.
+        fetch('/api/auth/me').then(r => { if (r.ok) window.location.replace(safeNext()); }).catch(() => {});
 
         const form = document.getElementById('loginForm');
         const errorBox = document.getElementById('errorBox');
