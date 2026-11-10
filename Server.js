@@ -82,7 +82,7 @@ connectDB();
 app.use('/api/portfolio', portfolioRoutes);
 
 // Typed addresses without .html (quik-spark.com/about) go to the real page
-app.get(/^\/(about|login|discover|myspark|spark-feed|profile-setup|thread)\/?$/, (req, res) => {
+app.get(/^\/(about|login|discover|myspark|spark-feed|profile-setup|thread|forgot-password|reset-password)\/?$/, (req, res) => {
     const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
     res.redirect(301, `/${req.params[0]}.html${query}`);
 });

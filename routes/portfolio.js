@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import { issueSession, requireAuth, rateLimit } from '../middleware/auth.js';
+import { sendVerification } from '../lib/accountEmails.js';
 
 const router = express.Router();
 
@@ -77,6 +78,7 @@ router.post('/create', signupLimiter, async (req, res) => {
     });
 
     await newUser.save();
+    sendVerification(newUser); // fire and forget; a mail problem never blocks signup
     issueSession(res, newUser._id);
 
     res.status(201).json({
